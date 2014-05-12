@@ -1,0 +1,183 @@
+package quicklic.quicklic.quicklic;
+
+import quicklic.floating.api.R;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+public class QuicklicActivity extends Activity {
+
+	private Context context;
+	private LinearLayout quicklicMain;
+	private GestureDetector gestureDetector;
+	private FrameLayout.LayoutParams layoutParams;
+
+	private int deviceWidth;
+	private int deviceHeight;
+
+	@Override
+	protected void onCreate( Bundle savedInstanceState )
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main_quicklic);
+
+		displayMetrics();
+		initialize();
+		quicklicLayoutSetting();
+	}
+
+	/**
+	 * @함수명 : initialize
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 초기화
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void initialize()
+	{
+		context = this;
+		gestureDetector = new GestureDetector(this, gestureListener);
+	}
+
+	/**
+	 * @함수명 : quicklicMainCreate
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : quicklic main layout 설정
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void quicklicLayoutSetting()
+	{
+		layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+		layoutParams.width = (int) (deviceWidth * 0.6);
+		layoutParams.height = (int) (deviceWidth * 0.6);
+		layoutParams.gravity = Gravity.CENTER;
+
+		quicklicMain = (LinearLayout) findViewById(R.id.quicklic_main_LinearLayout);
+		quicklicMain.setLayoutParams(layoutParams);
+		quicklicMain.setBackgroundColor(Color.TRANSPARENT);
+		quicklicMain.setOnTouchListener(touchListener);
+	}
+
+	/**
+	 * @함수명 : displayMetrics
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 사용자의 Display 사이즈 정보 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void displayMetrics()
+	{
+		WindowManager windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+		Display windowDisplay = windowManager.getDefaultDisplay();
+
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		windowDisplay.getMetrics(displayMetrics);
+
+		deviceWidth = displayMetrics.widthPixels;
+		deviceHeight = displayMetrics.heightPixels;
+	}
+
+	private OnTouchListener touchListener = new OnTouchListener()
+	{
+		/**
+		 * @함수명 : onTouch
+		 * @매개변수 : View v, MotionEvent event
+		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
+		 * @작성자 : THYang
+		 * @작성일 : 2014. 5. 5.
+		 */
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			gestureDetector.onTouchEvent(event);
+			return true;
+		}
+	};
+
+	private OnGestureListener gestureListener = new OnGestureListener()
+	{
+
+		@Override
+		public boolean onSingleTapUp( MotionEvent e )
+		{
+			return false;
+		}
+
+		@Override
+		public void onShowPress( MotionEvent e )
+		{
+		}
+
+		@Override
+		public boolean onScroll( MotionEvent e1, MotionEvent e2, float distanceX, float distanceY )
+		{
+			return false;
+		}
+
+		@Override
+		public void onLongPress( MotionEvent e )
+		{
+		}
+
+		@Override
+		public boolean onFling( MotionEvent e1, MotionEvent e2, float velocityX, float velocityY )
+		{
+			/* MotionEvent의 시작과 끝 지점의 X,Y 좌표값을 절대 값으로  가져온 다음, 같은 축 끼리 감산 계산을 한다.
+			 * MotionEvent는 어디서 부터 시작했느냐에 따라서 음수 값이 발생하기 때문에 절대 값 처리가 필요하다.
+			 * 
+			 * 움직임이 더 큰 쪽의 방향을 우선시 하기 위해 가로와 세로의 크기를 비교 한다.
+			 * 가로의 움직임이 큰 경우, 왼쪽과 오른쪽 / 세로의 움직임이 큰 경우, 위쪽과 아래쪽
+			 * 어느 방향으로 움직였느냐에 따라서 음수 값이 나오기 때문에, 음수 양수를 구분으로 방향을 정한다. 
+			 */
+			float xLorR = Math.abs(e1.getX()) - Math.abs(e2.getX());
+			float yUorD = Math.abs(e1.getY()) - Math.abs(e2.getY());
+
+			if ( Math.abs(xLorR) > Math.abs(yUorD) )
+			{
+				if ( xLorR < 0 )
+				{
+					Toast.makeText(context, "to Right", Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(context, "to Left", Toast.LENGTH_SHORT).show();
+				}
+			}
+			else
+			{
+				if ( yUorD < 0 )
+				{
+					Toast.makeText(context, "to Down", Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(context, "to Up", Toast.LENGTH_SHORT).show();
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean onDown( MotionEvent e )
+		{
+			return false;
+		}
+	};
+}

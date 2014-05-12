@@ -1,0 +1,338 @@
+package quicklic.quicklic.quicklic;
+
+import quicklic.floating.api.R;
+import quicklic.quicklic.test.TestingFunction;
+import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PixelFormat;
+import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.GestureDetector;
+import android.view.GestureDetector.OnGestureListener;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+public class QuicklicActivity extends Activity {
+
+	private Context context;
+	private GestureDetector gestureDetector;
+	private WindowManager windowManager;
+	private LayoutInflater layoutInflater;
+
+	private ViewGroup quicklicMain;
+
+	private FrameLayout quicklicFrameLayout;
+
+	private FrameLayout.LayoutParams fLayoutParams;
+	private WindowManager.LayoutParams wLayoutParams;
+	private Button addButton;
+	private ImageView quicklicImageView;
+	private TestingFunction testingFunction;
+
+	private int deviceWidth;
+	private int deviceHeight;
+
+	@Override
+	protected void onCreate( Bundle savedInstanceState )
+	{
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main_quicklic);
+
+		testingFunction = (TestingFunction) getIntent().getSerializableExtra("push");
+
+		displayMetrics();
+		initialize();
+		quicklicLayoutSetting();
+	}
+
+	@Override
+	protected void onDestroy()
+	{
+		// TODO Auto-generated method stub
+		super.onDestroy();
+
+		if ( quicklicMain != null )
+			windowManager.removeView(quicklicMain);
+	}
+
+	/**
+	 * @함수명 : initialize
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 초기화
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void initialize()
+	{
+		context = this;
+		gestureDetector = new GestureDetector(this, gestureListener);
+	}
+
+	/**
+	 * @함수명 : quicklicMainCreate
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : quicklic main layout 설정
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void quicklicLayoutSetting()
+	{
+		quicklicImageView = new ImageView(context);//(ImageView) findViewById(R.id.quicklicImageView);
+		fLayoutParams = new FrameLayout.LayoutParams((int) (deviceWidth * 0.7), (int) (deviceWidth * 0.7));
+		quicklicImageView.setLayoutParams(fLayoutParams);
+		quicklicImageView.setBackgroundResource(R.drawable.rendering_circle);
+		quicklicImageView.setOnTouchListener(touchListener);
+
+		int frameWidth = (int) (deviceWidth * 0.7);
+		int frameHeight = (int) (deviceWidth * 0.7);
+
+		int deviceHorizontalCenter = (deviceWidth - frameWidth) / 2;
+		int deviceVerticalCenter = (deviceHeight - frameHeight) / 2;
+
+		wLayoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
+				//WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL,
+				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
+
+		wLayoutParams.windowAnimations = android.R.style.Animation_Dialog;
+
+		wLayoutParams.gravity = Gravity.TOP | Gravity.LEFT;
+		wLayoutParams.x = deviceHorizontalCenter;
+		wLayoutParams.y = deviceVerticalCenter;
+
+		wLayoutParams.width = frameWidth;
+		wLayoutParams.height = frameHeight;
+
+		fLayoutParams = new FrameLayout.LayoutParams(frameWidth, frameHeight);
+
+		quicklicMain = (FrameLayout) layoutInflater.inflate(R.layout.activity_main_quicklic, null);
+		quicklicMain.setLayoutParams(fLayoutParams);
+		quicklicMain.setBackgroundColor(Color.TRANSPARENT);
+		quicklicMain.addView(quicklicImageView);
+
+		addButton = new Button(context);//(Button) findViewById(R.id.addButton);
+		addButton.setText("ADD");
+		addButton.setGravity(Gravity.CENTER);
+		addButton.setTextColor(Color.WHITE);
+		addButton.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
+		addButton.setBackgroundColor(Color.TRANSPARENT);
+		addButton.setTextSize(30.0f);
+
+		//	    <Button
+		//	        android:id="@+id/addButton"
+		//	        android:layout_width="wrap_content"
+		//	        android:layout_height="wrap_content"
+		//	        android:layout_gravity="center"
+		//	        android:background="#00000000"
+		//	        android:gravity="center"
+		//	        android:text="Add"
+		//	        android:textColor="@android:color/white"
+		//	        android:textSize="30sp" />
+
+		addButton.setOnClickListener(clickListener);
+		quicklicMain.addView(addButton);
+
+		windowManager.addView(quicklicMain, wLayoutParams);
+	}
+
+	/**
+	 * @함수명 : displayMetrics
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 사용자의 Display 사이즈 정보 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void displayMetrics()
+	{
+		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+		layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+		Display windowDisplay = windowManager.getDefaultDisplay();
+
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		windowDisplay.getMetrics(displayMetrics);
+
+		deviceWidth = displayMetrics.widthPixels;
+		deviceHeight = displayMetrics.heightPixels;
+	}
+
+	private OnTouchListener touchListener = new OnTouchListener()
+	{
+		/**
+		 * @함수명 : onTouch
+		 * @매개변수 : View v, MotionEvent event
+		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
+		 * @작성자 : THYang
+		 * @작성일 : 2014. 5. 5.
+		 */
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			gestureDetector.onTouchEvent(event);
+			return true;
+		}
+	};
+
+	private OnClickListener clickListener = new OnClickListener()
+	{
+
+		@Override
+		public void onClick( View v )
+		{
+			int SIZE = 270;
+
+			// TODO Auto-generated method stub
+			if ( v == addButton )
+			{
+				float iconSize = (deviceWidth * 0.15f);
+				float frameWidth = (deviceWidth * 0.7f);
+				float frameHeight = (deviceWidth * 0.7f);
+
+				int radius = (int) (frameHeight - iconSize) / 2 - 10;
+
+				float centerX = (frameWidth - iconSize) / 2;
+				float centerY = (frameHeight - iconSize) / 2;
+				//				float centerX = (frameWidth) / 2;
+				//				float centerY = (frameHeight) / 2;
+				System.out.println(centerX + " " + centerY);
+
+				System.out.println("Click");
+
+				// 1
+				FrameLayout.LayoutParams fLayoutParams = new FrameLayout.LayoutParams(-1, -1, Gravity.TOP | Gravity.LEFT);
+				fLayoutParams.width = (int) iconSize;
+				fLayoutParams.height = (int) iconSize;
+				fLayoutParams.leftMargin = (int) (centerX + radius * Math.cos(Math.PI / 180 * SIZE));//centerX; // x
+				fLayoutParams.topMargin = (int) (centerY + radius * Math.sin(Math.PI / 180 * SIZE));//centerY - radius; // y
+
+				System.out.println(fLayoutParams.leftMargin + " " + fLayoutParams.topMargin);
+
+				ImageView image0 = new ImageView(context);
+				image0.setBackgroundColor(Color.BLUE);
+				image0.setLayoutParams(fLayoutParams);
+				image0.setBackgroundResource(R.drawable.rendering_icon);
+				quicklicMain.addView(image0);
+
+				// 2
+				FrameLayout.LayoutParams ffLayoutParams = new FrameLayout.LayoutParams(-1, -1, Gravity.TOP | Gravity.LEFT);
+				ffLayoutParams.width = (int) iconSize;
+				ffLayoutParams.height = (int) iconSize;
+				ffLayoutParams.leftMargin = (int) (centerX + radius * Math.cos(Math.PI / 180 * (SIZE + 120)));//centerX; // x
+				ffLayoutParams.topMargin = (int) (centerY + radius * Math.sin(Math.PI / 180 * (SIZE + 120)));//centerY - radius; // y
+
+				ImageView image1 = new ImageView(context);
+				image1.setBackgroundColor(Color.RED);
+				image1.setLayoutParams(ffLayoutParams);
+				image1.setBackgroundResource(R.drawable.rendering_icon);
+				quicklicMain.addView(image1);
+
+				// 3
+				FrameLayout.LayoutParams fffLayoutParams = new FrameLayout.LayoutParams(-1, -1, Gravity.TOP | Gravity.LEFT);
+				fffLayoutParams.width = (int) iconSize;
+				fffLayoutParams.height = (int) iconSize;
+				fffLayoutParams.leftMargin = (int) (centerX + radius * Math.cos(Math.PI / 180 * (SIZE + 120 + 120)));//centerX; // x
+				fffLayoutParams.topMargin = (int) (centerY + radius * Math.sin(Math.PI / 180 * (SIZE + 120 + 120)));//centerY - radius; // y
+
+				ImageView image2 = new ImageView(context);
+				image2.setBackgroundColor(Color.YELLOW);
+				image2.setLayoutParams(fffLayoutParams);
+
+				image2.setBackgroundResource(R.drawable.rendering_icon);
+				quicklicMain.addView(image2);
+
+			}
+		}
+	};
+
+	private OnGestureListener gestureListener = new OnGestureListener()
+	{
+
+		@Override
+		public boolean onSingleTapUp( MotionEvent e )
+		{
+			return false;
+		}
+
+		@Override
+		public void onShowPress( MotionEvent e )
+		{
+		}
+
+		@Override
+		public boolean onScroll( MotionEvent e1, MotionEvent e2, float distanceX, float distanceY )
+		{
+			return false;
+		}
+
+		@Override
+		public void onLongPress( MotionEvent e )
+		{
+		}
+
+		@Override
+		public boolean onFling( MotionEvent e1, MotionEvent e2, float velocityX, float velocityY )
+		{
+			/* MotionEvent의 시작과 끝 지점의 X,Y 좌표값을 절대 값으로  가져온 다음, 같은 축 끼리 감산 계산을 한다.
+			 * MotionEvent는 어디서 부터 시작했느냐에 따라서 음수 값이 발생하기 때문에 절대 값 처리가 필요하다.
+			 * 
+			 * 움직임이 더 큰 쪽의 방향을 우선시 하기 위해 가로와 세로의 크기를 비교 한다.
+			 * 가로의 움직임이 큰 경우, 왼쪽과 오른쪽 / 세로의 움직임이 큰 경우, 위쪽과 아래쪽
+			 * 어느 방향으로 움직였느냐에 따라서 음수 값이 나오기 때문에, 음수 양수를 구분으로 방향을 정한다. 
+			 */
+			float xLorR = Math.abs(e1.getX()) - Math.abs(e2.getX());
+			float yUorD = Math.abs(e1.getY()) - Math.abs(e2.getY());
+
+			if ( Math.abs(xLorR) > Math.abs(yUorD) )
+			{
+				if ( xLorR < 0 )
+				{
+					Toast.makeText(context, "to Right", Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(context, "to Left", Toast.LENGTH_SHORT).show();
+				}
+			}
+			else
+			{
+				if ( yUorD < 0 )
+				{
+					Toast.makeText(context, "to Down", Toast.LENGTH_SHORT).show();
+				}
+				else
+				{
+					Toast.makeText(context, "to Up", Toast.LENGTH_SHORT).show();
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public boolean onDown( MotionEvent e )
+		{
+			return false;
+		}
+	};
+
+	public void onBackPressed()
+	{
+		testingFunction.floatingServices.setViewVisible(true);
+		super.onBackPressed();
+	};
+
+}

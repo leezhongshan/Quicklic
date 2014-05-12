@@ -1,0 +1,53 @@
+/*
+ * Created by Edward Akoto on 12/31/12. Email akotoe@aua.ac.ke Free for modification and distribution
+ */
+
+package quicklic.floating.util;
+
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
+
+public class OpenAnimation extends TranslateAnimation implements Animation.AnimationListener {
+
+	private ImageView imageView; // 슬라이드 메뉴를 제외한 기본 메인 레이아웃
+
+	public OpenAnimation(ImageView imageView, int fromXType,
+			float fromXValue, int toXType, float toXValue, int fromYType,
+			float fromYValue, int toYType, float toYValue, long duration)
+	{
+		super(fromXType, fromXValue, toXType, toXValue, fromYType, fromYValue, toYType, toYValue);
+
+		// init
+		this.imageView = imageView;
+
+		System.out.println("Ani Crea");
+		setDuration(duration);
+		setFillAfter(false);
+		setInterpolator(new AccelerateDecelerateInterpolator());
+		setAnimationListener(this);
+		imageView.startAnimation(this);
+		System.out.println("Ani Crea");
+	}
+
+	public void onAnimationEnd( Animation arg0 )
+	{
+		//		LayoutParams params = (LayoutParams) mainLinearLayout.getLayoutParams();
+		//		params.leftMargin = panelWidth;
+		//		params.gravity = Gravity.LEFT;
+		System.out.println("Ani End");
+		imageView.clearAnimation();
+		//		imageView.setLayoutParams(params);
+		imageView.requestLayout();
+	}
+
+	public void onAnimationRepeat( Animation arg0 )
+	{
+	}
+
+	public void onAnimationStart( Animation arg0 )
+	{
+		System.out.println("Ani Start");
+	}
+}
