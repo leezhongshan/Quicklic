@@ -31,7 +31,7 @@ public class TestingActivity extends Activity
 				Intent intent = new Intent(TestingActivity.this, FloatingServices.class);
 				intent.putExtra("push", testingFunction);
 				startService(intent);
-				//				finish();
+				finish();
 			}
 		});
 
@@ -43,5 +43,14 @@ public class TestingActivity extends Activity
 				stopService(new Intent(TestingActivity.this, FloatingServices.class));
 			}
 		});
+
 	}
+
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		finish();
+	}
+
 }
