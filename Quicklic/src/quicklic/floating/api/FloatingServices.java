@@ -304,7 +304,7 @@ public class FloatingServices extends Service
 	{
 		windowManager.updateViewLayout(view, layoutParams);
 	}
-
+//a
 	/**
 	 * @함수명 : windowManagerRemoveView
 	 * @매개변수 : View view
