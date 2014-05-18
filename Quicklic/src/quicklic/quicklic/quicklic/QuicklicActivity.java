@@ -7,6 +7,7 @@ import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -179,7 +180,7 @@ public class QuicklicActivity extends Activity {
 	 * @작성자 : 13 JHPark
 	 * @작성일 : 2014. 5. 9.
 	 */
-	public void addViewsForBalance( int item_count, ArrayList<Integer> imageList, OnClickListener onClickListener )
+	public void addViewsForBalance( int item_count, ArrayList<Drawable> imageList, OnClickListener onClickListener )
 	{
 		viewCount = item_count;
 
@@ -214,7 +215,7 @@ public class QuicklicActivity extends Activity {
 			image.setBackgroundResource(R.drawable.rendering_item);
 			if ( imageList != null && i < imageList.size() )
 			{
-				image.setImageResource(imageList.get(i));
+				image.setImageDrawable(imageList.get(i));
 			}
 			image.setLayoutParams(fLayoutParams);
 

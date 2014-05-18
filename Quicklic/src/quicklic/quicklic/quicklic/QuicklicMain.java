@@ -3,7 +3,7 @@ package quicklic.quicklic.quicklic;
 import java.util.ArrayList;
 
 import quicklic.floating.api.R;
-
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -13,7 +13,7 @@ public class QuicklicMain {
 	private QuicklicHardware quicklicHardware;
 	private QuicklicFavorite quicklicFavorite;
 	private QuicklicScroll quicklicScroll;
-	private ArrayList<Integer> imageList;
+	private ArrayList<Drawable> imageList;
 
 	public QuicklicMain(QuicklicActivity quicklicActivity)
 	{
@@ -24,11 +24,11 @@ public class QuicklicMain {
 
 	private void init()
 	{
-		imageList = new ArrayList<Integer>();
+		imageList = new ArrayList<Drawable>();
 
-		imageList.add(R.drawable.hardware);
-		imageList.add(R.drawable.scroll);
-		imageList.add(R.drawable.favorite);
+		imageList.add(quicklicActivity.getResources().getDrawable(R.drawable.hardware));
+		imageList.add(quicklicActivity.getResources().getDrawable(R.drawable.scroll));
+		imageList.add(quicklicActivity.getResources().getDrawable(R.drawable.favorite));
 
 		quicklicActivity.addViewsForBalance(3, imageList, onClickListener);
 	}
