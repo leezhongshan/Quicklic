@@ -1,5 +1,7 @@
 package quicklic.quicklic.quicklic;
 
+import java.util.ArrayList;
+
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.test.TestingFunction;
@@ -169,6 +171,7 @@ public class QuicklicActivity extends Activity {
 	};
 
 	/**
+	 * @param imageList
 	 * @함수명 : addViewsForBalance
 	 * @매개변수 :
 	 * @반환 : void
@@ -176,9 +179,9 @@ public class QuicklicActivity extends Activity {
 	 * @작성자 : 13 JHPark
 	 * @작성일 : 2014. 5. 9.
 	 */
-	public void addViewsForBalance( int item_count, OnClickListener onClickListener )
+	public void addViewsForBalance( int item_count, ArrayList<Integer> imageList, OnClickListener onClickListener )
 	{
-		viewCount = 0;
+		viewCount = item_count;
 
 		final int ANGLE = 360 / item_count; // 360 / Item 개수
 
@@ -209,11 +212,14 @@ public class QuicklicActivity extends Activity {
 			// TODO 다양한 정보를 갖고 있는 이미지뷰 클래스 정의
 			ImageView image = new ImageView(context);
 			image.setBackgroundResource(R.drawable.rendering_item);
+			if ( imageList != null && i < imageList.size() )
+			{
+				image.setImageResource(imageList.get(i));
+			}
 			image.setLayoutParams(fLayoutParams);
 
 			// TODO 추가한 아이템을 구별하기 위한 식별자와 클릭 리스너
 			image.setId(i);
-			viewCount++;
 			image.setOnClickListener(onClickListener);
 
 			quicklicFrameLayout.addView(image);
