@@ -58,6 +58,12 @@ public class TestingFunction implements Serializable, FloatingInterface
 		floatingServices.setVisibility(bool);
 	}
 
+	@Override
+	public float setSize()
+	{
+		return 0.2f;
+	}
+
 	//-------------------------------------------------------------------
 	//  API 비 제공 메소드
 	//-------------------------------------------------------------------
@@ -66,4 +72,5 @@ public class TestingFunction implements Serializable, FloatingInterface
 	{
 		return floatingServices;
 	}
+
 }

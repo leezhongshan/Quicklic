@@ -6,6 +6,8 @@ public interface FloatingInterface
 {
 	public void setContext( FloatingServices floatingServices );
 
+	public float setSize();
+
 	public void touched( View v );
 
 	public void doubleTouched( View v );

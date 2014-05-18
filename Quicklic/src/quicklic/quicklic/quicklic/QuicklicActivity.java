@@ -22,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 public class QuicklicActivity extends Activity {
+
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
 
@@ -38,6 +39,10 @@ public class QuicklicActivity extends Activity {
 
 	private int deviceWidth;
 	private int deviceHeight;
+
+	private int viewCount;
+
+	private QuicklicMain quicklicMain;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -70,17 +75,31 @@ public class QuicklicActivity extends Activity {
 	};
 
 	/**
-	 * @함수명 : onPause
+	 * @함수명 : onStop
 	 * @매개변수 :
 	 * @기능(역할) : 홈버튼이 눌렸을 때, quicklic 뷰가 다시 생성되도록 함
 	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 9.
 	 */
 	@Override
-	protected void onPause()
+	protected void onStop()
 	{
 		TestingFunction.getFloatingServices().setVisibility(true);
-		super.onPause();
+		super.onStop();
+	}
+
+	/**
+	 * @함수명 : onTouchEvent
+	 * @매개변수 :
+	 * @기능(역할) : 영역 밖이 눌렸을 경우 창이 닫히도록 한다.
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 5. 13.
+	 */
+	@Override
+	public boolean onTouchEvent( MotionEvent event )
+	{
+		finish();
+		return super.onTouchEvent(event);
 	}
 
 	/**
@@ -94,9 +113,12 @@ public class QuicklicActivity extends Activity {
 	private void initialize()
 	{
 		context = this;
-		gestureDetector = new GestureDetector(this, gestureListener);
+
+		viewCount = 0;
 
 		testingFunction = (TestingFunction) getIntent().getSerializableExtra("push");
+
+		gestureDetector = new GestureDetector(this, onGestureListener);
 
 		fLayoutParams = new FrameLayout.LayoutParams((int) (deviceWidth * 0.7), (int) (deviceWidth * 0.7));
 
@@ -106,8 +128,7 @@ public class QuicklicActivity extends Activity {
 		quicklicImageView.setLayoutParams(fLayoutParams);
 		quicklicImageView.setOnTouchListener(touchListener);
 
-		addButton = (Button) findViewById(R.id.quicklic_add_Button);
-		addButton.setOnClickListener(clickListener);
+		quicklicMain = new QuicklicMain(this);
 	}
 
 	/**
@@ -147,23 +168,6 @@ public class QuicklicActivity extends Activity {
 		}
 	};
 
-	private OnClickListener clickListener = new OnClickListener()
-	{
-
-		@Override
-		public void onClick( View v )
-		{
-			if ( v == addButton )
-			{
-				addViewsForBalance(10);
-			}
-			else if ( v instanceof ImageView )
-			{
-				System.out.println("Hi : " + v.getId());
-			}
-		}
-	};
-
 	/**
 	 * @함수명 : addViewsForBalance
 	 * @매개변수 :
@@ -172,8 +176,10 @@ public class QuicklicActivity extends Activity {
 	 * @작성자 : 13 JHPark
 	 * @작성일 : 2014. 5. 9.
 	 */
-	private void addViewsForBalance( int item_count )
+	public void addViewsForBalance( int item_count, OnClickListener onClickListener )
 	{
+		viewCount = 0;
+
 		final int ANGLE = 360 / item_count; // 360 / Item 개수
 
 		Axis axis = new Axis();
@@ -207,7 +213,8 @@ public class QuicklicActivity extends Activity {
 
 			// TODO 추가한 아이템을 구별하기 위한 식별자와 클릭 리스너
 			image.setId(i);
-			image.setOnClickListener(clickListener);
+			viewCount++;
+			image.setOnClickListener(onClickListener);
 
 			quicklicFrameLayout.addView(image);
 
@@ -231,7 +238,7 @@ public class QuicklicActivity extends Activity {
 		return axis;
 	}
 
-	private OnGestureListener gestureListener = new OnGestureListener()
+	private OnGestureListener onGestureListener = new OnGestureListener()
 	{
 
 		@Override
@@ -300,4 +307,15 @@ public class QuicklicActivity extends Activity {
 			return false;
 		}
 	};
+
+	public int getViewCount()
+	{
+		return viewCount;
+	}
+
+	public FrameLayout getQuicklicFrameLayout()
+	{
+		return quicklicFrameLayout;
+	}
+
 }

@@ -19,9 +19,8 @@ public final class R {
     public static final class id {
         public static final int button1=0x7f060000;
         public static final int button2=0x7f060001;
-        public static final int noti_image_ImageView=0x7f060005;
-        public static final int noti_text_TextView=0x7f060006;
-        public static final int quicklic_add_Button=0x7f060004;
+        public static final int noti_image_ImageView=0x7f060004;
+        public static final int noti_text_TextView=0x7f060005;
         public static final int quicklic_main_FrameLayout=0x7f060002;
         public static final int quicklic_main_ImageView=0x7f060003;
     }
