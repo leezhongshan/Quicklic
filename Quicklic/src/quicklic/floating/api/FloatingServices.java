@@ -174,8 +174,8 @@ public class FloatingServices extends Service
 
 	private void quicklicCreate()
 	{
-		int imageWidth = (int) (deviceWidth * 0.2);
-		int imageHeight = (int) (deviceWidth * 0.2);
+		int imageWidth = (int) (deviceWidth * floatingInterface.setSize());
+		int imageHeight = (int) (deviceWidth * floatingInterface.setSize());
 
 		quicklic = new ImageView(this);
 
@@ -304,7 +304,8 @@ public class FloatingServices extends Service
 	{
 		windowManager.updateViewLayout(view, layoutParams);
 	}
-//a
+
+	//a
 	/**
 	 * @함수명 : windowManagerRemoveView
 	 * @매개변수 : View view
