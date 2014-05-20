@@ -48,106 +48,42 @@ public class QuicklicActivity extends Activity {
 
 	private int viewCount;
 
+	/**************************************
+	 * Support Function Section
+	 **************************************/
+
+	/**
+	 * @함수명 : getViewCount
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : 현재 추가된 Item의 개수를 반환
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 5. 21.
+	 */
 	public int getViewCount()
 	{
 		return viewCount;
 	}
 
+	/**
+	 * @함수명 : getQuicklicFrameLayout
+	 * @매개변수 :
+	 * @반환 : FrameLayout
+	 * @기능(역할) : MainActivity의 FrameLayout을 반환
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 5. 21.
+	 */
 	public FrameLayout getQuicklicFrameLayout()
 	{
 		return quicklicFrameLayout;
 	}
 
-	@Override
-	public void setContentView( int layoutResID )
-	{
-		super.setContentView(layoutResID);
-		displayMetrics();
-		initialize();
-	}
-
-	/**
-	 * @함수명 : onStop
-	 * @매개변수 :
-	 * @기능(역할) : 홈버튼이 눌렸을 때, quicklic 뷰가 다시 생성되도록 함
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 9.
-	 */
-	@Override
-	protected void onStop()
-	{
-		Log.d("TAG", "Stop");
-		super.onStop();
-	}
-
-	/**
-	 * @함수명 : onTouchEvent
-	 * @매개변수 :
-	 * @기능(역할) : 영역 밖이 눌렸을 경우 창이 닫히도록 한다.
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 13.
-	 */
-	@Override
-	public boolean onTouchEvent( MotionEvent event )
-	{
-		//		finish();
-		super.onTouchEvent(event);
-		return true;
-	}
-
-	/**
-	 * @함수명 : initialize
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 초기화
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 5.
-	 */
-	private void initialize()
-	{
-		context = this;
-
-		viewCount = 0;
-
-		testingFunction = (TestingFunction) getIntent().getSerializableExtra("push");
-
-		gestureDetector = new GestureDetector(this, onGestureListener);
-
-		fLayoutParams = new FrameLayout.LayoutParams((int) (deviceWidth * 0.7), (int) (deviceWidth * 0.7));
-
-		quicklicFrameLayout = (FrameLayout) findViewById(R.id.quicklic_main_FrameLayout);
-
-		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
-		quicklicImageView.setLayoutParams(fLayoutParams);
-		quicklicImageView.setOnTouchListener(touchListener);
-	}
-
-	/**
-	 * @함수명 : displayMetrics
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 사용자의 Display 사이즈 정보 가져오기
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 5.
-	 */
-	private void displayMetrics()
-	{
-		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-		Display windowDisplay = windowManager.getDefaultDisplay();
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		windowDisplay.getMetrics(displayMetrics);
-
-		deviceWidth = displayMetrics.widthPixels;
-		deviceHeight = displayMetrics.heightPixels;
-	}
-
 	/**
 	 * @param imageList
 	 * @함수명 : addViewsForBalance
-	 * @매개변수 :
+	 * @매개변수 : int item_count, ArrayList<Drawable> imageArrayList, OnClickListener clickListener
 	 * @반환 : void
-	 * @기능(역할) :
+	 * @기능(역할) : Item의 개수에 따라서 균등하게 배치 해줌, 등록될 Item의 이미지는 ArrayList에 있음
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 9.
 	 * @수정자 : JHPark, THYang
@@ -204,6 +140,86 @@ public class QuicklicActivity extends Activity {
 			image.setOnClickListener(clickListener);
 			quicklicFrameLayout.addView(image);
 		}
+	}
+
+	/**************************************
+	 * Developer Section
+	 **************************************/
+
+	/**
+	 * @함수명 : setContentView
+	 * @매개변수 : int layoutResID
+	 * @기능(역할) : 초기화 세팅
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 21.
+	 */
+	@Override
+	public void setContentView( int layoutResID )
+	{
+		super.setContentView(layoutResID);
+		displayMetrics();
+		initialize();
+	}
+
+	/**
+	 * @함수명 : onTouchEvent
+	 * @매개변수 :
+	 * @기능(역할) : 영역 밖이 눌렸을 경우 창이 닫히도록 한다.
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 5. 13.
+	 */
+	@Override
+	public boolean onTouchEvent( MotionEvent event )
+	{
+		//		finish();
+		return super.onTouchEvent(event);
+	}
+
+	/**
+	 * @함수명 : initialize
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 초기화
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void initialize()
+	{
+		context = this;
+
+		viewCount = 0;
+
+		testingFunction = (TestingFunction) getIntent().getSerializableExtra("push");
+
+		gestureDetector = new GestureDetector(this, onGestureListener);
+
+		fLayoutParams = new FrameLayout.LayoutParams((int) (deviceWidth * 0.7), (int) (deviceWidth * 0.7));
+
+		quicklicFrameLayout = (FrameLayout) findViewById(R.id.quicklic_main_FrameLayout);
+
+		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
+		quicklicImageView.setLayoutParams(fLayoutParams);
+		quicklicImageView.setOnTouchListener(touchListener);
+	}
+
+	/**
+	 * @함수명 : displayMetrics
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 사용자의 Display 사이즈 정보 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
+	private void displayMetrics()
+	{
+		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
+		Display windowDisplay = windowManager.getDefaultDisplay();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		windowDisplay.getMetrics(displayMetrics);
+
+		deviceWidth = displayMetrics.widthPixels;
+		deviceHeight = displayMetrics.heightPixels;
 	}
 
 	/**
