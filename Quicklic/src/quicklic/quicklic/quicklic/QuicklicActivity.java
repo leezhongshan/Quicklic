@@ -8,8 +8,8 @@ import quicklic.quicklic.test.TestingFunction;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -18,11 +18,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+import android.widget.ImageView.ScaleType;
 
 public class QuicklicActivity extends Activity {
 
@@ -45,22 +47,22 @@ public class QuicklicActivity extends Activity {
 
 	private int viewCount;
 
-	private QuicklicMain quicklicMain;
-
-	@Override
-	protected void onCreate( Bundle savedInstanceState )
+	public int getViewCount()
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_quicklic);
+		return viewCount;
+	}
 
-		displayMetrics();
-		initialize();
+	public FrameLayout getQuicklicFrameLayout()
+	{
+		return quicklicFrameLayout;
 	}
 
 	@Override
-	protected void onDestroy()
+	public void setContentView( int layoutResID )
 	{
-		super.onDestroy();
+		super.setContentView(layoutResID);
+		displayMetrics();
+		initialize();
 	}
 
 	/**
@@ -73,9 +75,17 @@ public class QuicklicActivity extends Activity {
 	@Override
 	public void onBackPressed()
 	{
-		super.onBackPressed();
+
 		TestingFunction.getFloatingServices().setVisibility(true);
+		super.onBackPressed();
 	};
+
+	@Override
+	protected void onDestroy()
+	{
+		Log.d("TAG", "Destroy");
+		super.onDestroy();
+	}
 
 	/**
 	 * @함수명 : onStop
@@ -87,6 +97,7 @@ public class QuicklicActivity extends Activity {
 	@Override
 	protected void onStop()
 	{
+		Log.d("TAG", "Stop");
 		TestingFunction.getFloatingServices().setVisibility(true);
 		super.onStop();
 	}
@@ -101,8 +112,9 @@ public class QuicklicActivity extends Activity {
 	@Override
 	public boolean onTouchEvent( MotionEvent event )
 	{
-		finish();
-		return super.onTouchEvent(event);
+		//		finish();
+		super.onTouchEvent(event);
+		return true;
 	}
 
 	/**
@@ -130,8 +142,6 @@ public class QuicklicActivity extends Activity {
 		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
 		quicklicImageView.setLayoutParams(fLayoutParams);
 		quicklicImageView.setOnTouchListener(touchListener);
-
-		quicklicMain = new QuicklicMain(this);
 	}
 
 	/**
@@ -154,39 +164,22 @@ public class QuicklicActivity extends Activity {
 		deviceHeight = displayMetrics.heightPixels;
 	}
 
-	private OnTouchListener touchListener = new OnTouchListener()
-	{
-		/**
-		 * @함수명 : onTouch
-		 * @매개변수 : View v, MotionEvent event
-		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
-		 * @작성자 : THYang
-		 * @작성일 : 2014. 5. 5.
-		 */
-		@Override
-		public boolean onTouch( View v, MotionEvent event )
-		{
-			gestureDetector.onTouchEvent(event);
-			return true;
-		}
-	};
-
 	/**
 	 * @param imageList
 	 * @함수명 : addViewsForBalance
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) :
-	 * @작성자 : 13 JHPark
+	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 9.
+	 * @수정자 : JHPark, THYang
 	 */
-	public void addViewsForBalance( int item_count, ArrayList<Drawable> imageList, OnClickListener onClickListener )
+	protected void addViewsForBalance( int item_count, ArrayList<Drawable> imageArrayList, OnClickListener clickListener )
 	{
 		viewCount = item_count;
+		Axis axis = new Axis(); // 아이템이 놓일 좌표를 저장하는 자료구조 (float x, float y)
 
-		final int ANGLE = 360 / item_count; // 360 / Item 개수
-
-		Axis axis = new Axis();
+		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
 
 		float itemSize = (deviceWidth * 0.15f); // 등록되어질 아이템의 크기
 		float frameWidth = (deviceWidth * 0.7f);
@@ -198,6 +191,12 @@ public class QuicklicActivity extends Activity {
 		// 중심 좌표 구하기
 		float origin_x = (frameWidth - itemSize) / 2;
 		float origin_y = (frameHeight - itemSize) / 2;
+
+		// 아이템이 최대치를 넘으면, 최대치로 설정
+		if ( isItemFull(item_count) )
+		{
+			item_count = LIMTED_ITEM_COUNT;
+		}
 
 		int angle_sum = 0; // 각도 누적
 		for ( int i = 0; i < item_count; i++ )
@@ -212,20 +211,20 @@ public class QuicklicActivity extends Activity {
 
 			// TODO 다양한 정보를 갖고 있는 이미지뷰 클래스 정의
 			ImageView image = new ImageView(context);
+			image.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
 			image.setBackgroundResource(R.drawable.rendering_item);
-			if ( imageList != null && i < imageList.size() )
+			image.setScaleType(ScaleType.FIT_XY);
+
+			if ( imageArrayList != null && i < imageArrayList.size() )
 			{
-				image.setImageDrawable(imageList.get(i));
+				image.setImageDrawable(imageArrayList.get(i));
 			}
 			image.setLayoutParams(fLayoutParams);
 
-			// TODO 추가한 아이템을 구별하기 위한 식별자와 클릭 리스너
+			// TODO 추가한 아이템을 구별하기 위한 Id와 Listener
 			image.setId(i);
-			image.setOnClickListener(onClickListener);
-
+			image.setOnClickListener(clickListener);
 			quicklicFrameLayout.addView(image);
-
-			// TODO 새로 생성된 이미지뷰에 대한 정보를 ArrayList로 보관
 		}
 	}
 
@@ -245,12 +244,30 @@ public class QuicklicActivity extends Activity {
 		return axis;
 	}
 
+	private OnTouchListener touchListener = new OnTouchListener()
+	{
+		/**
+		 * @함수명 : onTouch
+		 * @매개변수 : View v, MotionEvent event
+		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
+		 * @작성자 : THYang
+		 * @작성일 : 2014. 5. 5.
+		 */
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			gestureDetector.onTouchEvent(event);
+			return true;
+		}
+	};
+
 	private OnGestureListener onGestureListener = new OnGestureListener()
 	{
 
 		@Override
 		public boolean onSingleTapUp( MotionEvent e )
 		{
+			Log.e("TAG", "single");
 			return false;
 		}
 
@@ -268,6 +285,7 @@ public class QuicklicActivity extends Activity {
 		@Override
 		public void onLongPress( MotionEvent e )
 		{
+			Log.e("TAG", "long");
 		}
 
 		@Override
@@ -315,14 +333,16 @@ public class QuicklicActivity extends Activity {
 		}
 	};
 
-	public int getViewCount()
+	/**
+	 * @함수명 : isItemFull
+	 * @매개변수 : int item_count
+	 * @반환 : boolean
+	 * @기능(역할) : 아이템 개수가 최대 치를 넘는지 검사
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 21.
+	 */
+	private boolean isItemFull( int item_count )
 	{
-		return viewCount;
+		return LIMTED_ITEM_COUNT < item_count;
 	}
-
-	public FrameLayout getQuicklicFrameLayout()
-	{
-		return quicklicFrameLayout;
-	}
-
 }

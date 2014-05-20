@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/quicklic_main_ImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:background="@drawable/rendering_circle"
         android:contentDescription="@string/app_name"
         android:gravity="center" />
