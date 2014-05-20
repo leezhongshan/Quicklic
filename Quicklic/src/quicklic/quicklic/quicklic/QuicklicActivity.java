@@ -40,6 +40,7 @@ public class QuicklicActivity extends Activity {
 	private FrameLayout.LayoutParams fLayoutParams;
 	private Button addButton;
 	private ImageView quicklicImageView;
+
 	private TestingFunction testingFunction;
 
 	private int deviceWidth;
@@ -66,28 +67,6 @@ public class QuicklicActivity extends Activity {
 	}
 
 	/**
-	 * @함수명 : onBackPressed
-	 * @매개변수 :
-	 * @기능(역할) : 뒤로가기 버튼을 눌렀을 때, quicklic 뷰가 다시 생성되도록 함
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 9.
-	 */
-	@Override
-	public void onBackPressed()
-	{
-
-		TestingFunction.getFloatingServices().setVisibility(true);
-		super.onBackPressed();
-	};
-
-	@Override
-	protected void onDestroy()
-	{
-		Log.d("TAG", "Destroy");
-		super.onDestroy();
-	}
-
-	/**
 	 * @함수명 : onStop
 	 * @매개변수 :
 	 * @기능(역할) : 홈버튼이 눌렸을 때, quicklic 뷰가 다시 생성되도록 함
@@ -98,7 +77,6 @@ public class QuicklicActivity extends Activity {
 	protected void onStop()
 	{
 		Log.d("TAG", "Stop");
-		TestingFunction.getFloatingServices().setVisibility(true);
 		super.onStop();
 	}
 
