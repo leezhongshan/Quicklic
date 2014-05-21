@@ -38,7 +38,7 @@ public class QuicklicActivity extends Activity {
 	private FrameLayout quicklicFrameLayout;
 
 	private FrameLayout.LayoutParams fLayoutParams;
-	private Button addButton;
+	private Button centerButton;
 	private ImageView quicklicImageView;
 
 	private TestingFunction testingFunction;
@@ -51,6 +51,32 @@ public class QuicklicActivity extends Activity {
 	/**************************************
 	 * Support Function Section
 	 **************************************/
+	
+	/**
+	 * @함수명 : getDeviceWidth
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : device 가로길이 반환
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 21.
+	 */
+	protected int getDeviceWidth()
+	{
+		return deviceWidth;
+	}
+
+	/**
+	 * @함수명 : getDeviceHeight
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : device 세로길이 반환
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 21.
+	 */
+	protected int getDeviceHeight()
+	{
+		return deviceHeight;
+	}
 
 	/**
 	 * @함수명 : getViewCount
@@ -60,7 +86,7 @@ public class QuicklicActivity extends Activity {
 	 * @작성자 : 13 JHPark
 	 * @작성일 : 2014. 5. 21.
 	 */
-	public int getViewCount()
+	protected int getViewCount()
 	{
 		return viewCount;
 	}
@@ -73,7 +99,7 @@ public class QuicklicActivity extends Activity {
 	 * @작성자 : 13 JHPark
 	 * @작성일 : 2014. 5. 21.
 	 */
-	public FrameLayout getQuicklicFrameLayout()
+	protected FrameLayout getQuicklicFrameLayout()
 	{
 		return quicklicFrameLayout;
 	}
