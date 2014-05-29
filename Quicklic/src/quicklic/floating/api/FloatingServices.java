@@ -205,14 +205,6 @@ public class FloatingServices extends Service
 		layoutParams.width = imageWidth;
 		layoutParams.height = imageHeight;
 
-		//		quicklicViewGroup = (LinearLayout) layoutInflater.inflate(R.layout.layout_quicklic, null);
-		//		//TODO
-		//		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-		//				LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-		//		quicklicViewGroup.setLayoutParams(params);
-		//		quicklicViewGroup.setBackgroundColor(Color.BLACK);
-		//		quicklicViewGroup.addView(quicklic);
-
 		// WindowManager에 layoutParams속성을 갖는 Quicklic ImageView 추가
 		windowManagerAddView(getQuicklic(), layoutParams);
 

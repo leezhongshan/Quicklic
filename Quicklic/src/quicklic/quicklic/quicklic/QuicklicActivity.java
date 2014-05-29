@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.test.TestingFunction;
-import android.app.Activity;
+import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -23,17 +21,16 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
+import android.widget.Toast;
 
-public class QuicklicActivity extends Activity {
+public class QuicklicActivity extends DeviceMetricActivity {
 
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
 
 	private Context context;
 	private GestureDetector gestureDetector;
-	private WindowManager windowManager;
 
 	private FrameLayout quicklicFrameLayout;
 
@@ -43,40 +40,11 @@ public class QuicklicActivity extends Activity {
 
 	private TestingFunction testingFunction;
 
-	private int deviceWidth;
-	private int deviceHeight;
-
 	private int viewCount;
 
 	/**************************************
 	 * Support Function Section
 	 **************************************/
-
-	/**
-	 * @함수명 : getDeviceWidth
-	 * @매개변수 :
-	 * @반환 : int
-	 * @기능(역할) : device 가로길이 반환
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 21.
-	 */
-	protected int getDeviceWidth()
-	{
-		return deviceWidth;
-	}
-
-	/**
-	 * @함수명 : getDeviceHeight
-	 * @매개변수 :
-	 * @반환 : int
-	 * @기능(역할) : device 세로길이 반환
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 21.
-	 */
-	protected int getDeviceHeight()
-	{
-		return deviceHeight;
-	}
 
 	/**
 	 * @함수명 : getViewCount
@@ -121,9 +89,9 @@ public class QuicklicActivity extends Activity {
 
 		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
 
-		float itemSize = (deviceWidth * 0.12f); // 등록되어질 아이템의 크기
-		float frameWidth = (deviceWidth * 0.7f);
-		float frameHeight = (deviceWidth * 0.7f);
+		float itemSize = (getDeviceWidth() * 0.12f); // 등록되어질 아이템의 크기
+		float frameWidth = (getDeviceWidth() * 0.7f);
+		float frameHeight = (getDeviceWidth() * 0.7f);
 
 		// 반지름 길이 구하기
 		int radius = (int) (frameHeight - itemSize) / 2 - 20;
@@ -182,7 +150,6 @@ public class QuicklicActivity extends Activity {
 	public void setContentView( int layoutResID )
 	{
 		super.setContentView(layoutResID);
-		displayMetrics();
 		initialize();
 	}
 
@@ -218,33 +185,13 @@ public class QuicklicActivity extends Activity {
 
 		gestureDetector = new GestureDetector(this, onGestureListener);
 
-		fLayoutParams = new FrameLayout.LayoutParams((int) (deviceWidth * 0.7), (int) (deviceWidth * 0.7));
+		fLayoutParams = new FrameLayout.LayoutParams((int) (getDeviceWidth() * 0.7), (int) (getDeviceWidth() * 0.7));
 
 		quicklicFrameLayout = (FrameLayout) findViewById(R.id.quicklic_main_FrameLayout);
 
 		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
 		quicklicImageView.setLayoutParams(fLayoutParams);
 		quicklicImageView.setOnTouchListener(touchListener);
-	}
-
-	/**
-	 * @함수명 : displayMetrics
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 사용자의 Display 사이즈 정보 가져오기
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 5.
-	 */
-	private void displayMetrics()
-	{
-		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-		Display windowDisplay = windowManager.getDefaultDisplay();
-		DisplayMetrics displayMetrics = new DisplayMetrics();
-		windowDisplay.getMetrics(displayMetrics);
-
-		deviceWidth = displayMetrics.widthPixels;
-		deviceHeight = displayMetrics.heightPixels;
 	}
 
 	/**

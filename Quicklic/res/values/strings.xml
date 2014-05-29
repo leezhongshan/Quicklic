@@ -2,5 +2,9 @@
 
     <string name="app_name">Quicklic</string>
     <string name="hello_quicklic">Hello Quicklic!!</string>
+    <string name="scroll_up">↑</string>
+    <string name="scroll_down">↓</string>
+    <string name="scroll_left">←</string>
+    <string name="scroll_right">→</string>
 
 </resources>

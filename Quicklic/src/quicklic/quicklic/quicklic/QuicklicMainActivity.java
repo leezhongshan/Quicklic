@@ -4,11 +4,16 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.test.TestingFunction;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.ImageView;
 
 public class QuicklicMainActivity extends QuicklicActivity {
 
