@@ -51,7 +51,7 @@ public class QuicklicActivity extends Activity {
 	/**************************************
 	 * Support Function Section
 	 **************************************/
-	
+
 	/**
 	 * @함수명 : getDeviceWidth
 	 * @매개변수 :
@@ -121,12 +121,12 @@ public class QuicklicActivity extends Activity {
 
 		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
 
-		float itemSize = (deviceWidth * 0.15f); // 등록되어질 아이템의 크기
+		float itemSize = (deviceWidth * 0.12f); // 등록되어질 아이템의 크기
 		float frameWidth = (deviceWidth * 0.7f);
 		float frameHeight = (deviceWidth * 0.7f);
 
 		// 반지름 길이 구하기
-		int radius = (int) (frameHeight - itemSize) / 2 - 10;
+		int radius = (int) (frameHeight - itemSize) / 2 - 20;
 
 		// 중심 좌표 구하기
 		float origin_x = (frameWidth - itemSize) / 2;
@@ -152,8 +152,7 @@ public class QuicklicActivity extends Activity {
 			// TODO 다양한 정보를 갖고 있는 이미지뷰 클래스 정의
 			ImageView image = new ImageView(context);
 			image.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
-			image.setBackgroundResource(R.drawable.rendering_item);
-			image.setScaleType(ScaleType.FIT_XY);
+			image.setScaleType(ScaleType.CENTER_INSIDE);
 
 			if ( imageArrayList != null && i < imageArrayList.size() )
 			{

@@ -26,6 +26,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
+
 	}
 
 	private void initialize()
