@@ -17,7 +17,7 @@ import android.widget.ListView;
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
 	private PackageManager packageManager;
-
+	private ApkAdapter apkAdapter;
 	private ListView apkList;
 
 	private PreferencesManager preferencesManager;
@@ -43,8 +43,8 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			}
 		}
 		apkList = (ListView) findViewById(R.id.applist);
-		apkList.setAdapter(new ApkAdapter(this, packageList1, packageManager));
-
+		apkAdapter = new ApkAdapter(this, R.layout.apklist_item, packageList1, packageManager);
+		apkList.setAdapter(apkAdapter);
 		apkList.setOnItemClickListener(this);
 	}
 

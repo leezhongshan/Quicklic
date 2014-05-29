@@ -23,17 +23,21 @@ public final class R {
         public static final int scroll_test=0x7f020009;
     }
     public static final class id {
+        public static final int applist=0x7f060007;
+        public static final int appname_TextView=0x7f060004;
         public static final int button1=0x7f060000;
         public static final int button2=0x7f060001;
-        public static final int noti_image_ImageView=0x7f060004;
-        public static final int noti_text_TextView=0x7f060005;
+        public static final int noti_image_ImageView=0x7f060005;
+        public static final int noti_text_TextView=0x7f060006;
         public static final int quicklic_main_FrameLayout=0x7f060002;
         public static final int quicklic_main_ImageView=0x7f060003;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int activity_main_quicklic=0x7f030001;
-        public static final int custom_noti_layout=0x7f030002;
+        public static final int apklist_item=0x7f030002;
+        public static final int custom_noti_layout=0x7f030003;
+        public static final int favorite=0x7f030004;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
