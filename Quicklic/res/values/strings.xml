@@ -6,5 +6,7 @@
     <string name="scroll_down">↓</string>
     <string name="scroll_left">←</string>
     <string name="scroll_right">→</string>
+    <string name="scroll_move">O</string>
+    <string name="scroll_exit">X</string>
 
 </resources>

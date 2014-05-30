@@ -191,7 +191,6 @@ public class FloatingServices extends Service
 		 * PixelFormat.TRANSLUCENT : 투명
 		 */
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
-				//WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL |
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
 				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
 
@@ -207,7 +206,6 @@ public class FloatingServices extends Service
 
 		// WindowManager에 layoutParams속성을 갖는 Quicklic ImageView 추가
 		windowManagerAddView(getQuicklic(), layoutParams);
-
 	}
 
 	/**

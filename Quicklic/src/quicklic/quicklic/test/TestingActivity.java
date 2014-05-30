@@ -2,7 +2,6 @@ package quicklic.quicklic.test;
 
 import quicklic.floating.api.FloatingServices;
 import quicklic.floating.api.R;
-import quicklic.quicklic.quicklic.QuicklicScrollActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

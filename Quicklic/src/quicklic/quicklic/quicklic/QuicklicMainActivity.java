@@ -65,9 +65,8 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	@Override
 	public void onBackPressed()
 	{
-
 		super.onBackPressed();
-	};
+	}
 
 	private void initialize()
 	{
@@ -97,9 +96,11 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			else if ( v.getId() == 1 )
 			{
 				System.out.println("[Scroll] " + v.getId());
-				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollService.class);
+				intent.putExtra("deviceWidth", getDeviceWidth());
+				startService(intent);
+				finish();
+				//	startActivity(intent);
 			}
 			else if ( v.getId() == 2 )
 			{
