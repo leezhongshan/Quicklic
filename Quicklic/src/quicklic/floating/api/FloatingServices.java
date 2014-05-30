@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.quicklic.test.TestingActivity;
+import quicklic.quicklic.test.TestingFunction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -33,6 +34,8 @@ public class FloatingServices extends Service
 	private static final int NOTIFICATION_ID = 1;
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
+
+	private Intent intent;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -91,9 +94,30 @@ public class FloatingServices extends Service
 		}
 	}
 
+	/**
+	 * @함수명 : getQuicklic
+	 * @매개변수 :
+	 * @반환 : ImageView
+	 * @기능(역할) : Quicklic 이미지 객체 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 30.
+	 */
 	public ImageView getQuicklic()
 	{
-		return this.quicklic;
+		return quicklic;
+	}
+
+	/**
+	 * @함수명 : stopQuicklicService
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : Quicklic Floating 서비스 종료
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 30.
+	 */
+	public void stopQuicklicService()
+	{
+
 	}
 
 	/*****************************************************************************/
@@ -128,6 +152,10 @@ public class FloatingServices extends Service
 			quicklicSetting();
 			quicklicNotification();
 		}
+		else
+		{
+			stopService(intent);
+		}
 
 		// START_REDELIVER_INTENT : START_STICKY와 마찬가지로 Service 종료 시,
 		// 시스템이 다시 재시작 시켜주지만 intent 값은 그대로 유지시켜준다.
@@ -148,6 +176,7 @@ public class FloatingServices extends Service
 	private void initialize( Intent intent )
 	{
 		context = this;
+		this.intent = intent;
 		timer = new Timer();
 
 		floatingInterface = (FloatingInterface) intent.getSerializableExtra("push");
@@ -408,6 +437,21 @@ public class FloatingServices extends Service
 						initialTouchY = event.getRawY();
 						break;
 
+					case MotionEvent.ACTION_MOVE:
+						moveTouchX = (int) (event.getRawX() - initialTouchX);
+						moveTouchY = (int) (event.getRawY() - initialTouchY);
+
+						layoutParams.x = initialX + moveTouchX;
+						layoutParams.y = initialY + moveTouchY;
+						windowManagerUpdateViewLayout(getQuicklic(), layoutParams);
+
+						// 터치 감지 : X와 Y좌표가 10이하인 경우에는 움직임이 없다고 판단하고 single touch 이벤트 발생.
+						isMoved = true;
+						if ( Math.abs(moveTouchX) < LIMITED_MOVE_DISTANCE && Math.abs(moveTouchY) < LIMITED_MOVE_DISTANCE )
+							isMoved = false;
+
+						break;
+
 					case MotionEvent.ACTION_UP:
 						if ( isMoved )
 						{
@@ -427,21 +471,6 @@ public class FloatingServices extends Service
 						{
 							moveToSide();
 						}
-						break;
-
-					case MotionEvent.ACTION_MOVE:
-						moveTouchX = (int) (event.getRawX() - initialTouchX);
-						moveTouchY = (int) (event.getRawY() - initialTouchY);
-
-						layoutParams.x = initialX + moveTouchX;
-						layoutParams.y = initialY + moveTouchY;
-						windowManagerUpdateViewLayout(getQuicklic(), layoutParams);
-
-						// 터치 감지 : X와 Y좌표가 10이하인 경우에는 움직임이 없다고 판단하고 single touch 이벤트 발생.
-						isMoved = true;
-						if ( Math.abs(moveTouchX) < LIMITED_MOVE_DISTANCE && Math.abs(moveTouchY) < LIMITED_MOVE_DISTANCE )
-							isMoved = false;
-
 						break;
 					}
 				}

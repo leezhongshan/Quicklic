@@ -1,5 +1,8 @@
 package quicklic.quicklic.quicklic;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import quicklic.floating.api.R;
 import android.app.Service;
 import android.content.Intent;
@@ -8,17 +11,20 @@ import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 public class QuicklicScrollService extends Service {
-
-	private final float DEVICE_RATE = 0.16f;
-	private final float VIEW_ALPHA = 0.8f;
+	private static final int DOUBLE_PRESS_INTERVAL = 300;
+	private static final int LIMITED_MOVE_DISTANCE = 10;
+	private static final float DEVICE_RATE = 0.16f;
+	private static final float VIEW_ALPHA = 0.8f;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -27,6 +33,7 @@ public class QuicklicScrollService extends Service {
 
 	private int keyboardHeight;
 	private int deviceWidth;
+	private int deviceHeight;
 
 	private Button upButton;
 	private Button downButton;
@@ -36,6 +43,11 @@ public class QuicklicScrollService extends Service {
 	private Button exitButton;
 
 	private Intent intent;
+
+	private boolean moveToSide;
+	private boolean isMoved = false;
+	private Timer timer;
+	private long lastPressTime;
 
 	@Override
 	public IBinder onBind( Intent intent )
@@ -51,6 +63,7 @@ public class QuicklicScrollService extends Service {
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
 		if ( startId == 1 || flags == 1 )
 		{
+			// 시스템이 다시 재시작 시켜주지만 intent 값은 그대로 유지시켜준다.
 			initialize(intent);
 			createManager();
 			createScrollLayout();
@@ -62,7 +75,6 @@ public class QuicklicScrollService extends Service {
 		}
 
 		// START_REDELIVER_INTENT : START_STICKY와 마찬가지로 Service 종료 시,
-		// 시스템이 다시 재시작 시켜주지만 intent 값은 그대로 유지시켜준다.
 		return Service.START_REDELIVER_INTENT;
 	}
 
@@ -78,7 +90,9 @@ public class QuicklicScrollService extends Service {
 	private void initialize( Intent intent )
 	{
 		this.intent = intent;
+		timer = new Timer();
 		deviceWidth = intent.getIntExtra("deviceWidth", 0);
+		deviceHeight = intent.getIntExtra("deviceHeight", 0);
 		keyboardHeight = (int) (deviceWidth * DEVICE_RATE);
 	}
 
@@ -98,12 +112,13 @@ public class QuicklicScrollService extends Service {
 				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
 
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
-		layoutParams.gravity = Gravity.BOTTOM | Gravity.RIGHT;
-		layoutParams.x = 0;
-		layoutParams.y = 0;
+		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
 
 		layoutParams.width = deviceWidth >> 1;
 		layoutParams.height = keyboardHeight << 1;
+
+		layoutParams.x = deviceWidth - layoutParams.width;
+		layoutParams.y = deviceHeight - layoutParams.height;
 
 		// WindowManager에 layoutParams속성을 갖는 Quicklic ImageView 추가
 		windowManager.addView(scrollLinearLayout, layoutParams);
@@ -198,6 +213,8 @@ public class QuicklicScrollService extends Service {
 		moveButton.setOnClickListener(clickListener);
 		exitButton.setOnClickListener(clickListener);
 
+		moveButton.setOnTouchListener(onTouchListener);
+
 		firstSectionLinearLayout.addView(moveButton);
 		firstSectionLinearLayout.addView(upButton);
 		firstSectionLinearLayout.addView(exitButton);
@@ -242,6 +259,74 @@ public class QuicklicScrollService extends Service {
 				System.out.println("Exit");
 				stopService(intent);
 			}
+		}
+	};
+
+	private OnTouchListener onTouchListener = new OnTouchListener()
+	{
+		private int initialX;
+		private int initialY;
+		private float initialTouchX;
+		private float initialTouchY;
+		private int moveTouchX;
+		private int moveTouchY;
+
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			try
+			{
+				if ( v == moveButton )
+				{
+					switch ( event.getAction() )
+					{
+					case MotionEvent.ACTION_DOWN:
+						initialX = layoutParams.x;
+						initialY = layoutParams.y;
+						initialTouchX = event.getRawX();
+						initialTouchY = event.getRawY();
+						break;
+
+					case MotionEvent.ACTION_MOVE:
+						moveTouchX = (int) (event.getRawX() - initialTouchX);
+						moveTouchY = (int) (event.getRawY() - initialTouchY);
+						layoutParams.x = initialX + moveTouchX;
+						layoutParams.y = initialY + moveTouchY;
+						windowManager.updateViewLayout(scrollLinearLayout, layoutParams);
+
+						// 터치 감지 : X와 Y좌표가 10이하인 경우에는 움직임이 없다고 판단하고 single touch 이벤트 발생.
+						isMoved = true;
+						if ( Math.abs(moveTouchX) < LIMITED_MOVE_DISTANCE && Math.abs(moveTouchY) < LIMITED_MOVE_DISTANCE )
+							isMoved = false;
+						break;
+
+					case MotionEvent.ACTION_UP:
+						if ( isMoved )
+						{
+							timer.schedule(new TimerTask()
+							{
+								@Override
+								public void run()
+								{
+									// DOUBLE_PRESS_INTERVAL+100 milliseconds 가 지나가면, 다시 클릭 가능해짐. 
+									isMoved = false;
+								}
+							}, DOUBLE_PRESS_INTERVAL + 100);
+						}
+
+						if ( moveToSide && isMoved )
+						{
+							//	moveToSide();
+						}
+						break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
+			return false;
 		}
 	};
 }
