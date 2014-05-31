@@ -23,19 +23,15 @@ public final class R {
         public static final int scroll_test=0x7f020009;
     }
     public static final class id {
-        public static final int applist=0x7f06000c;
-        public static final int appname_TextView=0x7f060009;
+        public static final int applist=0x7f060008;
+        public static final int appname_TextView=0x7f060005;
         public static final int button1=0x7f060000;
         public static final int button2=0x7f060001;
-        public static final int noti_image_ImageView=0x7f06000a;
-        public static final int noti_text_TextView=0x7f06000b;
+        public static final int noti_image_ImageView=0x7f060006;
+        public static final int noti_text_TextView=0x7f060007;
         public static final int quicklic_main_FrameLayout=0x7f060002;
         public static final int quicklic_main_ImageView=0x7f060003;
-        public static final int scroll_down_Button=0x7f060006;
-        public static final int scroll_left_Button=0x7f060007;
         public static final int scroll_main_LinearLayout=0x7f060004;
-        public static final int scroll_right_Button=0x7f060008;
-        public static final int scroll_up_Button=0x7f060005;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -49,7 +45,9 @@ public final class R {
         public static final int app_name=0x7f040000;
         public static final int hello_quicklic=0x7f040001;
         public static final int scroll_down=0x7f040003;
+        public static final int scroll_exit=0x7f040007;
         public static final int scroll_left=0x7f040004;
+        public static final int scroll_move=0x7f040006;
         public static final int scroll_right=0x7f040005;
         public static final int scroll_up=0x7f040002;
     }

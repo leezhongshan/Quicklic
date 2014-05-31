@@ -4,16 +4,11 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.test.TestingFunction;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
-import android.widget.ImageView;
 
 public class QuicklicMainActivity extends QuicklicActivity {
 
@@ -65,9 +60,8 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	@Override
 	public void onBackPressed()
 	{
-
 		super.onBackPressed();
-	};
+	}
 
 	private void initialize()
 	{
@@ -97,9 +91,11 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			else if ( v.getId() == 1 )
 			{
 				System.out.println("[Scroll] " + v.getId());
-				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollService.class);
+				intent.putExtra("deviceWidth", getDeviceWidth());
+				intent.putExtra("deviceHeight", getDeviceHeight());
+				startService(intent);
+				finish();
 			}
 			else if ( v.getId() == 2 )
 			{

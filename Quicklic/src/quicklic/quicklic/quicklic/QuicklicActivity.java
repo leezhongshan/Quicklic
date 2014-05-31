@@ -162,7 +162,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	@Override
 	public boolean onTouchEvent( MotionEvent event )
 	{
-		//		finish();
+		finish();
 		return super.onTouchEvent(event);
 	}
 
