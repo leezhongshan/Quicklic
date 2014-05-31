@@ -4,11 +4,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.test.TestingFunction;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -45,6 +48,7 @@ public class QuicklicScrollService extends Service {
 	private Intent intent;
 
 	private boolean moveToSide;
+	private boolean isDoubleClicked = false;
 	private boolean isMoved = false;
 	private Timer timer;
 	private long lastPressTime;
@@ -63,7 +67,9 @@ public class QuicklicScrollService extends Service {
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
 		if ( startId == 1 || flags == 1 )
 		{
-			// 시스템이 다시 재시작 시켜주지만 intent 값은 그대로 유지시켜준다.
+			// Quicklic View 숨기기
+			TestingFunction.getFloatingServices().setVisibility(false);
+
 			initialize(intent);
 			createManager();
 			createScrollLayout();
@@ -75,16 +81,15 @@ public class QuicklicScrollService extends Service {
 		}
 
 		// START_REDELIVER_INTENT : START_STICKY와 마찬가지로 Service 종료 시,
+		// 시스템이 다시 재시작 시켜주지만 intent 값은 그대로 유지시켜준다.
 		return Service.START_REDELIVER_INTENT;
 	}
 
 	public void onDestroy()
 	{
-		Log.d("TAG", "onDestroy");
-		super.onDestroy();
-
 		if ( scrollLinearLayout != null )
 			windowManager.removeView(scrollLinearLayout);
+		super.onDestroy();
 	}
 
 	private void initialize( Intent intent )
@@ -253,11 +258,53 @@ public class QuicklicScrollService extends Service {
 			else if ( v == moveButton )
 			{
 				System.out.println("Move");
+				long pressTime = System.currentTimeMillis();
+
+				/* Double Clicked
+				 * 현재 누른 시간과 마지막으로 누른 시간을 감산한 결과가
+				 * DOUBLE_PRESS_INTERVAL보다 작으면 Double Clicked.
+				 */
+				if ( (pressTime - lastPressTime) <= DOUBLE_PRESS_INTERVAL )
+				{
+					// TODO Double Clicked
+					System.out.println("key double");
+					// Double Clicked 인 경우, 핸들러가 실행되도 Single Click 작업 하지 않음.
+					isDoubleClicked = true;
+				}
+				// Single Clicked
+				else
+				{
+					isDoubleClicked = false;
+
+					// Handler 에 Single Click 시 수행할 작업을 등록
+					Message message = new Message();
+					Handler handler = new Handler()
+					{
+						public void handleMessage( Message message )
+						{
+							// Double Clicked 가 아니고 객체의 이동 수행을 하지 않았다면 실행.
+							if ( !isDoubleClicked && isMoved == false )
+							{
+								// TODO Single Clicked
+								System.out.println("key single");
+							}
+						}
+					};
+					// DOUBLE_PRESS_INTERVAL 시간동안 Handler 를 Delay 시킴.
+					handler.sendMessageDelayed(message, DOUBLE_PRESS_INTERVAL);
+				}
+				// 현재 누른 시간을 마지막 누른 시간으로 저장
+				lastPressTime = pressTime;
 			}
 			else if ( v == exitButton )
 			{
-				System.out.println("Exit");
+				// 서비스 종료
 				stopService(intent);
+
+				// MainActivity 시작
+				intent = new Intent(QuicklicScrollService.this, QuicklicMainActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
 			}
 		}
 	};

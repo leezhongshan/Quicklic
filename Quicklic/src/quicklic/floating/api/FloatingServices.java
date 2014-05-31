@@ -4,7 +4,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.quicklic.test.TestingActivity;
-import quicklic.quicklic.test.TestingFunction;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -34,8 +33,6 @@ public class FloatingServices extends Service
 	private static final int NOTIFICATION_ID = 1;
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
-
-	private Intent intent;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -176,7 +173,6 @@ public class FloatingServices extends Service
 	private void initialize( Intent intent )
 	{
 		context = this;
-		this.intent = intent;
 		timer = new Timer();
 
 		floatingInterface = (FloatingInterface) intent.getSerializableExtra("push");

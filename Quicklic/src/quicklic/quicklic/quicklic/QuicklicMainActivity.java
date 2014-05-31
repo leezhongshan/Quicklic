@@ -14,6 +14,8 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 	private ArrayList<Drawable> imageArrayList;
 
+	private boolean isScrollService;
+
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
@@ -46,7 +48,11 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	protected void onDestroy()
 	{
 		// Activity가 제거될 때, Floating Image를 보여지게 함
-		TestingFunction.getFloatingServices().setVisibility(true);
+		System.out.println("Main Des");
+
+		if ( !isScrollService )
+			TestingFunction.getFloatingServices().setVisibility(true);
+
 		super.onDestroy();
 	}
 
@@ -65,6 +71,8 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 	private void initialize()
 	{
+		isScrollService = false;
+
 		imageArrayList = new ArrayList<Drawable>();
 
 		imageArrayList.add(getResources().getDrawable(R.drawable.hardware));
@@ -90,10 +98,13 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			}
 			else if ( v.getId() == 1 )
 			{
+				isScrollService = true;
+
 				System.out.println("[Scroll] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollService.class);
 				intent.putExtra("deviceWidth", getDeviceWidth());
 				intent.putExtra("deviceHeight", getDeviceHeight());
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
 				finish();
 			}
