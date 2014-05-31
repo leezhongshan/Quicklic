@@ -8,5 +8,6 @@
     <string name="scroll_right">→</string>
     <string name="scroll_move">O</string>
     <string name="scroll_exit">X</string>
+    <string name="err_limited_item_count">최대 등록 개수를 초과하였습니다.</string>
 
 </resources>

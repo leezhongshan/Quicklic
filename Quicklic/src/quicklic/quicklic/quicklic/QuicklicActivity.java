@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
-import quicklic.quicklic.test.TestingFunction;
 import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -17,29 +16,31 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class QuicklicActivity extends DeviceMetricActivity {
 
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
+	private final static float SIZE_QUICKLIC_RATE = 0.7f;
+	private final static float SIZE_ITEM_RATE = 0.12f;
 
 	private Context context;
 	private GestureDetector gestureDetector;
 
 	private FrameLayout quicklicFrameLayout;
+	private FrameLayout.LayoutParams mainLayoutParams;
 
-	private FrameLayout.LayoutParams fLayoutParams;
-	private Button centerButton;
 	private ImageView quicklicImageView;
-
-	private TestingFunction testingFunction;
+	//	private Button centerButton;
 
 	private int viewCount;
+	private int sizeOfQuicklicMain;
+	private int deviceWidth;
 
 	/**************************************
 	 * Support Function Section
@@ -86,13 +87,14 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		viewCount = item_count;
 		Axis axis = new Axis(); // 아이템이 놓일 좌표를 저장하는 자료구조 (float x, float y)
 
+		// item 개수에 따른 각도 구하기
 		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
 
-		float itemSize = (getDeviceWidth() * 0.12f); // 등록되어질 아이템의 크기
-		float frameWidth = (getDeviceWidth() * 0.7f);
-		float frameHeight = (getDeviceWidth() * 0.7f);
+		float itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
+		float frameWidth = sizeOfQuicklicMain;
+		float frameHeight = sizeOfQuicklicMain;
 
-		// 반지름 길이 구하기
+		// 반지름 길이 구하기 : 아이템이 놓일 위치에서 20만큼의 여유공간 확보
 		int radius = (int) (frameHeight - itemSize) / 2 - 20;
 
 		// 중심 좌표 구하기
@@ -103,6 +105,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		if ( isItemFull(item_count) )
 		{
 			item_count = LIMTED_ITEM_COUNT;
+			Toast.makeText(context, R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
 		}
 
 		int angle_sum = 0; // 각도 누적
@@ -111,26 +114,40 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
 			axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
 
-			// 레이아웃 설정 : 기본적인 크기는 정해져 있으며, 좌표 값만 설정
-			FrameLayout.LayoutParams fLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			fLayoutParams.leftMargin = axis.getAxis_x();
-			fLayoutParams.topMargin = axis.getAxis_y();
-
 			// TODO 다양한 정보를 갖고 있는 이미지뷰 클래스 정의
-			ImageView image = new ImageView(context);
-			image.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
-			image.setScaleType(ScaleType.CENTER_INSIDE);
+			// 레이아웃 설정 : 기본적인 크기는 정해져 있으며, 좌표 값만 설정
+			FrameLayout.LayoutParams itemLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			itemLayoutParams.leftMargin = axis.getAxis_x();
+			itemLayoutParams.topMargin = axis.getAxis_y();
 
+			ImageView itemImageView = new ImageView(context);
+			itemImageView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
+			itemImageView.setScaleType(ScaleType.CENTER_INSIDE);
+
+			// image 그림 추가
 			if ( imageArrayList != null && i < imageArrayList.size() )
 			{
-				image.setImageDrawable(imageArrayList.get(i));
+				itemImageView.setPadding(5, 5, 5, 5);
+				itemImageView.setImageDrawable(imageArrayList.get(i));
 			}
-			image.setLayoutParams(fLayoutParams);
+			itemImageView.setLayoutParams(itemLayoutParams);
 
 			// TODO 추가한 아이템을 구별하기 위한 Id와 Listener
-			image.setId(i);
-			image.setOnClickListener(clickListener);
-			quicklicFrameLayout.addView(image);
+			itemImageView.setId(i);
+			itemImageView.setOnClickListener(clickListener);
+
+			LinearLayout itemBackLinearLayout = new LinearLayout(this);
+			FrameLayout.LayoutParams itemBackLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize);
+			itemBackLayoutParams.leftMargin = axis.getAxis_x();
+			itemBackLayoutParams.topMargin = axis.getAxis_y();
+
+			itemBackLinearLayout.setGravity(Gravity.CENTER);
+			itemBackLinearLayout.setOrientation(LinearLayout.VERTICAL);
+			itemBackLinearLayout.setLayoutParams(itemBackLayoutParams);
+			itemBackLinearLayout.setBackgroundResource(R.drawable.rendering_item);
+
+			itemBackLinearLayout.addView(itemImageView);
+			quicklicFrameLayout.addView(itemBackLinearLayout);
 		}
 	}
 
@@ -177,19 +194,17 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private void initialize()
 	{
 		context = this;
-
 		viewCount = 0;
-
-		testingFunction = (TestingFunction) getIntent().getSerializableExtra("push");
+		deviceWidth = getDeviceWidth();
+		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
 
 		gestureDetector = new GestureDetector(this, onGestureListener);
 
-		fLayoutParams = new FrameLayout.LayoutParams((int) (getDeviceWidth() * 0.7), (int) (getDeviceWidth() * 0.7));
-
+		mainLayoutParams = new FrameLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain);
 		quicklicFrameLayout = (FrameLayout) findViewById(R.id.quicklic_main_FrameLayout);
 
 		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
-		quicklicImageView.setLayoutParams(fLayoutParams);
+		quicklicImageView.setLayoutParams(mainLayoutParams);
 		quicklicImageView.setOnTouchListener(touchListener);
 	}
 

@@ -11,13 +11,11 @@ import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class ApkAdapter extends BaseAdapter
 {
-	private Context context;
 	private LayoutInflater inflater;
 	private int layout;
 	private List<PackageInfo> packageList;
@@ -26,7 +24,6 @@ public class ApkAdapter extends BaseAdapter
 	public ApkAdapter(Context context, int layout, List<PackageInfo> packageList, PackageManager packageManager)
 	{
 		super();
-		this.context = context;
 		this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.layout = layout;
 		this.packageList = packageList;
@@ -63,6 +60,8 @@ public class ApkAdapter extends BaseAdapter
 		Drawable appIcon = packageManager.getApplicationIcon(packageInfo.applicationInfo);
 		String appName = packageManager.getApplicationLabel(packageInfo.applicationInfo).toString();
 		appIcon.setBounds(0, 0, 80, 80);
+		appIcon.setDither(true);
+		
 		apkName.setCompoundDrawables(appIcon, null, null, null);
 		apkName.setCompoundDrawablePadding(5);
 		apkName.setText(appName);
