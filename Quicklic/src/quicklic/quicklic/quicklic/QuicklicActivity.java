@@ -36,7 +36,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private FrameLayout.LayoutParams mainLayoutParams;
 
 	private ImageView quicklicImageView;
-	//	private Button centerButton;
+	private ImageView centerView;
 
 	private int viewCount;
 	private int sizeOfQuicklicMain;
@@ -87,8 +87,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		viewCount = item_count;
 		Axis axis = new Axis(); // 아이템이 놓일 좌표를 저장하는 자료구조 (float x, float y)
 
-		// item 개수에 따른 각도 구하기
-		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
+		final int ANGLE;
 
 		float itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
 		float frameWidth = sizeOfQuicklicMain;
@@ -101,14 +100,33 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		float origin_x = (frameWidth - itemSize) / 2;
 		float origin_y = (frameHeight - itemSize) / 2;
 
-		// 아이템이 최대치를 넘으면, 최대치로 설정
-		if ( isItemFull(item_count) )
+		if ( centerView != null )
 		{
-			item_count = LIMTED_ITEM_COUNT;
-			Toast.makeText(context, R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
+			FrameLayout.LayoutParams itemLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			itemLayoutParams.leftMargin = (int) origin_x;
+			itemLayoutParams.topMargin = (int) origin_y;
+
+			centerView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
+			centerView.setScaleType(ScaleType.CENTER_INSIDE);
+			centerView.setLayoutParams(itemLayoutParams);
+
+			quicklicFrameLayout.addView(centerView);
+
+			viewCount++;
+		}
+
+		if ( item_count == 0 )
+		{
+			return;
+		}
+		else
+		{
+			// item 개수에 따른 각도 구하기
+			ANGLE = 360 / item_count; // 360 / (Item 개수)
 		}
 
 		int angle_sum = 0; // 각도 누적
+
 		for ( int i = 0; i < item_count; i++ )
 		{
 			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
@@ -127,7 +145,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			// image 그림 추가
 			if ( imageArrayList != null && i < imageArrayList.size() )
 			{
-				itemImageView.setPadding(5, 5, 5, 5);
+				itemImageView.setPadding(10, 10, 10, 10);
 				itemImageView.setImageDrawable(imageArrayList.get(i));
 			}
 			itemImageView.setLayoutParams(itemLayoutParams);
@@ -188,8 +206,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : 초기화
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 5.
+	 * @작성자 : THYang 9 * @작성일 : 2014. 5. 5.
 	 */
 	private void initialize()
 	{
@@ -325,4 +342,10 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		return LIMTED_ITEM_COUNT < item_count;
 	}
+
+	public void setCenterView( ImageView centerView )
+	{
+		this.centerView = centerView;
+	}
+
 }
