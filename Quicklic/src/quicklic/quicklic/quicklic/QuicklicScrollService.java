@@ -1,11 +1,17 @@
 package quicklic.quicklic.quicklic;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.test.TestingFunction;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.ActivityManager.RunningServiceInfo;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -28,6 +34,8 @@ public class QuicklicScrollService extends Service {
 	private static final int LIMITED_MOVE_DISTANCE = 10;
 	private static final float DEVICE_RATE = 0.16f;
 	private static final float VIEW_ALPHA = 0.8f;
+	private static final int MAX_TASK_NUM = 300;
+	private static final int MAX_SERVICE_NUM = 300;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -113,7 +121,9 @@ public class QuicklicScrollService extends Service {
 		 * PixelFormat.RGBA_8888 : 투명
 		 */
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
+						WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+						WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
 				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
 
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
@@ -234,6 +244,26 @@ public class QuicklicScrollService extends Service {
 		scrollLinearLayout.addView(backSectionLinearLayout);
 	}
 
+	private void getRunningTaskList()
+	{
+		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
+
+		System.out.println("Task" + taskinfo.size());
+		for ( int i = 0; i < taskinfo.size(); i++ )
+		{
+			System.out.println("Task : " + taskinfo.get(i).topActivity.getPackageName());
+		}
+
+		List<RunningServiceInfo> serviceinfo = activityManager.getRunningServices(MAX_SERVICE_NUM);
+		System.out.println("Service " + serviceinfo.size());
+		for ( int i = 0; i < serviceinfo.size(); i++ )
+		{
+			if ( serviceinfo.get(i).foreground )
+				System.out.println("Service : " + serviceinfo.get(i).service.getClassName());
+		}
+	}
+
 	private OnClickListener clickListener = new OnClickListener()
 	{
 		@Override
@@ -242,6 +272,7 @@ public class QuicklicScrollService extends Service {
 			if ( v == upButton )
 			{
 				System.out.println("Up");
+				getRunningTaskList();
 			}
 			else if ( v == downButton )
 			{
