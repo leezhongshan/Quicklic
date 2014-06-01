@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -24,43 +23,39 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
 	private boolean delEnabled;
+	private int item_count;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
-		delEnabled = false;
-	}
 
-	private void initialize()
-	{
-		imageArrayList = new ArrayList<Drawable>();
-		pkgArrayList = new ArrayList<String>();
-
-		getPreference();
-		setCenterView();
-		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
-	}
-
-	private void setCenterView()
-	{
-		ImageView imageView = new ImageView(this);
-		imageView.setId(99);
-		imageView.setOnClickListener(onClickListener);
-		imageView.setOnLongClickListener(onLongClickListener);
-		imageView.setBackgroundResource(R.drawable.favorite_test);
-		setCenterView(imageView);
+		initialize();
 	}
 
 	@Override
 	protected void onResume()
 	{
 		resetQuicklic();
-		initialize();
+		initializeView();
 
 		super.onResume();
-		preferencesManager = new PreferencesManager();
+	}
+
+	private void initialize()
+	{
+		delEnabled = false;
+	}
+
+	private void initializeView()
+	{
+		imageArrayList = new ArrayList<Drawable>();
+		pkgArrayList = new ArrayList<String>();
+
+		getPreference();
+		setCenterView();
+		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
 	private void resetQuicklic()
@@ -68,17 +63,25 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
+	private void setCenterView()
+	{
+		ImageView imageView = new ImageView(this);
+		imageView.setBackgroundResource(R.drawable.favorite_test);
+		imageView.setOnClickListener(clickListener);
+		imageView.setOnLongClickListener(onLongClickListener);
+
+		setCenterView(imageView);
+	}
+
 	private void getPreference()
 	{
 		preferencesManager = new PreferencesManager();
-
 		packageManager = getPackageManager();
 
-		for ( int i = 0; i < preferencesManager.getNumPreferences(this) + 1 && i < 10; i++ )
+		item_count = preferencesManager.getNumPreferences(this) + 1;
+		for ( int i = 0; i < item_count && !isItemFull(i); i++ )
 		{
 			pkgArrayList.add(preferencesManager.getAppPreferences(this, i));
-
-			Log.e("", "" + pkgArrayList.get(0));
 
 			try
 			{
@@ -89,12 +92,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			{
 				e.printStackTrace();
 			}
-
 		}
-
 	}
 
-	private OnClickListener onClickListener = new OnClickListener()
+	private OnClickListener clickListener = new OnClickListener()
 	{
 
 		private Intent intent;
@@ -102,8 +103,13 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			if ( v.getId() == 99 )
+			if ( v == getCenterView() )
 			{
+				if ( isItemFull(item_count) )
+				{
+					Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
+					return;
+				}
 				intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -126,7 +132,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private OnLongClickListener onLongClickListener = new OnLongClickListener()
 	{
-
 		@Override
 		public boolean onLongClick( View v )
 		{

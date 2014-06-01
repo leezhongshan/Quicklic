@@ -26,8 +26,10 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
+	private final static int IMG_PADDING = 12;
+	private final static int MAIN_PADDING = 20;
 	private final static float SIZE_QUICKLIC_RATE = 0.7f;
-	private final static float SIZE_ITEM_RATE = 0.12f;
+	private final static float SIZE_ITEM_RATE = 0.125f;
 
 	private Context context;
 	private GestureDetector gestureDetector;
@@ -59,6 +61,16 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		return viewCount;
 	}
 
+	protected void setCenterView( ImageView centerView )
+	{
+		this.centerView = centerView;
+	}
+
+	protected ImageView getCenterView()
+	{
+		return centerView;
+	}
+
 	/**
 	 * @함수명 : getQuicklicFrameLayout
 	 * @매개변수 :
@@ -70,6 +82,19 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	protected FrameLayout getQuicklicFrameLayout()
 	{
 		return quicklicFrameLayout;
+	}
+
+	/**
+	 * @함수명 : isItemFull
+	 * @매개변수 : int item_count
+	 * @반환 : boolean
+	 * @기능(역할) : 아이템 개수가 최대 치를 넘는지 검사
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 21.
+	 */
+	protected boolean isItemFull( int item_count )
+	{
+		return LIMTED_ITEM_COUNT < item_count;
 	}
 
 	/**
@@ -85,16 +110,14 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	protected void addViewsForBalance( int item_count, ArrayList<Drawable> imageArrayList, OnClickListener clickListener )
 	{
 		viewCount = item_count;
+
 		Axis axis = new Axis(); // 아이템이 놓일 좌표를 저장하는 자료구조 (float x, float y)
-
-		final int ANGLE;
-
-		float itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
-		float frameWidth = sizeOfQuicklicMain;
-		float frameHeight = sizeOfQuicklicMain;
+		final float itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
+		final float frameWidth = sizeOfQuicklicMain;
+		final float frameHeight = sizeOfQuicklicMain;
 
 		// 반지름 길이 구하기 : 아이템이 놓일 위치에서 20만큼의 여유공간 확보
-		int radius = (int) (frameHeight - itemSize) / 2 - 20;
+		int radius = (int) (frameHeight - itemSize) / 2 - MAIN_PADDING;
 
 		// 중심 좌표 구하기
 		float origin_x = (frameWidth - itemSize) / 2;
@@ -116,43 +139,34 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 
 		if ( item_count == 0 )
-		{
 			return;
-		}
-		else
-		{
-			// item 개수에 따른 각도 구하기
-			ANGLE = 360 / item_count; // 360 / (Item 개수)
-		}
+
+		// item 개수에 따른 각도 구하기
+		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
 
 		int angle_sum = 0; // 각도 누적
 
 		for ( int i = 0; i < item_count; i++ )
 		{
-			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
-			axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
-
 			// TODO 다양한 정보를 갖고 있는 이미지뷰 클래스 정의
 			// 레이아웃 설정 : 기본적인 크기는 정해져 있으며, 좌표 값만 설정
-			FrameLayout.LayoutParams itemLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			itemLayoutParams.leftMargin = axis.getAxis_x();
-			itemLayoutParams.topMargin = axis.getAxis_y();
-
 			ImageView itemImageView = new ImageView(context);
 			itemImageView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
 			itemImageView.setScaleType(ScaleType.CENTER_INSIDE);
+			itemImageView.setPadding(IMG_PADDING, IMG_PADDING, IMG_PADDING, IMG_PADDING);
 
 			// image 그림 추가
 			if ( imageArrayList != null && i < imageArrayList.size() )
 			{
-				itemImageView.setPadding(10, 10, 10, 10);
 				itemImageView.setImageDrawable(imageArrayList.get(i));
 			}
-			itemImageView.setLayoutParams(itemLayoutParams);
 
 			// TODO 추가한 아이템을 구별하기 위한 Id와 Listener
 			itemImageView.setId(i);
 			itemImageView.setOnClickListener(clickListener);
+
+			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
+			axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
 
 			LinearLayout itemBackLinearLayout = new LinearLayout(this);
 			FrameLayout.LayoutParams itemBackLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize);
@@ -236,8 +250,9 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private Axis getAxis( float origin_x, float origin_y, float radius, double angle )
 	{
 		Axis axis = new Axis();
-		axis.setAxis_x((int) (origin_x + radius * Math.cos(Math.PI / 180 * (DEFALT_POSITION + angle))));
-		axis.setAxis_y((int) (origin_y + radius * Math.sin(Math.PI / 180 * (DEFALT_POSITION + angle))));
+		double angles = Math.PI / 180 * (DEFALT_POSITION + angle);
+		axis.setAxis_x((int) (origin_x + radius * Math.cos(angles)));
+		axis.setAxis_y((int) (origin_y + radius * Math.sin(angles)));
 		return axis;
 	}
 
@@ -329,23 +344,4 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			return false;
 		}
 	};
-
-	/**
-	 * @함수명 : isItemFull
-	 * @매개변수 : int item_count
-	 * @반환 : boolean
-	 * @기능(역할) : 아이템 개수가 최대 치를 넘는지 검사
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 21.
-	 */
-	private boolean isItemFull( int item_count )
-	{
-		return LIMTED_ITEM_COUNT < item_count;
-	}
-
-	public void setCenterView( ImageView centerView )
-	{
-		this.centerView = centerView;
-	}
-
 }

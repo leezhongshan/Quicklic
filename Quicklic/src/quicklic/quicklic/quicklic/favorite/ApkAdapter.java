@@ -59,9 +59,9 @@ public class ApkAdapter extends BaseAdapter
 		PackageInfo packageInfo = (PackageInfo) getItem(position);
 		Drawable appIcon = packageManager.getApplicationIcon(packageInfo.applicationInfo);
 		String appName = packageManager.getApplicationLabel(packageInfo.applicationInfo).toString();
-		appIcon.setBounds(0, 0, 80, 80);
+		appIcon.setBounds(0, 0, 50, 50);
 		appIcon.setDither(true);
-		
+
 		apkName.setCompoundDrawables(appIcon, null, null, null);
 		apkName.setCompoundDrawablePadding(5);
 		apkName.setText(appName);

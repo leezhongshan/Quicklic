@@ -28,46 +28,53 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.favorite);
 
+		initialize();
+		initializeApkList();
+	}
+
+	private void initialize()
+	{
+		apkList = (ListView) findViewById(R.id.applist);
 		packageManager = getPackageManager();
+		preferencesManager = new PreferencesManager();
+	}
+
+	private void initializeApkList()
+	{
 		List<PackageInfo> packageList = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS);
+		List<PackageInfo> packageTempList = new ArrayList<PackageInfo>();
 
-		List<PackageInfo> packageList1 = new ArrayList<PackageInfo>();
-
-		/* To filter out System apps */
-		for ( PackageInfo pi : packageList )
+		/* To filter out the System Application */
+		for ( PackageInfo packageInfo : packageList )
 		{
-			boolean b = isSystemPackage(pi);
-			if ( !b )
+			if ( !isSystemPackage(packageInfo) )
 			{
-				packageList1.add(pi);
+				packageTempList.add(packageInfo);
 			}
 		}
-		apkList = (ListView) findViewById(R.id.applist);
-		apkAdapter = new ApkAdapter(this, R.layout.apklist_item, packageList1, packageManager);
+		apkAdapter = new ApkAdapter(this, R.layout.apklist_item, packageTempList, packageManager);
 		apkList.setAdapter(apkAdapter);
 		apkList.setOnItemClickListener(this);
 	}
 
 	/**
-	 * Return whether the given PackgeInfo represents a system package or not. User-installed packages (Market or otherwise) should not be denoted as system packages.
-	 * 
-	 * @param pkgInfo
-	 * @return boolean
+	 * @함수명 : isSystemPackage
+	 * @매개변수 :
+	 * @반환 : boolean
+	 * @기능(역할) : Return whether the given PackgeInfo represents a system package or not. User-installed packages (Market or otherwise) should not be denoted as system packages.
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 6. 2.
 	 */
 	private boolean isSystemPackage( PackageInfo pkgInfo )
 	{
-		return ((pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) ? true : false;
+		return (pkgInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
 	}
 
 	@Override
 	public void onItemClick( AdapterView<?> parent, View view, int position, long row )
 	{
 		PackageInfo packageInfo = (PackageInfo) parent.getItemAtPosition(position);
-
-		preferencesManager = new PreferencesManager();
 		preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
-
 		finish();
 	}
-
 }
