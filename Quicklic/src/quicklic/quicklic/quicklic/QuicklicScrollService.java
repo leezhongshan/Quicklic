@@ -248,7 +248,6 @@ public class QuicklicScrollService extends Service {
 	{
 		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
-
 		System.out.println("Task" + taskinfo.size());
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
