@@ -13,6 +13,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class QuicklicFavoriteActivity extends QuicklicActivity {
 
@@ -20,23 +23,34 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private ArrayList<String> pkgArrayList;
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
+	private boolean delEnabled;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
+		delEnabled = false;
 	}
 
 	private void initialize()
 	{
 		imageArrayList = new ArrayList<Drawable>();
 		pkgArrayList = new ArrayList<String>();
-		imageArrayList.add(getResources().getDrawable(R.drawable.favorite_test));
 
 		getPreference();
-
+		setCenterView();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
+	}
+
+	private void setCenterView()
+	{
+		ImageView imageView = new ImageView(this);
+		imageView.setId(99);
+		imageView.setOnClickListener(onClickListener);
+		imageView.setOnLongClickListener(onLongClickListener);
+		imageView.setBackgroundResource(R.drawable.favorite_test);
+		setCenterView(imageView);
 	}
 
 	@Override
@@ -88,18 +102,45 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			if ( v.getId() == 0 )
+			if ( v.getId() == 99 )
 			{
-				System.out.println("[Hardware] " + v.getId());
 				intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
 			}
 			else
 			{
-				Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
-				startActivity(intent);
+				if ( delEnabled )
+				{
+					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId() + 1);
+					onResume();
+				}
+				else
+				{
+					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId() + 1));
+					startActivity(intent);
+				}
 			}
+		}
+	};
+
+	private OnLongClickListener onLongClickListener = new OnLongClickListener()
+	{
+
+		@Override
+		public boolean onLongClick( View v )
+		{
+			if ( delEnabled )
+			{
+				delEnabled = false;
+				Toast.makeText(getApplicationContext(), "삭제가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+			}
+			else
+			{
+				delEnabled = true;
+				Toast.makeText(getApplicationContext(), "삭제가 활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+			}
+			return true;
 		}
 	};
 

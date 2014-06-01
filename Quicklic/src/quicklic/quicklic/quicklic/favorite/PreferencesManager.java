@@ -3,6 +3,7 @@ package quicklic.quicklic.quicklic.favorite;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class PreferencesManager extends Activity
@@ -19,6 +20,28 @@ public class PreferencesManager extends Activity
 	{
 		pref = context.getSharedPreferences("appData", MODE_PRIVATE);
 		return pref.getString("appData" + i, null);
+	}
+
+	public void removeAppPreferences( Context context, int i )
+	{
+		System.out.println(i);
+		SharedPreferences pref = context.getSharedPreferences("appData", MODE_PRIVATE);
+		SharedPreferences.Editor editor = pref.edit();
+
+		int num = getNumPreferences(context);
+
+		for ( int j = i; j < num; j++ )
+		{
+			editor.putString("appData" + j, getAppPreferences(context, j + 1));
+		}
+
+		editor.remove("appData" + num);
+
+		num--;
+
+		editor.putInt("appNum", num);
+
+		editor.commit();
 	}
 
 	public void setPreference( String pkg, Context context )
