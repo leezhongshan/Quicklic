@@ -49,7 +49,7 @@
         </activity>
 
         <service
-            android:name="quicklic.floating.api.FloatingServices"
+            android:name="quicklic.floating.api.FloatingService"
             android:exported="false" >
         </service>
         <service

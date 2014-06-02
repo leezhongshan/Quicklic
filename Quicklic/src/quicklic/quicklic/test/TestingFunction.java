@@ -3,7 +3,7 @@ package quicklic.quicklic.test;
 import java.io.Serializable;
 
 import quicklic.floating.api.FloatingInterface;
-import quicklic.floating.api.FloatingServices;
+import quicklic.floating.api.FloatingService;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import android.content.Intent;
 import android.view.View;
@@ -12,11 +12,11 @@ import android.widget.Toast;
 public class TestingFunction implements Serializable, FloatingInterface
 {
 	private static final long serialVersionUID = 1L;
-	private static FloatingServices floatingServices;
+	private static FloatingService floatingServices;
 	private Intent intent;
 
 	@Override
-	public void setContext( FloatingServices floatingServices )
+	public void setContext( FloatingService floatingServices )
 	{
 		TestingFunction.floatingServices = floatingServices;
 	}
@@ -68,7 +68,7 @@ public class TestingFunction implements Serializable, FloatingInterface
 	//  API 비 제공 메소드
 	//-------------------------------------------------------------------
 
-	public static FloatingServices getFloatingServices()
+	public static FloatingService getFloatingServices()
 	{
 		return floatingServices;
 	}

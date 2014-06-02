@@ -25,11 +25,12 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 		initialize();
 	}
-	
+
 	private void onWifi()
 	{
 		wifi.setWifiEnabled(true);
 	}
+
 	private void offWifi()
 	{
 		wifi.setWifiEnabled(false);
@@ -38,7 +39,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private void initialize()
 	{
 		imageArrayList = new ArrayList<Drawable>();
-		wifi = (WifiManager)getSystemService(Context.WIFI_SERVICE);
+		wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
 		// TODO
 		imageArrayList.add(getResources().getDrawable(R.drawable.hardware_test));
@@ -67,9 +68,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			}
 			if ( v.getId() == 2 )
 			{
-				if(!wifi.isWifiEnabled())
+				if ( !wifi.isWifiEnabled() )
 				{
-					if(wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLED)
+					if ( wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLED )
 					{
 						onWifi();
 						System.out.println("on");

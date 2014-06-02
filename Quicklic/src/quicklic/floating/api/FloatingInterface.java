@@ -4,7 +4,7 @@ import android.view.View;
 
 public interface FloatingInterface
 {
-	public void setContext( FloatingServices floatingServices );
+	public void setContext( FloatingService floatingServices );
 
 	public float setSize();
 

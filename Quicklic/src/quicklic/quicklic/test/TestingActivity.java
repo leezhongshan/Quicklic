@@ -1,6 +1,6 @@
 package quicklic.quicklic.test;
 
-import quicklic.floating.api.FloatingServices;
+import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
 import android.app.Activity;
 import android.content.Intent;
@@ -28,7 +28,7 @@ public class TestingActivity extends Activity
 			@Override
 			public void onClick( View v )
 			{
-				Intent intent = new Intent(TestingActivity.this, FloatingServices.class);
+				Intent intent = new Intent(TestingActivity.this, FloatingService.class);
 				intent.putExtra("push", testingFunction);
 				startService(intent);
 				finish();
@@ -40,7 +40,7 @@ public class TestingActivity extends Activity
 			@Override
 			public void onClick( View v )
 			{
-				stopService(new Intent(TestingActivity.this, FloatingServices.class));
+				stopService(new Intent(TestingActivity.this, FloatingService.class));
 			}
 		});
 
