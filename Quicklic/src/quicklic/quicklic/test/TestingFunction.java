@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import quicklic.floating.api.FloatingInterface;
 import quicklic.floating.api.FloatingServices;
-import quicklic.quicklic.quicklic.QuicklicMainActivity;
+import quicklic.quicklic.main.QuicklicMainActivity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;

@@ -1,4 +1,4 @@
-package quicklic.quicklic.quicklic.favorite;
+package quicklic.quicklic.favorite;
 
 import java.util.ArrayList;
 import java.util.List;

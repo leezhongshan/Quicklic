@@ -28,22 +28,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="quicklic.quicklic.quicklic.QuicklicMainActivity"
+            android:name="quicklic.quicklic.main.QuicklicMainActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Transparent" >
         </activity>
         <activity
-            android:name="quicklic.quicklic.quicklic.QuicklicFavoriteActivity"
+            android:name="quicklic.quicklic.favorite.QuicklicFavoriteActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Transparent" >
         </activity>
         <activity
-            android:name="quicklic.quicklic.quicklic.QuicklicHardwareActivity"
+            android:name="quicklic.quicklic.hardware.QuicklicHardwareActivity"
             android:label="@string/app_name"
             android:theme="@style/Theme.Transparent" >
         </activity>
         <activity
-            android:name="quicklic.quicklic.quicklic.favorite.ApkListActivity"
+            android:name="quicklic.quicklic.favorite.ApkListActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.NoTitleBar" >
         </activity>
@@ -53,7 +53,7 @@
             android:exported="false" >
         </service>
         <service
-            android:name="quicklic.quicklic.quicklic.QuicklicScrollService"
+            android:name="quicklic.quicklic.scrollkey.QuicklicScrollKeyService"
             android:exported="false" >
         </service>
     </application>
