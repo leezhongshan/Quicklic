@@ -8,8 +8,6 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
-import android.app.ActivityManager.RunningAppProcessInfo;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Context;
@@ -33,9 +31,9 @@ import android.widget.LinearLayout;
 public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
-	private static final float DEVICE_RATE = 0.16f;
+	private static final float KEYBOARD_HEIGHT_RATE = 0.125f;
 	private static final float VIEW_ALPHA = 0.8f;
-	private static final int MAX_TASK_NUM = 300;
+	private static final int MAX_TASK_NUM = 5;
 	private static final int MAX_SERVICE_NUM = 300;
 
 	private WindowManager windowManager;
@@ -107,7 +105,7 @@ public class QuicklicScrollKeyService extends Service {
 		timer = new Timer();
 		deviceWidth = intent.getIntExtra("deviceWidth", 0);
 		deviceHeight = intent.getIntExtra("deviceHeight", 0);
-		keyboardHeight = (int) (deviceWidth * DEVICE_RATE);
+		keyboardHeight = (int) (deviceWidth * KEYBOARD_HEIGHT_RATE);
 	}
 
 	private void createManager()
@@ -249,18 +247,10 @@ public class QuicklicScrollKeyService extends Service {
 	{
 		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
-		System.out.println("Task" + taskinfo.size());
+		System.out.println("Task " + taskinfo.size());
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			System.out.println("Task : " + taskinfo.get(i).topActivity.getPackageName());
-		}
-
-		List<RunningServiceInfo> serviceinfo = activityManager.getRunningServices(MAX_SERVICE_NUM);
-		System.out.println("Service " + serviceinfo.size());
-		for ( int i = 0; i < serviceinfo.size(); i++ )
-		{
-			if ( serviceinfo.get(i).foreground )
-				System.out.println("Service : " + serviceinfo.get(i).service.getClassName());
 		}
 	}
 
@@ -390,11 +380,6 @@ public class QuicklicScrollKeyService extends Service {
 									isMoved = false;
 								}
 							}, DOUBLE_PRESS_INTERVAL + 100);
-						}
-
-						if ( moveToSide && isMoved )
-						{
-							//	moveToSide();
 						}
 						break;
 					}
