@@ -62,16 +62,12 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		public void onClick( View v )
 		{
 			//TODO
-			switch ( v.getId() )
+			if ( v.getId() == 1 )
 			{
-			case 0:
-				break;
-
-			case 1:
 				startActivity(new Intent(android.provider.Settings.ACTION_SOUND_SETTINGS));
-				break;
-
-			case 2:
+			}
+			if ( v.getId() == 2 )
+			{
 				if ( !wifi.isWifiEnabled() )
 				{
 					if ( wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLED )
@@ -85,9 +81,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					offWifi();
 					System.out.println("off");
 				}
-				break;
-			default:
-				break;
 			}
 		}
 	};
