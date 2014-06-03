@@ -1,10 +1,9 @@
-package quicklic.quicklic.quicklic;
+package quicklic.quicklic.favorite;
 
 import java.util.ArrayList;
 
 import quicklic.floating.api.R;
-import quicklic.quicklic.quicklic.favorite.ApkListActivity;
-import quicklic.quicklic.quicklic.favorite.PreferencesManager;
+import quicklic.quicklic.main.QuicklicActivity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;

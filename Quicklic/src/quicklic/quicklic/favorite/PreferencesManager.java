@@ -1,4 +1,4 @@
-package quicklic.quicklic.quicklic.favorite;
+package quicklic.quicklic.favorite;
 
 import android.app.Activity;
 import android.content.Context;

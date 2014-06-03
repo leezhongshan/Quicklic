@@ -1,8 +1,9 @@
-package quicklic.quicklic.quicklic;
+package quicklic.quicklic.hardware;
 
 import java.util.ArrayList;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.main.QuicklicActivity;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;

@@ -1,8 +1,11 @@
-package quicklic.quicklic.quicklic;
+package quicklic.quicklic.main;
 
 import java.util.ArrayList;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
+import quicklic.quicklic.hardware.QuicklicHardwareActivity;
+import quicklic.quicklic.scrollkey.QuicklicScrollKeyService;
 import quicklic.quicklic.test.TestingFunction;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -101,7 +104,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				isScrollService = true;
 
 				System.out.println("[Scroll] " + v.getId());
-				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollService.class);
+				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollKeyService.class);
 				intent.putExtra("deviceWidth", getDeviceWidth());
 				intent.putExtra("deviceHeight", getDeviceHeight());
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

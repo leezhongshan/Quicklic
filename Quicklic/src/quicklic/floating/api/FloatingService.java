@@ -27,7 +27,7 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 
-public class FloatingServices extends Service
+public class FloatingService extends Service
 {
 	private static final String TAG = "Quicklic";
 	private static final int NOTIFICATION_ID = 1;

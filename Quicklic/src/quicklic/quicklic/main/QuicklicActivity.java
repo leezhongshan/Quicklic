@@ -1,4 +1,4 @@
-package quicklic.quicklic.quicklic;
+package quicklic.quicklic.main;
 
 import java.util.ArrayList;
 

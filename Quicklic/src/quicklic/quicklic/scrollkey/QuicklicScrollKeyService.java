@@ -1,10 +1,11 @@
-package quicklic.quicklic.quicklic;
+package quicklic.quicklic.scrollkey;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -29,7 +30,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-public class QuicklicScrollService extends Service {
+public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
 	private static final float DEVICE_RATE = 0.16f;
@@ -332,7 +333,7 @@ public class QuicklicScrollService extends Service {
 				stopService(intent);
 
 				// MainActivity 시작
-				intent = new Intent(QuicklicScrollService.this, QuicklicMainActivity.class);
+				intent = new Intent(QuicklicScrollKeyService.this, QuicklicMainActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 			}
