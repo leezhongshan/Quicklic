@@ -77,7 +77,7 @@ public class QuicklicScrollKeyService extends Service {
 		if ( startId == 1 || flags == 1 )
 		{
 			// Quicklic View 숨기기
-			TestingFunction.getFloatingServices().setVisibility(false);
+			TestingFunction.getFloatingService().setVisibility(false);
 
 			initialize(intent);
 			createManager();

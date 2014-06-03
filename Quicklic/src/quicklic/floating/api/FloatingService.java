@@ -187,7 +187,6 @@ public class FloatingService extends Service
 
 	private void displayMetrics()
 	{
-
 		Display windowDisplay = windowManager.getDefaultDisplay();
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();
