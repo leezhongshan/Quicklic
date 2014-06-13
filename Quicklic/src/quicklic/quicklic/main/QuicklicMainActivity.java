@@ -23,7 +23,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		// Activity가 생성될 때, Floating Image를 사라지게 함
-		TestingFunction.getFloatingServices().setVisibility(false);
+		TestingFunction.getFloatingService().setVisibility(false);
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
@@ -54,7 +54,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		System.out.println("Main Des");
 
 		if ( !isScrollService )
-			TestingFunction.getFloatingServices().setVisibility(true);
+			TestingFunction.getFloatingService().setVisibility(true);
 
 		super.onDestroy();
 	}
