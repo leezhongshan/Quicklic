@@ -8,7 +8,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
-import android.app.ActivityManager.RunningAppProcessInfo;
+import android.app.Instrumentation;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
@@ -19,6 +19,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -33,7 +34,7 @@ import android.widget.LinearLayout;
 public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
-	private static final float DEVICE_RATE = 0.16f;
+	private static final float DEVICE_RATE = 0.13f;
 	private static final float VIEW_ALPHA = 0.8f;
 	private static final int MAX_TASK_NUM = 300;
 	private static final int MAX_SERVICE_NUM = 300;
@@ -44,6 +45,7 @@ public class QuicklicScrollKeyService extends Service {
 	private LinearLayout scrollLinearLayout;
 
 	private int keyboardHeight;
+	private int keyboardWidth;
 	private int deviceWidth;
 	private int deviceHeight;
 
@@ -107,7 +109,8 @@ public class QuicklicScrollKeyService extends Service {
 		timer = new Timer();
 		deviceWidth = intent.getIntExtra("deviceWidth", 0);
 		deviceHeight = intent.getIntExtra("deviceHeight", 0);
-		keyboardHeight = (int) (deviceWidth * DEVICE_RATE);
+		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
+		keyboardWidth = (int) (deviceWidth * 0.4);
 	}
 
 	private void createManager()
@@ -130,8 +133,8 @@ public class QuicklicScrollKeyService extends Service {
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
 		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
 
-		layoutParams.width = deviceWidth >> 1;
-		layoutParams.height = keyboardHeight << 1;
+		layoutParams.width = keyboardWidth;
+		layoutParams.height = keyboardHeight;
 
 		layoutParams.x = deviceWidth - layoutParams.width;
 		layoutParams.y = deviceHeight - layoutParams.height;
@@ -249,12 +252,20 @@ public class QuicklicScrollKeyService extends Service {
 	{
 		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
-		System.out.println("Task" + taskinfo.size());
+		System.out.println("Task " + taskinfo.size());
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			System.out.println("Task : " + taskinfo.get(i).topActivity.getPackageName());
 		}
 
+		RunningTaskInfo topTaskInfo = taskinfo.get(0);
+		System.out.println(topTaskInfo.topActivity.getClassName());
+
+	}
+
+	private void getRunningServiceList()
+	{
+		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningServiceInfo> serviceinfo = activityManager.getRunningServices(MAX_SERVICE_NUM);
 		System.out.println("Service " + serviceinfo.size());
 		for ( int i = 0; i < serviceinfo.size(); i++ )
@@ -262,6 +273,14 @@ public class QuicklicScrollKeyService extends Service {
 			if ( serviceinfo.get(i).foreground )
 				System.out.println("Service : " + serviceinfo.get(i).service.getClassName());
 		}
+	}
+
+	private void injectTouchEvent()
+	{
+		System.out.println("Event");
+
+		Instrumentation instrumentation = new Instrumentation();
+		
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -273,6 +292,9 @@ public class QuicklicScrollKeyService extends Service {
 			{
 				System.out.println("Up");
 				getRunningTaskList();
+				getRunningServiceList();
+
+				injectTouchEvent();
 			}
 			else if ( v == downButton )
 			{
