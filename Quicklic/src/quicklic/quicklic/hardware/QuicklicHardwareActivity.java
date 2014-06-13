@@ -49,13 +49,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
 
-	/*protected void onResume()
-	{
-		initialize();
-		
-		super.onResume();
-	}*/
-
 	private OnClickListener onClickListener = new OnClickListener()
 	{
 		@Override
