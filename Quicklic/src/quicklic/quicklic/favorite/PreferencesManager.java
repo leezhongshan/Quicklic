@@ -3,7 +3,6 @@ package quicklic.quicklic.favorite;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class PreferencesManager extends Activity

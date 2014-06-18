@@ -8,9 +8,9 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
-import android.app.Instrumentation;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
+import android.app.Instrumentation;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +22,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -280,7 +281,10 @@ public class QuicklicScrollKeyService extends Service {
 		System.out.println("Event");
 
 		Instrumentation instrumentation = new Instrumentation();
-		
+		instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_A);
+
+		//		instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, deviceWidth / 2, deviceHeight / 2, 0));
+		//		instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, deviceWidth / 2, deviceHeight / 2, 0));
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
