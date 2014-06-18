@@ -12,12 +12,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class QuicklicMainActivity extends QuicklicActivity {
 
 	private ArrayList<Drawable> imageArrayList;
 
 	private boolean isScrollService;
+
+	private boolean isNotHomeKey;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -34,6 +37,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	@Override
 	protected void onResume()
 	{
+		isNotHomeKey = false;
 		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
 		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() == View.VISIBLE )
 		{
@@ -101,6 +105,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		{
 			if ( v.getId() == 0 )
 			{
+				isNotHomeKey = true;
 				System.out.println("[Hardware] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicHardwareActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -108,6 +113,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			}
 			else if ( v.getId() == 1 )
 			{
+				isNotHomeKey = true;
 				isScrollService = true;
 
 				System.out.println("[Scroll] " + v.getId());
@@ -120,12 +126,23 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			}
 			else if ( v.getId() == 2 )
 			{
+				isNotHomeKey = true;
+
 				System.out.println("[Favorite] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
 				startActivity(intent);
 			}
+		}
+	};
+
+	protected void onUserLeaveHint()
+	{
+		if ( isNotHomeKey == false )
+		{
+			TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+			Toast.makeText(this, "5초의 딜레이가 있습니다.", Toast.LENGTH_LONG).show();
 		}
 	};
 

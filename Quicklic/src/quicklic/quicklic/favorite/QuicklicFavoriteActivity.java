@@ -151,4 +151,11 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		}
 	};
 
+	protected void onUserLeaveHint()
+	{
+		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+		finish();
+
+		Toast.makeText(this, "5초의 딜레이가 있습니다.", Toast.LENGTH_LONG).show();
+	};
 }

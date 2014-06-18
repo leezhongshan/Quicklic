@@ -344,4 +344,5 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			return false;
 		}
 	};
+
 }

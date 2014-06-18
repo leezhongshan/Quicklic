@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicActivity;
+import quicklic.quicklic.test.TestingFunction;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Toast;
 
 public class QuicklicHardwareActivity extends QuicklicActivity {
 
@@ -118,6 +120,14 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			}
 
 		}
+	};
+
+	protected void onUserLeaveHint()
+	{
+		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+		finish();
+
+		Toast.makeText(this, "5초의 딜레이가 있습니다.", Toast.LENGTH_LONG).show();
 	};
 
 }
