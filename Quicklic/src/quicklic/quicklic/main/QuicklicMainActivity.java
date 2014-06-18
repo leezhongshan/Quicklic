@@ -35,7 +35,14 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	protected void onResume()
 	{
 		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
-		getQuicklicFrameLayout().setVisibility(View.VISIBLE);
+		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() == View.VISIBLE )
+		{
+			getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
+		}
+		else
+		{
+			getQuicklicFrameLayout().setVisibility(View.VISIBLE);
+		}
 		super.onResume();
 	}
 
@@ -116,6 +123,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				System.out.println("[Favorite] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
 				startActivity(intent);
 			}
 		}

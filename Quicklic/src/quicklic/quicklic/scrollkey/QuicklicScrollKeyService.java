@@ -8,7 +8,6 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
-import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;

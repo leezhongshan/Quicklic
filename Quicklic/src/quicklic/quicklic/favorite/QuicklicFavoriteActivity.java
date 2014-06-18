@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicActivity;
+import quicklic.quicklic.test.TestingFunction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -124,6 +125,8 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				{
 					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId() + 1));
 					startActivity(intent);
+					TestingFunction.getFloatingService().setVisibility(true);
+					finish();
 				}
 			}
 		}
