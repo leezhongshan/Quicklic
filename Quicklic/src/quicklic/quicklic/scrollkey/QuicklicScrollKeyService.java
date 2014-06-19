@@ -1,6 +1,7 @@
 package quicklic.quicklic.scrollkey;
 
 import java.util.List;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -10,19 +11,17 @@ import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
-import android.app.Instrumentation;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,6 +30,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
@@ -39,6 +39,7 @@ public class QuicklicScrollKeyService extends Service {
 	private static final float VIEW_ALPHA = 0.8f;
 	private static final int MAX_TASK_NUM = 300;
 	private static final int MAX_SERVICE_NUM = 300;
+	private static final int MIN_TASK_NUM = 2; // 기본 동작하는 System App을 제외
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -64,6 +65,9 @@ public class QuicklicScrollKeyService extends Service {
 	private boolean isMoved = false;
 	private Timer timer;
 	private long lastPressTime;
+
+	private ActivityManager activityManager;
+	private Stack<String> packageStack;
 
 	@Override
 	public IBinder onBind( Intent intent )
@@ -112,11 +116,13 @@ public class QuicklicScrollKeyService extends Service {
 		deviceHeight = intent.getIntExtra("deviceHeight", 0);
 		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
 		keyboardWidth = (int) (deviceWidth * 0.4);
+		packageStack = new Stack<String>();
 	}
 
 	private void createManager()
 	{
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+		activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	}
 
 	private void addViewInWindowManager()
@@ -251,40 +257,34 @@ public class QuicklicScrollKeyService extends Service {
 
 	private void getRunningTaskList()
 	{
-		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
 		System.out.println("Task " + taskinfo.size());
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
-			System.out.println("Task : " + taskinfo.get(i).topActivity.getPackageName());
+			String packageName = taskinfo.get(i).topActivity.getPackageName();
+			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone")) )
+				packageStack.push(packageName);
 		}
 
-		RunningTaskInfo topTaskInfo = taskinfo.get(0);
-		System.out.println(topTaskInfo.topActivity.getClassName());
+		while ( !packageStack.empty() )
+			System.out.println(packageStack.pop());
+	}
 
+	private String getTopPackageName()
+	{
+		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(1);
+		return taskinfo.get(0).topActivity.getPackageName();
 	}
 
 	private void getRunningServiceList()
 	{
-		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningServiceInfo> serviceinfo = activityManager.getRunningServices(MAX_SERVICE_NUM);
 		System.out.println("Service " + serviceinfo.size());
 		for ( int i = 0; i < serviceinfo.size(); i++ )
 		{
 			if ( serviceinfo.get(i).foreground )
-				System.out.println("Service : " + serviceinfo.get(i).service.getClassName());
+				System.out.println("Service : " + serviceinfo.get(i).service.getPackageName());
 		}
-	}
-
-	private void injectTouchEvent()
-	{
-		System.out.println("Event");
-
-		Instrumentation instrumentation = new Instrumentation();
-		instrumentation.sendKeyDownUpSync(KeyEvent.KEYCODE_A);
-
-		//		instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_DOWN, deviceWidth / 2, deviceHeight / 2, 0));
-		//		instrumentation.sendPointerSync(MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, deviceWidth / 2, deviceHeight / 2, 0));
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -298,7 +298,6 @@ public class QuicklicScrollKeyService extends Service {
 				getRunningTaskList();
 				getRunningServiceList();
 
-				injectTouchEvent();
 			}
 			else if ( v == downButton )
 			{
@@ -307,10 +306,17 @@ public class QuicklicScrollKeyService extends Service {
 			else if ( v == leftButton )
 			{
 				System.out.println("Left");
+
+				if ( packageStack.empty() )
+					return;
+				PackageManager packageManager = getPackageManager();
+				Intent intent = packageManager.getLaunchIntentForPackage(packageStack.pop());
+				startActivity(intent);
 			}
 			else if ( v == rightButton )
 			{
 				System.out.println("Right");
+
 			}
 			else if ( v == moveButton )
 			{
