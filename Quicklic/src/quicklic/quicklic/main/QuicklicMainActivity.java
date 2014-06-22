@@ -3,20 +3,23 @@ package quicklic.quicklic.main;
 import java.util.ArrayList;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
 import quicklic.quicklic.hardware.QuicklicHardwareActivity;
 import quicklic.quicklic.scrollkey.QuicklicScrollKeyService;
 import quicklic.quicklic.test.TestingFunction;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 
 public class QuicklicMainActivity extends QuicklicActivity {
 
-	private ArrayList<Drawable> imageArrayList;
+	private final int HARDWARE = 0;
+	private final int SCROLL = 1;
+	private final int FAVORITE = 2;
 
+	private ArrayList<Item> imageArrayList;
 	private boolean isScrollService;
 
 	@Override
@@ -76,11 +79,11 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	{
 		isScrollService = false;
 
-		imageArrayList = new ArrayList<Drawable>();
+		imageArrayList = new ArrayList<Item>();
 
-		imageArrayList.add(getResources().getDrawable(R.drawable.hardware));
-		imageArrayList.add(getResources().getDrawable(R.drawable.scroll));
-		imageArrayList.add(getResources().getDrawable(R.drawable.favorite));
+		imageArrayList.add(new Item(HARDWARE, R.drawable.hardware));
+		imageArrayList.add(new Item(SCROLL, R.drawable.scroll));
+		imageArrayList.add(new Item(FAVORITE, R.drawable.favorite));
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
@@ -92,15 +95,16 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			if ( v.getId() == 0 )
+			switch ( v.getId() )
 			{
+			case HARDWARE:
 				System.out.println("[Hardware] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicHardwareActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
-			}
-			else if ( v.getId() == 1 )
-			{
+				break;
+
+			case SCROLL:
 				isScrollService = true;
 
 				System.out.println("[Scroll] " + v.getId());
@@ -110,13 +114,17 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
 				finish();
-			}
-			else if ( v.getId() == 2 )
-			{
+				break;
+
+			case FAVORITE:
 				System.out.println("[Favorite] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
+				break;
+
+			default:
+				break;
 			}
 		}
 	};

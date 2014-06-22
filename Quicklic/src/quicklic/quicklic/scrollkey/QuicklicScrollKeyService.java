@@ -30,7 +30,6 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
@@ -39,7 +38,6 @@ public class QuicklicScrollKeyService extends Service {
 	private static final float VIEW_ALPHA = 0.8f;
 	private static final int MAX_TASK_NUM = 300;
 	private static final int MAX_SERVICE_NUM = 300;
-	private static final int MIN_TASK_NUM = 2; // 기본 동작하는 System App을 제외
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -163,7 +161,6 @@ public class QuicklicScrollKeyService extends Service {
 
 		sectionLayoutParams.weight = 0.5f;
 		buttonLayoutParams.weight = 1 / 3f;
-		buttonLayoutParams.setMargins(2, 2, 2, 2);
 
 		upButton = new Button(this);
 		downButton = new Button(this);
@@ -185,13 +182,13 @@ public class QuicklicScrollKeyService extends Service {
 		backSectionLinearLayout.setLayoutParams(sectionLayoutParams);
 
 		firstSectionLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-		firstSectionLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+		firstSectionLinearLayout.setBackgroundColor(Color.BLACK);
 		firstSectionLinearLayout.setAlpha(VIEW_ALPHA);
 		firstSectionLinearLayout.setWeightSum(1);
 		firstSectionLinearLayout.setLayoutParams(sectionLayoutParams);
 
 		secondSectionLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-		secondSectionLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+		secondSectionLinearLayout.setBackgroundColor(Color.BLACK);
 		secondSectionLinearLayout.setAlpha(VIEW_ALPHA);
 		secondSectionLinearLayout.setWeightSum(1);
 		secondSectionLinearLayout.setLayoutParams(sectionLayoutParams);
@@ -199,38 +196,32 @@ public class QuicklicScrollKeyService extends Service {
 		upButton.setHeight(keyboardHeight);
 		upButton.setLayoutParams(buttonLayoutParams);
 		upButton.setTextAppearance(this, R.style.Scroll_Button);
-		upButton.setBackgroundColor(Color.BLACK);
-		upButton.setText(R.string.scroll_up);
+		upButton.setBackgroundResource(R.drawable.key_up);
 
 		downButton.setHeight(keyboardHeight);
 		downButton.setLayoutParams(buttonLayoutParams);
 		downButton.setTextAppearance(this, R.style.Scroll_Button);
-		downButton.setBackgroundColor(Color.BLACK);
-		downButton.setText(R.string.scroll_down);
+		downButton.setBackgroundResource(R.drawable.key_down);
 
 		leftButton.setHeight(keyboardHeight);
 		leftButton.setLayoutParams(buttonLayoutParams);
 		leftButton.setTextAppearance(this, R.style.Scroll_Button);
-		leftButton.setBackgroundColor(Color.BLACK);
-		leftButton.setText(R.string.scroll_left);
+		leftButton.setBackgroundResource(R.drawable.key_left);
 
 		rightButton.setHeight(keyboardHeight);
 		rightButton.setLayoutParams(buttonLayoutParams);
 		rightButton.setTextAppearance(this, R.style.Scroll_Button);
-		rightButton.setBackgroundColor(Color.BLACK);
-		rightButton.setText(R.string.scroll_right);
+		rightButton.setBackgroundResource(R.drawable.key_right);
 
 		moveButton.setHeight(keyboardHeight);
 		moveButton.setLayoutParams(buttonLayoutParams);
 		moveButton.setTextAppearance(this, R.style.Scroll_Button);
-		moveButton.setBackgroundColor(Color.BLACK);
-		moveButton.setText(R.string.scroll_move);
+		moveButton.setBackgroundResource(R.drawable.key_move);
 
 		exitButton.setHeight(keyboardHeight);
 		exitButton.setLayoutParams(buttonLayoutParams);
 		exitButton.setTextAppearance(this, R.style.Scroll_Button);
-		exitButton.setBackgroundColor(Color.BLACK);
-		exitButton.setText(R.string.scroll_exit);
+		exitButton.setBackgroundResource(R.drawable.key_exit);
 
 		upButton.setOnClickListener(clickListener);
 		downButton.setOnClickListener(clickListener);

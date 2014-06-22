@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
+import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -107,7 +107,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 * @작성일 : 2014. 5. 9.
 	 * @수정자 : JHPark, THYang
 	 */
-	protected void addViewsForBalance( int item_count, ArrayList<Drawable> imageArrayList, OnClickListener clickListener )
+	protected void addViewsForBalance( int item_count, ArrayList<Item> imageArrayList, OnClickListener clickListener )
 	{
 		viewCount = item_count;
 
@@ -129,12 +129,11 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			itemLayoutParams.leftMargin = (int) origin_x;
 			itemLayoutParams.topMargin = (int) origin_y;
 
-			centerView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
 			centerView.setScaleType(ScaleType.CENTER_INSIDE);
 			centerView.setLayoutParams(itemLayoutParams);
 
 			quicklicFrameLayout.addView(centerView);
-
+			quicklicFrameLayout.updateViewLayout(centerView, itemLayoutParams);
 			viewCount++;
 		}
 
@@ -158,11 +157,14 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			// image 그림 추가
 			if ( imageArrayList != null && i < imageArrayList.size() )
 			{
-				itemImageView.setImageDrawable(imageArrayList.get(i));
+				if ( imageArrayList.get(i).getIconDrawable() != null )
+					itemImageView.setImageDrawable(imageArrayList.get(i).getIconDrawable());
+				else
+					itemImageView.setImageResource(imageArrayList.get(i).getDrawResId());
 			}
 
 			// TODO 추가한 아이템을 구별하기 위한 Id와 Listener
-			itemImageView.setId(i);
+			itemImageView.setId(imageArrayList.get(i).getViewId());
 			itemImageView.setOnClickListener(clickListener);
 
 			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴

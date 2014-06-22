@@ -3,6 +3,7 @@ package quicklic.quicklic.favorite;
 import java.util.ArrayList;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.content.Intent;
@@ -18,7 +19,7 @@ import android.widget.Toast;
 
 public class QuicklicFavoriteActivity extends QuicklicActivity {
 
-	private ArrayList<Drawable> imageArrayList;
+	private ArrayList<Item> imageArrayList;
 	private ArrayList<String> pkgArrayList;
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
@@ -50,11 +51,16 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private void initializeView()
 	{
-		imageArrayList = new ArrayList<Drawable>();
+		imageArrayList = new ArrayList<Item>();
 		pkgArrayList = new ArrayList<String>();
 
 		getPreference();
-		setCenterView();
+
+		if ( !delEnabled )
+			setCenterAddView();
+		else
+			setCenterDeleteView();
+
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
@@ -63,30 +69,43 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
-	private void setCenterView()
+	private void setCenterAddView()
 	{
+		System.out.println("add");
+
 		ImageView imageView = new ImageView(this);
-		imageView.setBackgroundResource(R.drawable.favorite_test);
+		imageView.setBackgroundResource(R.drawable.favorite_add);
 		imageView.setOnClickListener(clickListener);
 		imageView.setOnLongClickListener(onLongClickListener);
 
 		setCenterView(imageView);
 	}
 
+	private void setCenterDeleteView()
+	{
+		System.out.println("del");
+		getQuicklicFrameLayout().removeView(getCenterView());
+
+		ImageView imageView = new ImageView(this);
+		imageView.setBackgroundResource(R.drawable.favorite_delete);
+		imageView.setOnClickListener(clickListener);
+		imageView.setOnLongClickListener(onLongClickListener);
+
+		//		setCenterView(imageView);
+	}
+
 	private void getPreference()
 	{
 		preferencesManager = new PreferencesManager();
 		packageManager = getPackageManager();
-
 		item_count = preferencesManager.getNumPreferences(this) + 1;
 		for ( int i = 0; i < item_count && !isItemFull(i); i++ )
 		{
 			pkgArrayList.add(preferencesManager.getAppPreferences(this, i));
-
 			try
 			{
 				Drawable appIcon = packageManager.getApplicationIcon(pkgArrayList.get(i));
-				imageArrayList.add(appIcon);
+				imageArrayList.add(new Item(i, appIcon));
 			}
 			catch (NameNotFoundException e)
 			{
@@ -118,12 +137,12 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			{
 				if ( delEnabled )
 				{
-					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId() + 1);
+					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
 					onResume();
 				}
 				else
 				{
-					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId() + 1));
+					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
 					startActivity(intent);
 					TestingFunction.getFloatingService().setVisibility(true);
 					finish();
@@ -140,12 +159,12 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			if ( delEnabled )
 			{
 				delEnabled = false;
-				Toast.makeText(getApplicationContext(), "삭제가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.favorite_disable_delete, Toast.LENGTH_SHORT).show();
 			}
 			else
 			{
 				delEnabled = true;
-				Toast.makeText(getApplicationContext(), "삭제가 활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
 			return true;
 		}
