@@ -36,6 +36,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 	private FrameLayout quicklicFrameLayout;
 	private FrameLayout.LayoutParams mainLayoutParams;
+	private FrameLayout.LayoutParams centerLayoutParams;
 
 	private ImageView quicklicImageView;
 	private ImageView centerView;
@@ -125,15 +126,13 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 		if ( centerView != null )
 		{
-			FrameLayout.LayoutParams itemLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			itemLayoutParams.leftMargin = (int) origin_x;
-			itemLayoutParams.topMargin = (int) origin_y;
+			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			centerLayoutParams.leftMargin = (int) origin_x;
+			centerLayoutParams.topMargin = (int) origin_y;
 
 			centerView.setScaleType(ScaleType.CENTER_INSIDE);
-			centerView.setLayoutParams(itemLayoutParams);
-
+			centerView.setLayoutParams(centerLayoutParams);
 			quicklicFrameLayout.addView(centerView);
-			quicklicFrameLayout.updateViewLayout(centerView, itemLayoutParams);
 			viewCount++;
 		}
 

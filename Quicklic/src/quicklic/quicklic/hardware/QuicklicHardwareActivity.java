@@ -65,7 +65,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		else
 			resId = R.drawable.bluetooth_on;
 		imageArrayList.add(new Item(COMP_BLUETOOTH, resId));
-		
+
 		imageArrayList.add(new Item(COMP_ROTATE, R.drawable.rotate_on));
 		imageArrayList.add(new Item(COMP_SOUND_MUTE, R.drawable.sound_mute));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
@@ -83,17 +83,22 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			case COMP_SOUND_MUTE:
 				startActivity(new Intent(android.provider.Settings.ACTION_SOUND_SETTINGS));
 				break;
+
 			case COMP_SOUND_INC:
+				
 				break;
+				
 			case COMP_SOUND_DEC:
 				break;
 
 			case COMP_WIFI:
 				componentWifi.controlWifi();
 				break;
+				
 			case COMP_BLUETOOTH:
 				componentBluetooth.controlBluetooth();
 				break;
+				
 			case COMP_ROTATE:
 				break;
 			}
