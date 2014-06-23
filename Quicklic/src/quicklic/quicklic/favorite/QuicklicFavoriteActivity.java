@@ -145,12 +145,18 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				}
 				else
 				{
-					TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+					try
+					{
+						Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
+						startActivity(intent);
 
-					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
-					startActivity(intent);
-
-					finish();
+						TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+						finish();
+					}
+					catch (Exception e)
+					{
+						Toast.makeText(getApplicationContext(), R.string.favorite_run_no, Toast.LENGTH_SHORT).show();
+					}
 				}
 			}
 		}
