@@ -349,8 +349,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 	};
 
-<<<<<<< HEAD
-=======
 	public void homeKeyPressed()
 	{
 		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.GONE);
@@ -379,5 +377,4 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		Timer mTimer = new Timer();
 		mTimer.schedule(checkTask, 5000);
 	}
->>>>>>> origin/second_branch
 }

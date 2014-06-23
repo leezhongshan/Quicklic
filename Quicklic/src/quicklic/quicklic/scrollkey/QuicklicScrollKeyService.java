@@ -9,10 +9,6 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
-<<<<<<< HEAD
-import android.app.ActivityManager.RunningServiceInfo;
-=======
->>>>>>> origin/second_branch
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Context;

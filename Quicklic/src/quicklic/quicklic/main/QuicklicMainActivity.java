@@ -24,8 +24,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	private boolean isScrollService;
 	private boolean isNotHomeKey;
 
-	private boolean isNotHomeKey;
-
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
@@ -110,25 +108,14 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 			switch ( v.getId() )
 			{
-<<<<<<< HEAD
-				isNotHomeKey = true;
-=======
 			case HARDWARE:
->>>>>>> origin/second_branch
 				System.out.println("[Hardware] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicHardwareActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
-<<<<<<< HEAD
-			}
-			else if ( v.getId() == 1 )
-			{
-				isNotHomeKey = true;
-=======
 				break;
 
 			case SCROLL:
->>>>>>> origin/second_branch
 				isScrollService = true;
 
 				System.out.println("[Scroll] " + v.getId());
@@ -138,17 +125,9 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
 				finish();
-<<<<<<< HEAD
-			}
-			else if ( v.getId() == 2 )
-			{
-				isNotHomeKey = true;
-
-=======
 				break;
 
 			case FAVORITE:
->>>>>>> origin/second_branch
 				System.out.println("[Favorite] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -164,17 +143,9 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-<<<<<<< HEAD
-		if ( isNotHomeKey == false )
-		{
-			TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
-			Toast.makeText(this, "5초의 딜레이가 있습니다.", Toast.LENGTH_LONG).show();
-=======
 		if ( !isNotHomeKey )
 		{
 			homeKeyPressed();
->>>>>>> origin/second_branch
 		}
 	};
-
 }

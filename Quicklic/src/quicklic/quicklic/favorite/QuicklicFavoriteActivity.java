@@ -149,11 +149,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
 					startActivity(intent);
-<<<<<<< HEAD
-					TestingFunction.getFloatingService().setVisibility(true);
-=======
 
->>>>>>> origin/second_branch
 					finish();
 				}
 			}
@@ -181,13 +177,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-<<<<<<< HEAD
-		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
-		finish();
-
-		Toast.makeText(this, "5초의 딜레이가 있습니다.", Toast.LENGTH_LONG).show();
-	};
-=======
 		if ( !listActivity )
 		{
 			if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
@@ -197,6 +186,4 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			finish();
 		}
 	};
-
->>>>>>> origin/second_branch
 }

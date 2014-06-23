@@ -6,10 +6,6 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
 import quicklic.quicklic.test.TestingFunction;
-<<<<<<< HEAD
-import android.bluetooth.BluetoothAdapter;
-=======
->>>>>>> origin/second_branch
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -17,7 +13,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Toast;
 
 public class QuicklicHardwareActivity extends QuicklicActivity {
 
@@ -140,19 +135,10 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-<<<<<<< HEAD
-		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
-		finish();
-
-		Toast.makeText(this, "5초의 딜레이가 있습니다.", Toast.LENGTH_LONG).show();
-	};
-
-=======
 		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 		{
 			homeKeyPressed();
 		}
 		finish();
-	};
->>>>>>> origin/second_branch
+	}
 }
