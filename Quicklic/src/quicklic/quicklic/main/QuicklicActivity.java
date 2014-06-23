@@ -1,12 +1,15 @@
 package quicklic.quicklic.main;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
+import quicklic.quicklic.datastructure.Item;
+import quicklic.quicklic.test.TestingFunction;
 import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
@@ -36,6 +39,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 	private FrameLayout quicklicFrameLayout;
 	private FrameLayout.LayoutParams mainLayoutParams;
+	private FrameLayout.LayoutParams centerLayoutParams;
 
 	private ImageView quicklicImageView;
 	private ImageView centerView;
@@ -107,7 +111,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 * @작성일 : 2014. 5. 9.
 	 * @수정자 : JHPark, THYang
 	 */
-	protected void addViewsForBalance( int item_count, ArrayList<Drawable> imageArrayList, OnClickListener clickListener )
+	protected void addViewsForBalance( int item_count, ArrayList<Item> imageArrayList, OnClickListener clickListener )
 	{
 		viewCount = item_count;
 
@@ -125,16 +129,13 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 		if ( centerView != null )
 		{
-			FrameLayout.LayoutParams itemLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			itemLayoutParams.leftMargin = (int) origin_x;
-			itemLayoutParams.topMargin = (int) origin_y;
+			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			centerLayoutParams.leftMargin = (int) origin_x;
+			centerLayoutParams.topMargin = (int) origin_y;
 
-			centerView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
 			centerView.setScaleType(ScaleType.CENTER_INSIDE);
-			centerView.setLayoutParams(itemLayoutParams);
-
+			centerView.setLayoutParams(centerLayoutParams);
 			quicklicFrameLayout.addView(centerView);
-
 			viewCount++;
 		}
 
@@ -158,11 +159,14 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			// image 그림 추가
 			if ( imageArrayList != null && i < imageArrayList.size() )
 			{
-				itemImageView.setImageDrawable(imageArrayList.get(i));
+				if ( imageArrayList.get(i).getIconDrawable() != null )
+					itemImageView.setImageDrawable(imageArrayList.get(i).getIconDrawable());
+				else
+					itemImageView.setImageResource(imageArrayList.get(i).getDrawResId());
 			}
 
 			// TODO 추가한 아이템을 구별하기 위한 Id와 Listener
-			itemImageView.setId(i);
+			itemImageView.setId(imageArrayList.get(i).getViewId());
 			itemImageView.setOnClickListener(clickListener);
 
 			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
@@ -345,4 +349,35 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 	};
 
+<<<<<<< HEAD
+=======
+	public void homeKeyPressed()
+	{
+		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.GONE);
+		Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
+
+		TimerTask checkTask;
+		checkTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				runOnUiThread(new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+
+						finish();
+					}
+				});
+			}
+		};
+
+		Timer mTimer = new Timer();
+		mTimer.schedule(checkTask, 5000);
+	}
+>>>>>>> origin/second_branch
 }

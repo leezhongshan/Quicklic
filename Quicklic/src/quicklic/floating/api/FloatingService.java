@@ -258,19 +258,19 @@ public class FloatingService extends Service
 	private void quicklicNotification()
 	{
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		Notification notification = new Notification();
 
+		Notification notification = new Notification();
 		notification.when = System.currentTimeMillis();
 		notification.iconLevel = 2;
-		notification.tickerText = "Hello Quicklic!!";
+		notification.tickerText = "안녕하세요 Quicklic!! 입니다.";
 
 		// 알람 동작 시 : 기본 사운드 설정 | 진동 설정
 
 		// 특정 사운드 추가 : 스마트폰 sdcard 내부에 있는 파일 절대 경로를 입력
 		// notification.sound  = Uri.parse("file:///sdcard/notification/ringer.mp3");
-		notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-		// 플래그 설정 : 알람을 체크할 때까지 계속 소리 울림 | 해당 Notification이 선택 되면 자동으로 사라진다.
-		notification.flags = Notification.FLAG_INSISTENT | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
+		// notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+		// 플래그 설정 :  해당 Notification이 선택 되면 자동으로 사라진다.
+		notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
 
 		// 알림 발생 시 LED 표시 플래그
 		//		notification.ledARGB = Notification.FLAG_SHOW_LIGHTS;

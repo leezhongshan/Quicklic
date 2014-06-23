@@ -1,5 +1,6 @@
 package quicklic.quicklic.scrollkey;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -8,11 +9,15 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
+<<<<<<< HEAD
 import android.app.ActivityManager.RunningServiceInfo;
+=======
+>>>>>>> origin/second_branch
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
@@ -28,14 +33,14 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
-	private static final float DEVICE_RATE = 0.16f;
+	private static final float DEVICE_RATE = 0.13f;
 	private static final float VIEW_ALPHA = 0.8f;
 	private static final int MAX_TASK_NUM = 300;
-	private static final int MAX_SERVICE_NUM = 300;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -43,6 +48,7 @@ public class QuicklicScrollKeyService extends Service {
 	private LinearLayout scrollLinearLayout;
 
 	private int keyboardHeight;
+	private int keyboardWidth;
 	private int deviceWidth;
 	private int deviceHeight;
 
@@ -60,6 +66,10 @@ public class QuicklicScrollKeyService extends Service {
 	private boolean isMoved = false;
 	private Timer timer;
 	private long lastPressTime;
+
+	private ActivityManager activityManager;
+	private ArrayList<String> packageArrayList;
+	private int pacakgeIndex;
 
 	@Override
 	public IBinder onBind( Intent intent )
@@ -81,6 +91,7 @@ public class QuicklicScrollKeyService extends Service {
 			initialize(intent);
 			createManager();
 			createScrollLayout();
+			getRunningTaskList();
 			addViewInWindowManager();
 		}
 		else
@@ -106,12 +117,16 @@ public class QuicklicScrollKeyService extends Service {
 		timer = new Timer();
 		deviceWidth = intent.getIntExtra("deviceWidth", 0);
 		deviceHeight = intent.getIntExtra("deviceHeight", 0);
-		keyboardHeight = (int) (deviceWidth * DEVICE_RATE);
+		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
+		keyboardWidth = (int) (deviceWidth * 0.4);
+		packageArrayList = new ArrayList<String>();
+		pacakgeIndex = 0;
 	}
 
 	private void createManager()
 	{
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+		activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 	}
 
 	private void addViewInWindowManager()
@@ -129,8 +144,8 @@ public class QuicklicScrollKeyService extends Service {
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
 		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
 
-		layoutParams.width = deviceWidth >> 1;
-		layoutParams.height = keyboardHeight << 1;
+		layoutParams.width = keyboardWidth;
+		layoutParams.height = keyboardHeight;
 
 		layoutParams.x = deviceWidth - layoutParams.width;
 		layoutParams.y = deviceHeight - layoutParams.height;
@@ -152,7 +167,6 @@ public class QuicklicScrollKeyService extends Service {
 
 		sectionLayoutParams.weight = 0.5f;
 		buttonLayoutParams.weight = 1 / 3f;
-		buttonLayoutParams.setMargins(2, 2, 2, 2);
 
 		upButton = new Button(this);
 		downButton = new Button(this);
@@ -174,13 +188,13 @@ public class QuicklicScrollKeyService extends Service {
 		backSectionLinearLayout.setLayoutParams(sectionLayoutParams);
 
 		firstSectionLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-		firstSectionLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+		firstSectionLinearLayout.setBackgroundColor(Color.BLACK);
 		firstSectionLinearLayout.setAlpha(VIEW_ALPHA);
 		firstSectionLinearLayout.setWeightSum(1);
 		firstSectionLinearLayout.setLayoutParams(sectionLayoutParams);
 
 		secondSectionLinearLayout.setOrientation(LinearLayout.HORIZONTAL);
-		secondSectionLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+		secondSectionLinearLayout.setBackgroundColor(Color.BLACK);
 		secondSectionLinearLayout.setAlpha(VIEW_ALPHA);
 		secondSectionLinearLayout.setWeightSum(1);
 		secondSectionLinearLayout.setLayoutParams(sectionLayoutParams);
@@ -188,38 +202,32 @@ public class QuicklicScrollKeyService extends Service {
 		upButton.setHeight(keyboardHeight);
 		upButton.setLayoutParams(buttonLayoutParams);
 		upButton.setTextAppearance(this, R.style.Scroll_Button);
-		upButton.setBackgroundColor(Color.BLACK);
-		upButton.setText(R.string.scroll_up);
+		upButton.setBackgroundResource(R.drawable.key_up);
 
 		downButton.setHeight(keyboardHeight);
 		downButton.setLayoutParams(buttonLayoutParams);
 		downButton.setTextAppearance(this, R.style.Scroll_Button);
-		downButton.setBackgroundColor(Color.BLACK);
-		downButton.setText(R.string.scroll_down);
+		downButton.setBackgroundResource(R.drawable.key_down);
 
 		leftButton.setHeight(keyboardHeight);
 		leftButton.setLayoutParams(buttonLayoutParams);
 		leftButton.setTextAppearance(this, R.style.Scroll_Button);
-		leftButton.setBackgroundColor(Color.BLACK);
-		leftButton.setText(R.string.scroll_left);
+		leftButton.setBackgroundResource(R.drawable.key_left);
 
 		rightButton.setHeight(keyboardHeight);
 		rightButton.setLayoutParams(buttonLayoutParams);
 		rightButton.setTextAppearance(this, R.style.Scroll_Button);
-		rightButton.setBackgroundColor(Color.BLACK);
-		rightButton.setText(R.string.scroll_right);
+		rightButton.setBackgroundResource(R.drawable.key_right);
 
 		moveButton.setHeight(keyboardHeight);
 		moveButton.setLayoutParams(buttonLayoutParams);
 		moveButton.setTextAppearance(this, R.style.Scroll_Button);
-		moveButton.setBackgroundColor(Color.BLACK);
-		moveButton.setText(R.string.scroll_move);
+		moveButton.setBackgroundResource(R.drawable.key_move);
 
 		exitButton.setHeight(keyboardHeight);
 		exitButton.setLayoutParams(buttonLayoutParams);
 		exitButton.setTextAppearance(this, R.style.Scroll_Button);
-		exitButton.setBackgroundColor(Color.BLACK);
-		exitButton.setText(R.string.scroll_exit);
+		exitButton.setBackgroundResource(R.drawable.key_exit);
 
 		upButton.setOnClickListener(clickListener);
 		downButton.setOnClickListener(clickListener);
@@ -246,21 +254,21 @@ public class QuicklicScrollKeyService extends Service {
 
 	private void getRunningTaskList()
 	{
-		ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
-		System.out.println("Task" + taskinfo.size());
+		System.out.println("Task " + taskinfo.size());
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
-			System.out.println("Task : " + taskinfo.get(i).topActivity.getPackageName());
+			String packageName = taskinfo.get(i).topActivity.getPackageName();
+			System.out.println(packageName);
+			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone") || packageName.contains("quicklic")) )
+			{
+				packageArrayList.add(packageName);
+			}
 		}
 
-		List<RunningServiceInfo> serviceinfo = activityManager.getRunningServices(MAX_SERVICE_NUM);
-		System.out.println("Service " + serviceinfo.size());
-		for ( int i = 0; i < serviceinfo.size(); i++ )
-		{
-			if ( serviceinfo.get(i).foreground )
-				System.out.println("Service : " + serviceinfo.get(i).service.getClassName());
-		}
+		System.out.println("하하");
+		for ( int i = 0; i < packageArrayList.size(); i++ )
+			System.out.println(packageArrayList.get(i));
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -268,10 +276,10 @@ public class QuicklicScrollKeyService extends Service {
 		@Override
 		public void onClick( View v )
 		{
+			PackageManager packageManager = getPackageManager();
 			if ( v == upButton )
 			{
 				System.out.println("Up");
-				getRunningTaskList();
 			}
 			else if ( v == downButton )
 			{
@@ -280,10 +288,40 @@ public class QuicklicScrollKeyService extends Service {
 			else if ( v == leftButton )
 			{
 				System.out.println("Left");
+				if ( packageArrayList.size() == 0 )
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if ( pacakgeIndex > 0 )
+				{
+					--pacakgeIndex;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_first, Toast.LENGTH_SHORT).show();
+				}
+				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
+				startActivity(intent);
 			}
 			else if ( v == rightButton )
 			{
 				System.out.println("Right");
+				if ( packageArrayList.size() == 0 )
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if ( pacakgeIndex != packageArrayList.size() - 1 )
+				{
+					++pacakgeIndex;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_finish, Toast.LENGTH_SHORT).show();
+				}
+				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
+				startActivity(intent);
 			}
 			else if ( v == moveButton )
 			{

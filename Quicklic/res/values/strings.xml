@@ -2,12 +2,11 @@
 
     <string name="app_name">Quicklic</string>
     <string name="hello_quicklic">Hello Quicklic!!</string>
-    <string name="scroll_up">↑</string>
-    <string name="scroll_down">↓</string>
-    <string name="scroll_left">←</string>
-    <string name="scroll_right">→</string>
-    <string name="scroll_move">O</string>
-    <string name="scroll_exit">X</string>
     <string name="err_limited_item_count">최대 등록 개수를 초과하였습니다.</string>
+    <string name="favorite_enable_delete">삭제가 활성화 되었습니다.</string>
+    <string name="favorite_disable_delete">삭제가 비활성화 되었습니다.</string>
+    <string name="scroll_move_finish">마지막 입니다.</string>
+    <string name="scroll_move_first">처음 입니다.</string>
+    <string name="scroll_move_no">실행된 Application이 없습니다.</string>
 
 </resources>
