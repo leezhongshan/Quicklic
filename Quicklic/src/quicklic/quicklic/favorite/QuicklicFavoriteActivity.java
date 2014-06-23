@@ -145,6 +145,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				}
 				else
 				{
+					/* 실행할 수 없는 앱을 추가한 상태에서
+					 *  앱 실행을 요청했을 때,
+					 *  예외처리를 하여서 service는 죽지 않으며, 사용자에게 Toast로 알림.
+					 */
 					try
 					{
 						Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
