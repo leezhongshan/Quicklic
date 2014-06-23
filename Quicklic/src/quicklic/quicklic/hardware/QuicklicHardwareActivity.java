@@ -20,6 +20,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_WIFI = 4;
 	private final int COMP_BLUETOOTH = 5;
 	private final int COMP_ROTATE = 6;
+	private final int COMP_GPS = 7;
 
 	private ArrayList<Item> imageArrayList;
 	private ComponentWifi componentWifi;
@@ -66,7 +67,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			resId = R.drawable.bluetooth_on;
 		imageArrayList.add(new Item(COMP_BLUETOOTH, resId));
 
-		imageArrayList.add(new Item(COMP_ROTATE, R.drawable.rotate_on));
+		imageArrayList.add(new Item(COMP_ROTATE, R.drawable.rotate_off));
+		imageArrayList.add(new Item(COMP_GPS, R.drawable.gps_off));
+
 		imageArrayList.add(new Item(COMP_SOUND_MUTE, R.drawable.sound_mute));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
 
@@ -85,21 +88,24 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				break;
 
 			case COMP_SOUND_INC:
-				
+
 				break;
-				
+
 			case COMP_SOUND_DEC:
 				break;
 
 			case COMP_WIFI:
 				componentWifi.controlWifi();
 				break;
-				
+
 			case COMP_BLUETOOTH:
 				componentBluetooth.controlBluetooth();
 				break;
-				
+
 			case COMP_ROTATE:
+				break;
+
+			case COMP_GPS:
 				break;
 			}
 			onResume();

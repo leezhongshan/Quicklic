@@ -1,7 +1,7 @@
 package quicklic.quicklic.scrollkey;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -9,7 +9,6 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Context;
@@ -30,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class QuicklicScrollKeyService extends Service {
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
@@ -37,7 +37,6 @@ public class QuicklicScrollKeyService extends Service {
 	private static final float DEVICE_RATE = 0.13f;
 	private static final float VIEW_ALPHA = 0.8f;
 	private static final int MAX_TASK_NUM = 300;
-	private static final int MAX_SERVICE_NUM = 300;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -65,7 +64,8 @@ public class QuicklicScrollKeyService extends Service {
 	private long lastPressTime;
 
 	private ActivityManager activityManager;
-	private Stack<String> packageStack;
+	private ArrayList<String> packageArrayList;
+	private int pacakgeIndex;
 
 	@Override
 	public IBinder onBind( Intent intent )
@@ -87,6 +87,7 @@ public class QuicklicScrollKeyService extends Service {
 			initialize(intent);
 			createManager();
 			createScrollLayout();
+			getRunningTaskList();
 			addViewInWindowManager();
 		}
 		else
@@ -114,7 +115,8 @@ public class QuicklicScrollKeyService extends Service {
 		deviceHeight = intent.getIntExtra("deviceHeight", 0);
 		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
 		keyboardWidth = (int) (deviceWidth * 0.4);
-		packageStack = new Stack<String>();
+		packageArrayList = new ArrayList<String>();
+		pacakgeIndex = 0;
 	}
 
 	private void createManager()
@@ -253,29 +255,16 @@ public class QuicklicScrollKeyService extends Service {
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
-			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone")) )
-				packageStack.push(packageName);
+			System.out.println(packageName);
+			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone") || packageName.contains("quicklic")) )
+			{
+				packageArrayList.add(packageName);
+			}
 		}
 
-		while ( !packageStack.empty() )
-			System.out.println(packageStack.pop());
-	}
-
-	private String getTopPackageName()
-	{
-		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(1);
-		return taskinfo.get(0).topActivity.getPackageName();
-	}
-
-	private void getRunningServiceList()
-	{
-		List<RunningServiceInfo> serviceinfo = activityManager.getRunningServices(MAX_SERVICE_NUM);
-		System.out.println("Service " + serviceinfo.size());
-		for ( int i = 0; i < serviceinfo.size(); i++ )
-		{
-			if ( serviceinfo.get(i).foreground )
-				System.out.println("Service : " + serviceinfo.get(i).service.getPackageName());
-		}
+		System.out.println("하하");
+		for ( int i = 0; i < packageArrayList.size(); i++ )
+			System.out.println(packageArrayList.get(i));
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -283,12 +272,10 @@ public class QuicklicScrollKeyService extends Service {
 		@Override
 		public void onClick( View v )
 		{
+			PackageManager packageManager = getPackageManager();
 			if ( v == upButton )
 			{
 				System.out.println("Up");
-				getRunningTaskList();
-				getRunningServiceList();
-
 			}
 			else if ( v == downButton )
 			{
@@ -297,17 +284,40 @@ public class QuicklicScrollKeyService extends Service {
 			else if ( v == leftButton )
 			{
 				System.out.println("Left");
-
-				if ( packageStack.empty() )
+				if ( packageArrayList.size() == 0 )
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
 					return;
-				PackageManager packageManager = getPackageManager();
-				Intent intent = packageManager.getLaunchIntentForPackage(packageStack.pop());
+				}
+				if ( pacakgeIndex > 0 )
+				{
+					--pacakgeIndex;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_first, Toast.LENGTH_SHORT).show();
+				}
+				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
 				startActivity(intent);
 			}
 			else if ( v == rightButton )
 			{
 				System.out.println("Right");
-
+				if ( packageArrayList.size() == 0 )
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				if ( pacakgeIndex != packageArrayList.size() - 1 )
+				{
+					++pacakgeIndex;
+				}
+				else
+				{
+					Toast.makeText(getApplicationContext(), R.string.scroll_move_finish, Toast.LENGTH_SHORT).show();
+				}
+				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
+				startActivity(intent);
 			}
 			else if ( v == moveButton )
 			{

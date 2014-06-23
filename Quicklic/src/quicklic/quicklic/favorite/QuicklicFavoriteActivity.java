@@ -84,14 +84,13 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private void setCenterDeleteView()
 	{
 		System.out.println("del");
-		getQuicklicFrameLayout().removeView(getCenterView());
 
 		ImageView imageView = new ImageView(this);
 		imageView.setBackgroundResource(R.drawable.favorite_delete);
 		imageView.setOnClickListener(clickListener);
 		imageView.setOnLongClickListener(onLongClickListener);
 
-		//		setCenterView(imageView);
+		setCenterView(imageView);
 	}
 
 	private void getPreference()

@@ -258,7 +258,7 @@ public class FloatingService extends Service
 	private void quicklicNotification()
 	{
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		
+
 		Notification notification = new Notification();
 		notification.when = System.currentTimeMillis();
 		notification.iconLevel = 2;
