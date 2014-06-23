@@ -21,6 +21,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 	private ArrayList<Item> imageArrayList;
 	private boolean isScrollService;
+	private boolean isNotHomeKey;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -34,11 +35,18 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		initialize();
 	}
 
-	@Override
 	protected void onResume()
 	{
+		isNotHomeKey = false;
 		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
-		getQuicklicFrameLayout().setVisibility(View.VISIBLE);
+		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() == View.VISIBLE )
+		{
+			getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
+		}
+		else
+		{
+			getQuicklicFrameLayout().setVisibility(View.VISIBLE);
+		}
 		super.onResume();
 	}
 
@@ -78,7 +86,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	private void initialize()
 	{
 		isScrollService = false;
-
+		isNotHomeKey = false;
 		imageArrayList = new ArrayList<Item>();
 
 		imageArrayList.add(new Item(HARDWARE, R.drawable.hardware));
@@ -95,6 +103,8 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
+			isNotHomeKey = true;
+
 			switch ( v.getId() )
 			{
 			case HARDWARE:
@@ -126,6 +136,14 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			default:
 				break;
 			}
+		}
+	};
+
+	protected void onUserLeaveHint()
+	{
+		if ( !isNotHomeKey )
+		{
+			homeKeyPressed();
 		}
 	};
 

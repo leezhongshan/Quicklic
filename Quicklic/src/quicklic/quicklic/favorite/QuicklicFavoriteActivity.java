@@ -24,6 +24,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
 	private boolean delEnabled;
+	private boolean listActivity;
 	private int item_count;
 
 	@Override
@@ -40,6 +41,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	{
 		resetQuicklic();
 		initializeView();
+		listActivity = false;
 
 		super.onResume();
 	}
@@ -47,6 +49,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private void initialize()
 	{
 		delEnabled = false;
+		listActivity = false;
 	}
 
 	private void initializeView()
@@ -128,6 +131,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
 					return;
 				}
+				listActivity = true;
 				intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -141,9 +145,11 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				}
 				else
 				{
+					TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+
 					Intent intent = packageManager.getLaunchIntentForPackage(preferencesManager.getAppPreferences(getApplicationContext(), v.getId()));
 					startActivity(intent);
-					TestingFunction.getFloatingService().setVisibility(true);
+
 					finish();
 				}
 			}
@@ -166,6 +172,18 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
 			return true;
+		}
+	};
+
+	protected void onUserLeaveHint()
+	{
+		if ( !listActivity )
+		{
+			if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+			{
+				homeKeyPressed();
+			}
+			finish();
 		}
 	};
 

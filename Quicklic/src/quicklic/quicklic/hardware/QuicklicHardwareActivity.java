@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
+import quicklic.quicklic.test.TestingFunction;
 import android.content.Context;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -132,4 +133,12 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		}
 	};
 
+	protected void onUserLeaveHint()
+	{
+		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+		{
+			homeKeyPressed();
+		}
+		finish();
+	};
 }
