@@ -94,7 +94,6 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			{
 				runOnUiThread(new Runnable()
 				{
-
 					@Override
 					public void run()
 					{

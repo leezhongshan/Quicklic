@@ -2,7 +2,6 @@ package quicklic.quicklic.hardware;
 
 import quicklic.floating.api.R;
 import android.media.AudioManager;
-import android.widget.Toast;
 
 public class ComponentVolume {
 

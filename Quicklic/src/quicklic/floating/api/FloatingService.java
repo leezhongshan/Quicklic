@@ -16,7 +16,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -30,7 +29,6 @@ import android.widget.ImageView;
 
 public class FloatingService extends Service
 {
-	private static final String TAG = "Quicklic";
 	private static final int NOTIFICATION_ID = 1;
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
@@ -124,23 +122,19 @@ public class FloatingService extends Service
 	@Override
 	public IBinder onBind( Intent arg0 )
 	{
-		Log.d(TAG, "onBind");
 		return null;
 	}
 
 	@Override
 	public void onCreate()
 	{
-		Log.d(TAG, "onCreate");
 		super.onCreate();
 	}
 
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-		Log.d(TAG, "onStartCommand - flags :" + flags + ", id : " + startId);
-
-		// TODO 이미 실행중인 Service 가 있다면, 추가 수행 금지
+		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
 		if ( startId == 1 || flags == 1 )
 		{
 			initialize(intent);
@@ -162,7 +156,6 @@ public class FloatingService extends Service
 
 	public void onDestroy()
 	{
-		Log.d(TAG, "onDestroy");
 		super.onDestroy();
 
 		if ( getQuicklic() != null )
@@ -204,7 +197,7 @@ public class FloatingService extends Service
 
 		quicklic = new ImageView(this);
 
-		//TODO 이미지 변경 가능 하도록
+		//TODO 이미지 설정
 		getQuicklic().setImageResource(R.drawable.floating);
 
 		// Device의 Display에서 가운데 위치 구하기
@@ -225,7 +218,7 @@ public class FloatingService extends Service
 		layoutParams.x = deviceHorizontalCenter;
 		layoutParams.y = deviceVerticalCenter;
 
-		//TODO 사용자가 크기 설정 가능하도록
+		// TODO Quicklic Image 크기 설정
 		layoutParams.width = imageWidth;
 		layoutParams.height = imageHeight;
 
@@ -263,9 +256,8 @@ public class FloatingService extends Service
 
 		PendingIntent intent = PendingIntent.getActivity(context, 0, new Intent(context, FinishService.class), 0);
 
-		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText("Quicklic이 실행중입니다! 누르시면 종료됩니다. ")
-				.setSmallIcon(R.drawable.ic_launcher)
-				.setTicker("Quicklic을 시작합니다.").setOngoing(true).setContentIntent(intent).build();
+		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText(getResources().getString(R.string.stop_quicklic))
+				.setSmallIcon(R.drawable.ic_launcher).setTicker(getResources().getString(R.string.hello_quicklic)).setOngoing(true).setContentIntent(intent).build();
 		notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
 
 		notificationManager.notify(NOTIFICATION_ID, notification);
@@ -440,7 +432,6 @@ public class FloatingService extends Service
 							}, DOUBLE_PRESS_INTERVAL + 100);
 						}
 
-						//TODO UP되어 있을 때, 이동하는 모습 Animation으로 추후 적용 할 부분
 						if ( moveToSide && isMoved )
 						{
 							moveToSide();

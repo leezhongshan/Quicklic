@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class QuicklicScrollKeyService extends Service {
+
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
 	private static final float DEVICE_RATE = 0.13f;
@@ -255,16 +256,12 @@ public class QuicklicScrollKeyService extends Service {
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
-			System.out.println(packageName);
+			System.out.println(packageName); // TODO 제거
 			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone") || packageName.contains("quicklic")) )
 			{
 				packageArrayList.add(packageName);
 			}
 		}
-
-		System.out.println("하하");
-		for ( int i = 0; i < packageArrayList.size(); i++ )
-			System.out.println(packageArrayList.get(i));
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -275,15 +272,12 @@ public class QuicklicScrollKeyService extends Service {
 			PackageManager packageManager = getPackageManager();
 			if ( v == upButton )
 			{
-				System.out.println("Up");
 			}
 			else if ( v == downButton )
 			{
-				System.out.println("Down");
 			}
 			else if ( v == leftButton )
 			{
-				System.out.println("Left");
 				if ( packageArrayList.size() == 0 )
 				{
 					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
@@ -302,7 +296,6 @@ public class QuicklicScrollKeyService extends Service {
 			}
 			else if ( v == rightButton )
 			{
-				System.out.println("Right");
 				if ( packageArrayList.size() == 0 )
 				{
 					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
@@ -321,7 +314,6 @@ public class QuicklicScrollKeyService extends Service {
 			}
 			else if ( v == moveButton )
 			{
-				System.out.println("Move");
 				long pressTime = System.currentTimeMillis();
 
 				/* Double Clicked
@@ -331,7 +323,6 @@ public class QuicklicScrollKeyService extends Service {
 				if ( (pressTime - lastPressTime) <= DOUBLE_PRESS_INTERVAL )
 				{
 					// TODO Double Clicked
-					System.out.println("key double");
 					// Double Clicked 인 경우, 핸들러가 실행되도 Single Click 작업 하지 않음.
 					isDoubleClicked = true;
 				}
@@ -350,7 +341,6 @@ public class QuicklicScrollKeyService extends Service {
 							if ( !isDoubleClicked && isMoved == false )
 							{
 								// TODO Single Clicked
-								System.out.println("key single");
 							}
 						}
 					};

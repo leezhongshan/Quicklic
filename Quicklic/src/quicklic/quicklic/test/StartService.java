@@ -28,5 +28,4 @@ public class StartService extends Activity
 		super.onPause();
 		finish();
 	}
-
 }

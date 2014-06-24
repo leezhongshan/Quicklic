@@ -1,7 +1,8 @@
 <resources>
 
     <string name="app_name">Quicklic</string>
-    <string name="hello_quicklic">Hello Quicklic!!</string>
+    <string name="hello_quicklic">Quicklic을 시작합니다.</string>
+    <string name="stop_quicklic">Quicklic이 실행중입니다. 누르시면 종료됩니다.</string>
     <string name="err_limited_item_count">최대 등록 개수를 초과하였습니다.</string>
     <string name="favorite_enable_delete">삭제가 활성화 되었습니다.</string>
     <string name="favorite_disable_delete">삭제가 비활성화 되었습니다.</string>
