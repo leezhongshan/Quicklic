@@ -62,8 +62,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	protected void onDestroy()
 	{
 		// Activity가 제거될 때, Floating Image를 보여지게 함
-		System.out.println("Main Des");
-
 		if ( !isScrollService )
 			SettingFloatingInterface.getFloatingService().setVisibility(true);
 
@@ -108,7 +106,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			switch ( v.getId() )
 			{
 			case HARDWARE:
-				System.out.println("[Hardware] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicHardwareActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -117,7 +114,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			case SCROLL:
 				isScrollService = true;
 
-				System.out.println("[Scroll] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollKeyService.class);
 				intent.putExtra("deviceWidth", getDeviceWidth());
 				intent.putExtra("deviceHeight", getDeviceHeight());
@@ -127,7 +123,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				break;
 
 			case FAVORITE:
-				System.out.println("[Favorite] " + v.getId());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);

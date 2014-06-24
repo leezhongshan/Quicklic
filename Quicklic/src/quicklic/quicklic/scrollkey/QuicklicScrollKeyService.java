@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+// TODO 작업중
 public class QuicklicScrollKeyService extends Service {
 
 	private static final int DOUBLE_PRESS_INTERVAL = 300;

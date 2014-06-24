@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
+	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private PackageManager packageManager;
 	private ApkAdapter apkAdapter;
 	private ListView apkList;
@@ -64,7 +65,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	 * @함수명 : isSystemPackage
 	 * @매개변수 :
 	 * @반환 : boolean
-	 * @기능(역할) : Return whether the given PackgeInfo represents a system package or not. User-installed packages (Market or otherwise) should not be denoted as system packages.
+	 * @기능(역할) : System Application인지 판별
 	 * @작성자 : 13 JHPark
 	 * @작성일 : 2014. 6. 2.
 	 */
@@ -84,7 +85,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	public void homeKeyPressed()
 	{
 		SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.GONE);
-		Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
+		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
 
 		TimerTask checkTask;
 		checkTask = new TimerTask()
@@ -106,7 +107,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		};
 
 		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, 5000);
+		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
 	}
 
 	protected void onUserLeaveHint()

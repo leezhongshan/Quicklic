@@ -23,6 +23,24 @@ public class SettingFloatingInterface implements Serializable, FloatingInterface
 	}
 
 	@Override
+	public int setDrawableQuicklic()
+	{
+		return R.drawable.floating;
+	}
+
+	@Override
+	public float setSize()
+	{
+		return 0.17f;
+	}
+
+	@Override
+	public boolean setAnimation()
+	{
+		return true;
+	}
+
+	@Override
 	public void touched( View v )
 	{
 		intent = new Intent(floatingService, QuicklicMainActivity.class);
@@ -49,21 +67,9 @@ public class SettingFloatingInterface implements Serializable, FloatingInterface
 	}
 
 	@Override
-	public boolean setAnimation()
-	{
-		return true;
-	}
-
-	@Override
 	public void setQuicklicVisibility( boolean bool )
 	{
 		floatingService.setVisibility(bool);
-	}
-
-	@Override
-	public float setSize()
-	{
-		return 0.17f;
 	}
 
 	//-------------------------------------------------------------------

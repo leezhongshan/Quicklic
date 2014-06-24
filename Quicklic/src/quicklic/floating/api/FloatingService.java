@@ -204,8 +204,8 @@ public class FloatingService extends Service
 
 		quicklic = new ImageView(this);
 
-		//TODO 이미지 설정
-		getQuicklic().setImageResource(R.drawable.floating);
+		// 이미지 설정
+		getQuicklic().setImageResource(floatingInterface.setDrawableQuicklic());
 
 		// Device의 Display에서 가운데 위치 구하기
 		deviceHorizontalCenter = (deviceWidth - imageWidth) / 2;
@@ -225,7 +225,6 @@ public class FloatingService extends Service
 		layoutParams.x = deviceHorizontalCenter;
 		layoutParams.y = deviceVerticalCenter;
 
-		// TODO Quicklic Image 크기 설정
 		layoutParams.width = imageWidth;
 		layoutParams.height = imageHeight;
 
@@ -463,7 +462,6 @@ public class FloatingService extends Service
 			int toX = layoutParams.x;
 			int toY = layoutParams.y;
 
-			System.out.println(getQuicklic().getHeight() + " " + getQuicklic().getWidth());
 			if ( layoutParams.x > deviceHorizontalCenter )
 			{
 				if ( layoutParams.y > deviceVerticalCenter )

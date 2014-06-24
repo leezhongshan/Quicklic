@@ -10,7 +10,6 @@ import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -311,7 +310,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		@Override
 		public boolean onSingleTapUp( MotionEvent e )
 		{
-			Log.e("TAG", "single");
 			return false;
 		}
 
@@ -329,7 +327,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		@Override
 		public void onLongPress( MotionEvent e )
 		{
-			Log.e("TAG", "long");
 		}
 
 		@Override
@@ -349,22 +346,22 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			{
 				if ( xLorR < 0 )
 				{
-					Toast.makeText(context, "to Right", Toast.LENGTH_SHORT).show();
+					// to Right
 				}
 				else
 				{
-					Toast.makeText(context, "to Left", Toast.LENGTH_SHORT).show();
+					// to Left
 				}
 			}
 			else
 			{
 				if ( yUorD < 0 )
 				{
-					Toast.makeText(context, "to Down", Toast.LENGTH_SHORT).show();
+					// to Down
 				}
 				else
 				{
-					Toast.makeText(context, "to Up", Toast.LENGTH_SHORT).show();
+					// to Up
 				}
 			}
 			return false;

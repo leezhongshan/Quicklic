@@ -18,6 +18,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+// TODO 작업중
 public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private PreferencesManager preferencesManager;
@@ -48,6 +49,8 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		initializeView();
 		listActivity = false;
 		super.onResume();
+
+		System.out.println("Res");
 	}
 
 	private void resetQuicklic()
@@ -176,6 +179,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				delEnabled = true;
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
+			onResume();
 			return true;
 		}
 	};

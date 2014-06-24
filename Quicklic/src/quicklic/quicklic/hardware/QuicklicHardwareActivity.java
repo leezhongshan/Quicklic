@@ -26,7 +26,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_WIFI = 4;
 	private final int COMP_BLUETOOTH = 5;
 	private final int COMP_ROTATE = 6;
-	private final int COMP_GPS = 7;
 
 	private ArrayList<Item> imageArrayList;
 	private ComponentWifi componentWifi;
@@ -54,13 +53,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
-	// TODO
-	private void setCenterButton()
-	{
-		ImageView imageView = new ImageView(this);
-		setCenterView(null);
-	}
-
 	private void initialize()
 	{
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
@@ -75,8 +67,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
-
-		setCenterButton();
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
