@@ -266,8 +266,10 @@ public class FloatingService extends Service
 		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText("Quicklic이 실행중입니다! 누르시면 종료됩니다. ")
 				.setSmallIcon(R.drawable.ic_launcher)
 				.setTicker("Quicklic을 시작합니다.").setOngoing(true).setContentIntent(intent).build();
+		notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
 
 		notificationManager.notify(NOTIFICATION_ID, notification);
+		startForeground(NOTIFICATION_ID, notification);
 	}
 
 	/**

@@ -8,16 +8,15 @@ import java.util.TimerTask;
 import quicklic.floating.api.R;
 import quicklic.quicklic.test.TestingFunction;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
