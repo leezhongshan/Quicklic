@@ -10,7 +10,7 @@ public class ComponentWifi extends Activity {
 
 	public ComponentWifi(WifiManager wifiManager)
 	{
-		wifi = wifiManager;
+		this.wifi = wifiManager;
 	}
 
 	/**

@@ -1,6 +1,8 @@
 package quicklic.quicklic.hardware;
 
-public class ComponentGPS {
+import android.app.Activity;
+
+public class ComponentGPS extends Activity {
 
 	public ComponentGPS()
 	{
