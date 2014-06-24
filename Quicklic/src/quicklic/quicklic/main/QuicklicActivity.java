@@ -70,6 +70,11 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		this.centerView = centerView;
 	}
 
+	protected void updateCenterView( ImageView centeView )
+	{
+		quicklicFrameLayout.updateViewLayout(centeView, centerLayoutParams);
+	}
+
 	protected ImageView getCenterView()
 	{
 		return centerView;
@@ -149,7 +154,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 		for ( int i = 0; i < item_count; i++ )
 		{
-			// TODO 다양한 정보를 갖고 있는 이미지뷰 클래스 정의
 			// 레이아웃 설정 : 기본적인 크기는 정해져 있으며, 좌표 값만 설정
 			ImageView itemImageView = new ImageView(context);
 			itemImageView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
@@ -165,7 +169,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 					itemImageView.setImageResource(imageArrayList.get(i).getDrawResId());
 			}
 
-			// TODO 추가한 아이템을 구별하기 위한 Id와 Listener
+			// 추가한 아이템을 구별하기 위한 Id와 Listener
 			itemImageView.setId(imageArrayList.get(i).getViewId());
 			itemImageView.setOnClickListener(clickListener);
 

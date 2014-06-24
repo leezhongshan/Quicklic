@@ -45,10 +45,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	@Override
 	protected void onResume()
 	{
+		super.onResume();
 		resetQuicklic();
 		initializeView();
 		listActivity = false;
-		super.onResume();
 
 		System.out.println("Res");
 	}
@@ -85,6 +85,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			imageView.setBackgroundResource(R.drawable.favorite_add);
 		else
 			imageView.setBackgroundResource(R.drawable.favorite_delete);
+
 		imageView.setOnClickListener(clickListener);
 		imageView.setOnLongClickListener(onLongClickListener);
 
@@ -120,6 +121,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
+			System.out.println("click");
 			if ( v == getCenterView() )
 			{
 				if ( isItemFull(item_count) )
@@ -169,6 +171,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public boolean onLongClick( View v )
 		{
+			System.out.println("long");
 			if ( delEnabled )
 			{
 				delEnabled = false;
@@ -179,13 +182,14 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				delEnabled = true;
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
-			onResume();
+			//			onResume();
 			return true;
 		}
 	};
 
 	protected void onUserLeaveHint()
 	{
+		System.out.println("hint");
 		if ( !listActivity )
 		{
 			if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )

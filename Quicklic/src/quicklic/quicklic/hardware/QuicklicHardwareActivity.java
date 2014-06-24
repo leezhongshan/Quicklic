@@ -43,8 +43,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	@Override
 	protected void onResume()
 	{
-		resetQuicklic();
 		super.onResume();
+		resetQuicklic();
 		initialize();
 	}
 
