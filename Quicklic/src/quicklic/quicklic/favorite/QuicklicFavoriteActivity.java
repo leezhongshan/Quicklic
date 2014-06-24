@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
-import quicklic.quicklic.test.TestingFunction;
+import quicklic.quicklic.test.SettingFloatingInterface;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -20,8 +19,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 public class QuicklicFavoriteActivity extends QuicklicActivity {
-
-	private String TAG = "Quicklic";
 
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
@@ -96,7 +93,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		pkgArrayList.clear();
 		imageArrayList.clear();
 		item_count = preferencesManager.getNumPreferences(this);
-		Log.d(TAG, "Item 개수 : " + item_count);
 
 		for ( int i = 0; i < item_count && !isItemFull(i); i++ )
 		{
@@ -138,7 +134,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			{
 				if ( delEnabled )
 				{
-					Log.d(TAG, "선택 번호 : " + v.getId());
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
 					onResume();
 				}
@@ -154,7 +149,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 						Intent intent = packageManager.getLaunchIntentForPackage(packageName);
 						startActivity(intent);
 
-						TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+						SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
 						finish();
 					}
 					catch (Exception e)
@@ -189,7 +184,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	{
 		if ( !listActivity )
 		{
-			if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+			if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 			{
 				homeKeyPressed();
 			}

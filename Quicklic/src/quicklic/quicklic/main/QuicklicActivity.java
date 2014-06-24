@@ -7,7 +7,7 @@ import java.util.TimerTask;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.test.TestingFunction;
+import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
 import android.util.Log;
@@ -188,6 +188,33 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 	}
 
+	protected void homeKeyPressed()
+	{
+		SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.GONE);
+		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
+
+		TimerTask checkTask;
+		checkTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+						finish();
+					}
+				});
+			}
+		};
+
+		Timer mTimer = new Timer();
+		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
+	}
+
 	/**************************************
 	 * Developer Section
 	 **************************************/
@@ -349,33 +376,4 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			return false;
 		}
 	};
-
-	public void homeKeyPressed()
-	{
-		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.GONE);
-		Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
-
-		TimerTask checkTask;
-		checkTask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-
-					@Override
-					public void run()
-					{
-						TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
-
-						finish();
-					}
-				});
-			}
-		};
-
-		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
-	}
 }

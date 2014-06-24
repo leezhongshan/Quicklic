@@ -47,7 +47,7 @@ public class ComponentWifi extends Activity {
 	 * @작성자 : SBKim
 	 * @작성일 : 2014. 6. 24.
 	 */
-	public boolean isEnabled()
+	private boolean isEnabled()
 	{
 		return wifi.isWifiEnabled();
 	}

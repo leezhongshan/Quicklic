@@ -1,8 +1,8 @@
 package quicklic.quicklic.datastructure;
 
 public class Axis {
-	int axis_x;
-	int axis_y;
+	private int axis_x;
+	private int axis_y;
 
 	public Axis()
 	{
@@ -37,11 +37,4 @@ public class Axis {
 	{
 		this.axis_y = axis_y;
 	}
-
-	@Override
-	public String toString()
-	{
-		return "Axis [axis_x=" + axis_x + ", axis_y=" + axis_y + "]";
-	}
-
 }

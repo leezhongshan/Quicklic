@@ -61,12 +61,12 @@ public class FloatingService extends Service
 	/**
 	 * @함수명 : changeMoveToSide
 	 * @매개변수 :
-	 * @반환 : void
+	 * @반환 : boolean
 	 * @기능(역할) : 애니메이션 기능 On/Off
 	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 5.
 	 */
-	public void changeMoveToSide()
+	public boolean changeMoveToSide()
 	{
 		if ( moveToSide )
 		{
@@ -76,6 +76,7 @@ public class FloatingService extends Service
 		{
 			moveToSide = true;
 		}
+		return moveToSide;
 	}
 
 	public void setVisibility( boolean bool )

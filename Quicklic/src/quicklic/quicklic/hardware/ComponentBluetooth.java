@@ -6,7 +6,7 @@ import android.util.Log;
 
 public class ComponentBluetooth {
 
-	BluetoothAdapter bluetooth;
+	private BluetoothAdapter bluetooth;
 
 	public ComponentBluetooth()
 	{
@@ -47,7 +47,7 @@ public class ComponentBluetooth {
 	 * @작성자 : SBKim
 	 * @작성일 : 2014. 6. 24.
 	 */
-	public boolean isEnabled()
+	private boolean isEnabled()
 	{
 		return bluetooth.isEnabled();
 	}

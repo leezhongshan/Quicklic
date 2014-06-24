@@ -7,7 +7,7 @@ import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
 import quicklic.quicklic.hardware.QuicklicHardwareActivity;
 import quicklic.quicklic.scrollkey.QuicklicScrollKeyService;
-import quicklic.quicklic.test.TestingFunction;
+import quicklic.quicklic.test.SettingFloatingInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -27,7 +27,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		// Activity가 생성될 때, Floating Image를 사라지게 함
-		TestingFunction.getFloatingService().setVisibility(false);
+		SettingFloatingInterface.getFloatingService().setVisibility(false);
 
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
@@ -39,7 +39,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	{
 		isNotHomeKey = false;
 		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
-		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() == View.VISIBLE )
+		if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() == View.VISIBLE )
 		{
 			getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
 		}
@@ -65,7 +65,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		System.out.println("Main Des");
 
 		if ( !isScrollService )
-			TestingFunction.getFloatingService().setVisibility(true);
+			SettingFloatingInterface.getFloatingService().setVisibility(true);
 
 		super.onDestroy();
 	}

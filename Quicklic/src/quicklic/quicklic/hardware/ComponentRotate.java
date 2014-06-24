@@ -44,9 +44,37 @@ public class ComponentRotate {
 		Settings.System.putInt(CONTENT_RESOLVER, ACCELEROMETER_ROTATION, STATE_OFF);
 	}
 
+	/**
+	 * @함수명 : getState
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : 현재 rotate 상태 반환
+	 * @작성자 : SBKim
+	 * @작성일 : 2014. 6. 25.
+	 */
 	private int getState()
 	{
 		return Settings.System.getInt(CONTENT_RESOLVER, ACCELEROMETER_ROTATION, STATE_ON);
+	}
+
+	/**
+	 * @함수명 : getDrawable
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : rotate 상태에 따른 drawable 반환
+	 * @작성자 : SBKim
+	 * @작성일 : 2014. 6. 24.
+	 */
+	public int getDrawable()
+	{
+		if ( getState() == STATE_OFF )
+		{
+			return R.drawable.rotate_on;
+		}
+		else
+		{
+			return R.drawable.rotate_off;
+		}
 	}
 
 	/**
@@ -69,23 +97,4 @@ public class ComponentRotate {
 		}
 	}
 
-	/**
-	 * @함수명 : getDrawable
-	 * @매개변수 :
-	 * @반환 : int
-	 * @기능(역할) : rotate 상태에 따른 drawable 반환
-	 * @작성자 : SBKim
-	 * @작성일 : 2014. 6. 24.
-	 */
-	public int getDrawable()
-	{
-		if ( getState() == STATE_OFF )
-		{
-			return R.drawable.rotate_on;
-		}
-		else
-		{
-			return R.drawable.rotate_off;
-		}
-	}
 }

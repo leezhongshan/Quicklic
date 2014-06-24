@@ -5,14 +5,13 @@ import java.util.ArrayList;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
-import quicklic.quicklic.test.TestingFunction;
+import quicklic.quicklic.test.SettingFloatingInterface;
 import android.content.Context;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -32,7 +31,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private ArrayList<Item> imageArrayList;
 	private ComponentWifi componentWifi;
 	private ComponentBluetooth componentBluetooth;
-	private ComponentGPS componentGPS;
 	private ComponentRotate componentRotate;
 	private ComponentVolume componentVolume;
 
@@ -56,6 +54,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
+	// TODO
 	private void setCenterButton()
 	{
 		ImageView imageView = new ImageView(this);
@@ -66,7 +65,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	{
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
 		componentBluetooth = new ComponentBluetooth();
-		componentGPS = new ComponentGPS();
 		componentRotate = new ComponentRotate(getApplicationContext());
 		componentVolume = new ComponentVolume((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 
@@ -149,7 +147,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-		if ( TestingFunction.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+		if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 		{
 			homeKeyPressed();
 		}

@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.floating.api.R;
-import quicklic.quicklic.test.TestingFunction;
+import quicklic.quicklic.test.SettingFloatingInterface;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -83,7 +83,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 
 	public void homeKeyPressed()
 	{
-		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.GONE);
+		SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.GONE);
 		Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
 
 		TimerTask checkTask;
@@ -97,7 +97,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 					@Override
 					public void run()
 					{
-						TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+						SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
 						QuicklicFavoriteActivity.activity.finish();
 						finish();
 					}

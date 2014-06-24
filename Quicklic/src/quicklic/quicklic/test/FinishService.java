@@ -1,13 +1,14 @@
 package quicklic.quicklic.test;
 
 import quicklic.floating.api.FloatingService;
+import quicklic.floating.api.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-public class FinishService extends Activity
-{
+public class FinishService extends Activity {
+
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
@@ -16,7 +17,7 @@ public class FinishService extends Activity
 		Intent intent = new Intent(FinishService.this, FloatingService.class);
 		stopService(intent);
 
-		Toast.makeText(getApplicationContext(), "Quicklic을 종료하였습니다.", Toast.LENGTH_SHORT).show();
+		Toast.makeText(getApplicationContext(), R.string.quit_quicklic, Toast.LENGTH_SHORT).show();
 
 		finish();
 	}

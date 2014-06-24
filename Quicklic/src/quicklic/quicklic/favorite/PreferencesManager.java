@@ -6,8 +6,8 @@ import android.content.SharedPreferences;
 
 public class PreferencesManager extends Activity
 {
-	SharedPreferences pref;
-	SharedPreferences.Editor editor;
+	private SharedPreferences pref;
+	private SharedPreferences.Editor editor;
 
 	public PreferencesManager(Context context)
 	{

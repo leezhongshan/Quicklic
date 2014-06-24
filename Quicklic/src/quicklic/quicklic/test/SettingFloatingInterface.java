@@ -4,12 +4,13 @@ import java.io.Serializable;
 
 import quicklic.floating.api.FloatingInterface;
 import quicklic.floating.api.FloatingService;
+import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
-public class TestingFunction implements Serializable, FloatingInterface
+public class SettingFloatingInterface implements Serializable, FloatingInterface
 {
 	private static final long serialVersionUID = 1L;
 	private static FloatingService floatingService;
@@ -18,7 +19,7 @@ public class TestingFunction implements Serializable, FloatingInterface
 	@Override
 	public void setContext( FloatingService floatingService )
 	{
-		TestingFunction.floatingService = floatingService;
+		SettingFloatingInterface.floatingService = floatingService;
 	}
 
 	@Override
@@ -34,8 +35,11 @@ public class TestingFunction implements Serializable, FloatingInterface
 	@Override
 	public void doubleTouched( View v )
 	{
-		Toast.makeText(floatingService, "double", Toast.LENGTH_SHORT).show();
-		floatingService.changeMoveToSide();
+		boolean mode = floatingService.changeMoveToSide();
+		if ( mode )
+			Toast.makeText(floatingService, R.string.quicklic_magnet_mode, Toast.LENGTH_SHORT).show();
+		else
+			Toast.makeText(floatingService, R.string.quicklic_floating_mode, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

@@ -75,7 +75,7 @@ public class ComponentVolume {
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 6. 25.
 	 */
-	public int getVolume()
+	private int getVolume()
 	{
 		return audioManager.getStreamVolume(AudioManager.STREAM_RING);
 	}

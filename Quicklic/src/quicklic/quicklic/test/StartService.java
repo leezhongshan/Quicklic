@@ -5,10 +5,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class StartService extends Activity
-{
+public class StartService extends Activity {
 
-	TestingFunction testingFunction = new TestingFunction();
+	private SettingFloatingInterface testingFunction = new SettingFloatingInterface();
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )

@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
-import quicklic.quicklic.test.TestingFunction;
+import quicklic.quicklic.test.SettingFloatingInterface;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
@@ -83,7 +83,7 @@ public class QuicklicScrollKeyService extends Service {
 		if ( startId == 1 || flags == 1 )
 		{
 			// Quicklic View 숨기기
-			TestingFunction.getFloatingService().setVisibility(false);
+			SettingFloatingInterface.getFloatingService().setVisibility(false);
 
 			initialize(intent);
 			createManager();
