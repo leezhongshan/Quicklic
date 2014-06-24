@@ -169,10 +169,16 @@ public class FloatingService extends Service
 	{
 		context = this;
 		timer = new Timer();
-
-		floatingInterface = (FloatingInterface) intent.getSerializableExtra("push");
-		floatingInterface.setContext(this);
-		moveToSide = floatingInterface.setAnimation();
+		try
+		{
+			floatingInterface = (FloatingInterface) intent.getSerializableExtra("push");
+			floatingInterface.setContext(this);
+			moveToSide = floatingInterface.setAnimation();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	private void managerCreate()

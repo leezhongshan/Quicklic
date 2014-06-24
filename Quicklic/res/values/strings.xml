@@ -14,7 +14,7 @@
     <string name="scroll_move_no">실행된 Application이 없습니다.</string>
     <string name="hardware_volume_max">최대 음량입니다.</string>
     <string name="hardware_volume_min">최소 음량입니다.</string>
-    <string name="quicklic_loading">Loading...</string>
+    <string name="quicklic_loading">Q 불러오는 중...</string>
     <string name="quicklic_magnet_mode">자석 모드</string>
     <string name="quicklic_floating_mode">Floating 모드</string>
 

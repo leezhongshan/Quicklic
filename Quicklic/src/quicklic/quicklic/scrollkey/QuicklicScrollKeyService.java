@@ -133,10 +133,8 @@ public class QuicklicScrollKeyService extends Service {
 		 * PixelFormat.RGBA_8888 : 투명
 		 */
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE |
-						WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-						WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
-				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+				PixelFormat.RGBA_8888);
 
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
 		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;

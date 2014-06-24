@@ -73,7 +73,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_WIFI, componentWifi.getDrawable()));
 		imageArrayList.add(new Item(COMP_BLUETOOTH, componentBluetooth.getDrawable()));
 		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
-		imageArrayList.add(new Item(COMP_GPS, R.drawable.gps_off));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
 
@@ -119,11 +118,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					break;
 
 				case COMP_BLUETOOTH:
-
 					componentBluetooth.controlBluetooth();
-					break;
-
-				case COMP_GPS:
 					break;
 				}
 				v.setEnabled(false);
