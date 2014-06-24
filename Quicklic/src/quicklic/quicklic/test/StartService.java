@@ -7,13 +7,14 @@ import android.os.Bundle;
 
 public class StartService extends Activity {
 
-	private SettingFloatingInterface testingFunction = new SettingFloatingInterface();
+	private SettingFloatingInterface testingFunction;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate(savedInstanceState);
 
+		testingFunction = new SettingFloatingInterface();
 		Intent intent = new Intent(StartService.this, FloatingService.class);
 		intent.putExtra("push", testingFunction);
 		startService(intent);
