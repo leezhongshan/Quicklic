@@ -131,7 +131,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
-				startActivity(intent);
+				startActivityForResult(intent, 2);
 				break;
 
 			default:

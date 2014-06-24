@@ -2,8 +2,11 @@ package quicklic.quicklic.favorite;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import quicklic.floating.api.R;
+import quicklic.quicklic.test.TestingFunction;
 import android.app.Activity;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -13,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
@@ -76,4 +80,39 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
 		finish();
 	}
+
+	public void homeKeyPressed()
+	{
+		TestingFunction.getFloatingService().getQuicklic().setVisibility(View.GONE);
+		Toast.makeText(getApplicationContext(), "Loading...", Toast.LENGTH_LONG).show();
+
+		TimerTask checkTask;
+		checkTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				runOnUiThread(new Runnable()
+				{
+
+					@Override
+					public void run()
+					{
+						TestingFunction.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+						QuicklicFavoriteActivity.activity.finish();
+						finish();
+					}
+				});
+			}
+		};
+
+		Timer mTimer = new Timer();
+		mTimer.schedule(checkTask, 5000);
+	}
+
+	protected void onUserLeaveHint()
+	{
+		homeKeyPressed();
+		finish();
+	};
 }

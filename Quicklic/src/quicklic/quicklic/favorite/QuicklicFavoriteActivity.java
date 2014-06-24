@@ -6,6 +6,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
 import quicklic.quicklic.test.TestingFunction;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -31,12 +32,14 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private boolean delEnabled;
 	private boolean listActivity;
 	private int item_count;
+	public static Activity activity;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
+		activity = QuicklicFavoriteActivity.this;
 
 		initialize();
 	}
