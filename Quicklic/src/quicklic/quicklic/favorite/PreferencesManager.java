@@ -3,61 +3,52 @@ package quicklic.quicklic.favorite;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 public class PreferencesManager extends Activity
 {
 	SharedPreferences pref;
+	SharedPreferences.Editor editor;
+
+	public PreferencesManager(Context context)
+	{
+		pref = context.getSharedPreferences("appData", MODE_PRIVATE);
+		editor = pref.edit();
+		if ( pref.getInt("appNum", -1) < 0 )
+		{
+			editor.putInt("appNum", 0);
+			editor.commit();
+		}
+	}
 
 	public int getNumPreferences( Context context )
 	{
-		pref = context.getSharedPreferences("appData", MODE_PRIVATE);
 		return pref.getInt("appNum", 0);
 	}
 
-	public String getAppPreferences( Context context, int i )
+	public void setPreference( String pkgName, Context context )
 	{
-		pref = context.getSharedPreferences("appData", MODE_PRIVATE);
-		return pref.getString("appData" + i, null);
-	}
-
-	public void removeAppPreferences( Context context, int i )
-	{
-		System.out.println(i);
-		SharedPreferences pref = context.getSharedPreferences("appData", MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref.edit();
-
 		int num = getNumPreferences(context);
 
-		for ( int j = i; j < num; j++ )
-		{
-			editor.putString("appData" + j, getAppPreferences(context, j + 1));
-		}
-
-		editor.remove("appData" + num);
-
-		num--;
-
-		editor.putInt("appNum", num);
-
+		editor.putString("appData" + num, pkgName);
+		editor.putInt("appNum", ++num);
 		editor.commit();
 	}
 
-	public void setPreference( String pkg, Context context )
+	public String getAppPreferences( Context context, int pkgNum )
 	{
-		SharedPreferences pref = context.getSharedPreferences("appData", MODE_PRIVATE);
-		SharedPreferences.Editor editor = pref.edit();
+		return pref.getString("appData" + pkgNum, null);
+	}
 
+	public void removeAppPreferences( Context context, int pkgNum )
+	{
 		int num = getNumPreferences(context);
 
-		num++;
-
-		editor.putString("appData" + num, pkg);
-		editor.putInt("appNum", num);
-
-		Log.e("[pkg]", pkg);
-		Log.e("[num]", "" + num + ", " + getNumPreferences(context));
-
+		for ( int j = pkgNum; j < num; j++ )
+		{
+			editor.putString("appData" + j, getAppPreferences(context, j + 1));
+		}
+		editor.remove("appData" + num);
+		editor.putInt("appNum", --num);
 		editor.commit();
 	}
 }

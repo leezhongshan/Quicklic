@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 public class QuicklicActivity extends DeviceMetricActivity {
 
+	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
 	private final static int IMG_PADDING = 12;
@@ -98,7 +99,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 */
 	protected boolean isItemFull( int item_count )
 	{
-		return LIMTED_ITEM_COUNT < item_count;
+		return LIMTED_ITEM_COUNT <= item_count;
 	}
 
 	/**
@@ -375,6 +376,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		};
 
 		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, 5000);
+		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
 	}
 }

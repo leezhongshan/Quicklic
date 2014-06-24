@@ -2,14 +2,18 @@ package quicklic.quicklic.hardware;
 
 import quicklic.floating.api.R;
 import android.media.AudioManager;
+import android.widget.Toast;
 
 public class ComponentVolume {
 
 	private AudioManager audioManager;
+	private int ringMaxVolume;
 
 	public ComponentVolume(AudioManager audioManager)
 	{
 		this.audioManager = audioManager;
+
+		ringMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_RING);
 	}
 
 	/**
@@ -62,6 +66,21 @@ public class ComponentVolume {
 		default:
 			return R.drawable.sound_on;
 		}
+	}
+
+	public int getVolume()
+	{
+		return audioManager.getStreamVolume(AudioManager.STREAM_RING);
+	}
+
+	public boolean isMaxVolume()
+	{
+		return getVolume() == ringMaxVolume;
+	}
+
+	public boolean isMinVolume()
+	{
+		return getVolume() == 0;
 	}
 
 	/**

@@ -14,6 +14,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class QuicklicHardwareActivity extends QuicklicActivity {
 
@@ -53,6 +56,12 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
+	private void setCenterButton()
+	{
+		ImageView imageView = new ImageView(this);
+		setCenterView(null);
+	}
+
 	private void initialize()
 	{
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
@@ -70,6 +79,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
 
+		setCenterButton();
+
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
 
@@ -85,11 +96,17 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				break;
 
 			case COMP_SOUND_INC:
-				componentVolume.upVolume();
+				if ( componentVolume.isMaxVolume() )
+					Toast.makeText(getApplicationContext(), R.string.hardware_volume_max, Toast.LENGTH_SHORT).show();
+				else
+					componentVolume.upVolume();
 				break;
 
 			case COMP_SOUND_DEC:
-				componentVolume.downVolume();
+				if ( componentVolume.isMinVolume() )
+					Toast.makeText(getApplicationContext(), R.string.hardware_volume_min, Toast.LENGTH_SHORT).show();
+				else
+					componentVolume.downVolume();
 				break;
 
 			default:

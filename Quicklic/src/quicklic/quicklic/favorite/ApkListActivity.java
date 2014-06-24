@@ -36,7 +36,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		apkList = (ListView) findViewById(R.id.applist);
 		packageManager = getPackageManager();
-		preferencesManager = new PreferencesManager();
+		preferencesManager = new PreferencesManager(this);
 	}
 
 	private void initializeApkList()
@@ -44,7 +44,6 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		List<PackageInfo> packageList = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS);
 		List<PackageInfo> packageTempList = new ArrayList<PackageInfo>();
 
-		/* To filter out the System Application */
 		for ( PackageInfo packageInfo : packageList )
 		{
 			if ( !isSystemPackage(packageInfo) )
