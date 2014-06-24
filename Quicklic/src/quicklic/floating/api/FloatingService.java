@@ -114,7 +114,9 @@ public class FloatingService extends Service
 	 */
 	public void stopQuicklicService()
 	{
-
+		Intent intent = new Intent(context, FinishService.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(intent);
 	}
 
 	/*****************************************************************************/
@@ -259,7 +261,7 @@ public class FloatingService extends Service
 	{
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		PendingIntent intent = PendingIntent.getActivity(context, 0, new Intent(context, FinishService.class), 0);
+		PendingIntent intent = PendingIntent.getActivity(context, 0, new Intent(context, FinishService.class), Intent.FLAG_ACTIVITY_NEW_TASK);
 
 		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText(getResources().getString(R.string.stop_quicklic))
 				.setSmallIcon(R.drawable.ic_launcher).setTicker(getResources().getString(R.string.hello_quicklic)).setOngoing(true).setContentIntent(intent).build();

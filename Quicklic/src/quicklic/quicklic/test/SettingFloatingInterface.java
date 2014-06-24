@@ -45,7 +45,6 @@ public class SettingFloatingInterface implements Serializable, FloatingInterface
 	@Override
 	public void longTouched( View v )
 	{
-		Toast.makeText(floatingService, "long", Toast.LENGTH_SHORT).show();
 		floatingService.stopQuicklicService();
 	}
 
