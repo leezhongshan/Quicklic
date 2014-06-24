@@ -58,14 +58,14 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
 		componentBluetooth = new ComponentBluetooth();
 		componentGPS = new ComponentGPS();
-		componentRotate = new ComponentRotate();
+		componentRotate = new ComponentRotate(getApplicationContext());
 		componentVolume = new ComponentVolume((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 
 		imageArrayList = new ArrayList<Item>();
 		imageArrayList.add(new Item(COMP_SOUND_DEC, R.drawable.sound_decrease));
 		imageArrayList.add(new Item(COMP_WIFI, componentWifi.getDrawable()));
 		imageArrayList.add(new Item(COMP_BLUETOOTH, componentBluetooth.getDrawable()));
-		imageArrayList.add(new Item(COMP_ROTATE, R.drawable.rotate_off));
+		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
 		imageArrayList.add(new Item(COMP_GPS, R.drawable.gps_off));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
@@ -100,10 +100,12 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					break;
 
 				case COMP_BLUETOOTH:
+					
 					componentBluetooth.controlBluetooth();
 					break;
 
 				case COMP_ROTATE:
+					componentRotate.controlRotate();
 					break;
 
 				case COMP_GPS:
