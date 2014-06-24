@@ -96,9 +96,7 @@ public class QuicklicScrollKeyService extends Service {
 			stopService(intent);
 		}
 
-		// START_REDELIVER_INTENT : START_STICKY와 마찬가지로 Service 종료 시,
-		// 시스템이 다시 재시작 시켜주지만 intent 값은 그대로 유지시켜준다.
-		return Service.START_REDELIVER_INTENT;
+		return Service.START_NOT_STICKY;
 	}
 
 	public void onDestroy()
