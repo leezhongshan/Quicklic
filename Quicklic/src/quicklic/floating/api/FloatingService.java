@@ -3,7 +3,7 @@ package quicklic.floating.api;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import quicklic.quicklic.test.TestingActivity;
+import quicklic.quicklic.test.FinishService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +14,7 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
@@ -230,6 +231,7 @@ public class FloatingService extends Service
 
 		// WindowManager에 layoutParams속성을 갖는 Quicklic ImageView 추가
 		windowManagerAddView(getQuicklic(), layoutParams);
+
 	}
 
 	/**
@@ -259,38 +261,13 @@ public class FloatingService extends Service
 	{
 		notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-		Notification notification = new Notification();
-		notification.when = System.currentTimeMillis();
-		notification.iconLevel = 2;
-		notification.tickerText = "안녕하세요 Quicklic!! 입니다.";
+		PendingIntent intent = PendingIntent.getActivity(context, 0, new Intent(context, FinishService.class), 0);
 
-		// 알람 동작 시 : 기본 사운드 설정 | 진동 설정
-
-		// 특정 사운드 추가 : 스마트폰 sdcard 내부에 있는 파일 절대 경로를 입력
-		// notification.sound  = Uri.parse("file:///sdcard/notification/ringer.mp3");
-		// notification.defaults = Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-		// 플래그 설정 :  해당 Notification이 선택 되면 자동으로 사라진다.
-		notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
-
-		// 알림 발생 시 LED 표시 플래그
-		//		notification.ledARGB = Notification.FLAG_SHOW_LIGHTS;
-		//		notification.ledOffMS = Notification.FLAG_SHOW_LIGHTS;
-		//		notification.ledOnMS= Notification.FLAG_SHOW_LIGHTS;
-
-		// [Start] Custom Notification View
-		//		RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.custom_noti_layout);
-		//		remoteViews.setImageViewResource(R.id.noti_image_ImageView, R.drawable.ic_launcher);
-		//		remoteViews.setTextViewText(R.id.noti_text_TextView, "안녕하세요, 퀵클릭 입니다.");
-		//		notification.tickerView = remoteViews;
-
-		Intent notificationIntent = new Intent(context, TestingActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-		notification.contentIntent = contentIntent;
+		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText("Quicklic이 실행중입니다! 누르시면 종료됩니다. ")
+				.setSmallIcon(R.drawable.ic_launcher)
+				.setTicker("Quicklic을 시작합니다.").setOngoing(true).setContentIntent(intent).build();
 
 		notificationManager.notify(NOTIFICATION_ID, notification);
-		// [End] Custom Notification View
-
-		startForeground(NOTIFICATION_ID, notification);
 	}
 
 	/**

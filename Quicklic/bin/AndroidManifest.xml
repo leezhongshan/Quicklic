@@ -21,13 +21,19 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="quicklic.quicklic.test.TestingActivity"
-            android:label="@string/app_name" >
+            android:name="quicklic.quicklic.test.StartService"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="quicklic.quicklic.test.FinishService"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
         <activity
             android:name="quicklic.quicklic.main.QuicklicMainActivity"
@@ -46,8 +52,8 @@
         </activity>
         <activity
             android:name="quicklic.quicklic.favorite.ApkListActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.NoTitleBar" >
+            android:label="@string/favorite_add_application"
+            android:theme="@android:style/Theme.Dialog" >
         </activity>
 
         <service
