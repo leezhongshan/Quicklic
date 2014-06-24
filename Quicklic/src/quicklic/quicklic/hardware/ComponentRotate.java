@@ -1,16 +1,23 @@
 package quicklic.quicklic.hardware;
 
 import quicklic.floating.api.R;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.provider.Settings;
 
 public class ComponentRotate {
-	Context r_context;
+
+	private final int STATE_ON = 0;
+	private final int STATE_OFF = 1;
+	private final String ACCELEROMETER_ROTATION;
+	private final ContentResolver CONTENT_RESOLVER;
 
 	public ComponentRotate(Context context)
 	{
-		this.r_context = context;
+		ACCELEROMETER_ROTATION = Settings.System.ACCELEROMETER_ROTATION;
+		CONTENT_RESOLVER = context.getContentResolver();
 	}
+
 	/**
 	 * @함수명 : onRotate
 	 * @매개변수 :
@@ -21,8 +28,9 @@ public class ComponentRotate {
 	 */
 	private void onRotate()
 	{
-		android.provider.Settings.System.putInt(r_context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0);	
+		Settings.System.putInt(CONTENT_RESOLVER, ACCELEROMETER_ROTATION, STATE_ON);
 	}
+
 	/**
 	 * @함수명 : offRotate
 	 * @매개변수 :
@@ -33,8 +41,14 @@ public class ComponentRotate {
 	 */
 	private void offRotate()
 	{
-		android.provider.Settings.System.putInt(r_context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 1);
+		Settings.System.putInt(CONTENT_RESOLVER, ACCELEROMETER_ROTATION, STATE_OFF);
 	}
+
+	private int getState()
+	{
+		return Settings.System.getInt(CONTENT_RESOLVER, ACCELEROMETER_ROTATION, STATE_ON);
+	}
+
 	/**
 	 * @함수명 : controlRotate
 	 * @매개변수 :
@@ -45,7 +59,7 @@ public class ComponentRotate {
 	 */
 	public void controlRotate()
 	{
-		if ( android.provider.Settings.System.getInt(r_context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1 )
+		if ( getState() == STATE_OFF )
 		{
 			onRotate();
 		}
@@ -54,6 +68,7 @@ public class ComponentRotate {
 			offRotate();
 		}
 	}
+
 	/**
 	 * @함수명 : getDrawable
 	 * @매개변수 :
@@ -64,9 +79,13 @@ public class ComponentRotate {
 	 */
 	public int getDrawable()
 	{
-		if ( android.provider.Settings.System.getInt(r_context.getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1 )
+		if ( getState() == STATE_OFF )
+		{
 			return R.drawable.rotate_on;
+		}
 		else
+		{
 			return R.drawable.rotate_off;
+		}
 	}
 }

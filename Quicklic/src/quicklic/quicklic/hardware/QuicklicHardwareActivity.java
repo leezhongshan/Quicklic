@@ -12,9 +12,9 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -109,6 +109,10 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					componentVolume.downVolume();
 				break;
 
+			case COMP_ROTATE:
+				componentRotate.controlRotate();
+				break;
+
 			default:
 				switch ( v.getId() )
 				{
@@ -117,12 +121,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					break;
 
 				case COMP_BLUETOOTH:
-					
-					componentBluetooth.controlBluetooth();
-					break;
 
-				case COMP_ROTATE:
-					componentRotate.controlRotate();
+					componentBluetooth.controlBluetooth();
 					break;
 
 				case COMP_GPS:

@@ -25,7 +25,7 @@ public class ComponentVolume {
 	 */
 	public void upVolume()
 	{
-		audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_RAISE, AudioManager.FLAG_PLAY_SOUND);
+		audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class ComponentVolume {
 	 */
 	public void downVolume()
 	{
-		audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_LOWER, AudioManager.FLAG_PLAY_SOUND);
+		audioManager.adjustStreamVolume(AudioManager.STREAM_RING, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
 	}
 
 	/**
@@ -67,16 +67,40 @@ public class ComponentVolume {
 		}
 	}
 
+	/**
+	 * @함수명 : getVolume
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : 현재 음량값을 반환
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 25.
+	 */
 	public int getVolume()
 	{
 		return audioManager.getStreamVolume(AudioManager.STREAM_RING);
 	}
 
+	/**
+	 * @함수명 : isMaxVolume
+	 * @매개변수 :
+	 * @반환 : boolean
+	 * @기능(역할) : 음량이 최대치인지 판별
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 25.
+	 */
 	public boolean isMaxVolume()
 	{
 		return getVolume() == ringMaxVolume;
 	}
 
+	/**
+	 * @함수명 : isMinVolume
+	 * @매개변수 :
+	 * @반환 : boolean
+	 * @기능(역할) : 음량이 최소치인지 판별
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 25.
+	 */
 	public boolean isMinVolume()
 	{
 		return getVolume() == 0;
