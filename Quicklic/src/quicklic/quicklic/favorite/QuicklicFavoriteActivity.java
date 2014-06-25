@@ -10,9 +10,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -31,6 +31,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private boolean delEnabled;
 	private boolean isActivity;
 	private int item_count;
+	private ImageView imageView;
 	public static Activity activity;
 
 	@Override
@@ -39,15 +40,22 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
 		activity = QuicklicFavoriteActivity.this;
+		imageView = new ImageView(this);
 
 		initialize();
+		initializeView();
+		setCenterView();
 	}
 
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
+
 		resetQuicklic();
+
+		setCenterView();
+
 		initializeView();
 	}
 
@@ -71,18 +79,18 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		isActivity = false;
 
 		getPreference();
-		setCenterView();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
 	private void setCenterView()
 	{
-		ImageView imageView = new ImageView(this);
+
 		if ( !delEnabled )
 			imageView.setBackgroundResource(R.drawable.favorite_add);
 		else
 			imageView.setBackgroundResource(R.drawable.favorite_delete);
 
+		imageView.setId(0);
 		imageView.setOnClickListener(clickListener);
 		imageView.setOnLongClickListener(onLongClickListener);
 
@@ -118,6 +126,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
+
 			if ( v == getCenterView() )
 			{
 				if ( isItemFull(item_count) )
@@ -162,11 +171,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		}
 	};
 
-	public void onDraw( Canvas canvas )
-	{
-		System.out.println("aa");
-	}
-
 	private OnLongClickListener onLongClickListener = new OnLongClickListener()
 	{
 		@Override
@@ -182,8 +186,8 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				delEnabled = true;
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
-			setCenterView();
-			updateCenterView();
+
+			onResume();
 
 			return true;
 		}
@@ -197,7 +201,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			{
 				homeKeyPressed();
 			}
-			//			finish();
 		}
 	};
 }

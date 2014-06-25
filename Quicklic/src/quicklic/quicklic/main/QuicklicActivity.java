@@ -75,11 +75,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		this.centerView = centerView;
 	}
 
-	protected void updateCenterView()
-	{
-		getQuicklicFrameLayout().invalidate();
-	}
-
 	protected ImageView getCenterView()
 	{
 		return centerView;
@@ -267,7 +262,10 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	@Override
 	public boolean onTouchEvent( MotionEvent event )
 	{
-		finish();
+		if ( event.getAction() == MotionEvent.ACTION_DOWN )
+		{
+			finish();
+		}
 		return super.onTouchEvent(event);
 	}
 
