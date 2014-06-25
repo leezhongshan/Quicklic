@@ -1,4 +1,4 @@
-package quicklic.quicklic.main;
+package quicklic.quicklic.util;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -8,10 +8,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.test.SettingFloatingInterface;
-import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -50,8 +47,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private int viewCount;
 	private int sizeOfQuicklicMain;
 	private int deviceWidth;
-
-	private boolean isOrientation;
 
 	/**************************************
 	 * Support Function Section
@@ -241,22 +236,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		initialize();
 	}
 
-	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		if ( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
-		{
-			Log.d("Quicklic", "Portrait");
-			isOrientation = true;
-		}
-		else
-		{
-			isOrientation = false;
-			Log.d("Quicklic", "Landscape");
-		}
-	}
-
 	/**
 	 * @함수명 : onTouchEvent
 	 * @매개변수 :
@@ -282,6 +261,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		context = this;
 
+		// 화면 회전의 방향에 따른 resize 비율
 		if ( getOrientation() == Surface.ROTATION_0 )
 		{
 			IMG_PADDING = 12;

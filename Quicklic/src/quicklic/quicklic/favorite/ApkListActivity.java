@@ -1,6 +1,9 @@
 package quicklic.quicklic.favorite;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -8,14 +11,24 @@ import java.util.TimerTask;
 import quicklic.floating.api.R;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Surface;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
@@ -23,7 +36,17 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private PackageManager packageManager;
 	private ApkAdapter apkAdapter;
-	private ListView apkList;
+
+	private RelativeLayout mainRelativeLayout;
+	private ListView apkListView;
+	private Button systemButton;
+	private Button userButton;
+
+	private List<PackageInfo> packageInstalled;
+	private List<PackageInfo> packageSystem;
+
+	private boolean isSystem;
+	private boolean isUser;
 
 	private PreferencesManager preferencesManager;
 
@@ -31,34 +54,156 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	public void onCreate( Bundle savedInstanceState )
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.favorite);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		setContentView(R.layout.activity_main_favorite);
 
 		initialize();
-		initializeApkList();
+		initializeApkListView();
+		changeAppListView(false);
+	}
+
+	/**
+	 * @함수명 : ApkAsyncTask
+	 * @매개변수 : List<PackageInfo>
+	 * @기능(역할) : List를 정렬 하는 동안 [불러오는 중...] 다이얼로그 띄워줌
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 26.
+	 */
+	private class ApkAsyncTask extends AsyncTask<List<PackageInfo>, Void, Void> {
+		private ProgressDialog Dialog = new ProgressDialog(ApkListActivity.this);
+
+		@Override
+		protected void onPreExecute()
+		{
+			Dialog.setMessage(getResources().getString(R.string.quicklic_loading));
+			Dialog.show();
+		}
+
+		@Override
+		protected Void doInBackground( List<PackageInfo>... list )
+		{
+			Collections.sort(list[0], comparator);
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute( Void result )
+		{
+			if ( Dialog != null )
+			{
+				Dialog.dismiss();
+			}
+			apkAdapter.notifyDataSetChanged();
+		}
 	}
 
 	private void initialize()
 	{
-		apkList = (ListView) findViewById(R.id.applist);
+		isSystem = false;
+		isUser = false;
+
+		mainRelativeLayout = (RelativeLayout) findViewById(R.id.favorite_main_RelativeLayout);
+		apkListView = (ListView) findViewById(R.id.favorite_app_ListView);
+		systemButton = (Button) findViewById(R.id.favorite_system_Button);
+		userButton = (Button) findViewById(R.id.favorite_user_Button);
+
 		packageManager = getPackageManager();
 		preferencesManager = new PreferencesManager(this);
+
+		Point point = new Point();
+		getWindowManager().getDefaultDisplay().getSize(point);
+
+		FrameLayout.LayoutParams params = new FrameLayout.LayoutParams((int) (point.x * 0.7f), (int) (point.y * 0.7f));
+		mainRelativeLayout.setLayoutParams(params);
+
+		int buttonHeight;
+		if ( getWindowManager().getDefaultDisplay().getRotation() == Surface.ROTATION_0 )
+			buttonHeight = (int) (point.x * 0.12f);
+		else
+			buttonHeight = (int) (point.y * 0.12f);
+
+		systemButton.setHeight(buttonHeight);
+		userButton.setHeight(buttonHeight);
+		userButton.setTextColor(Color.CYAN);
+
+		userButton.setEnabled(false);
+		systemButton.setEnabled(true);
+
+		systemButton.setOnClickListener(clickListener);
+		userButton.setOnClickListener(clickListener);
 	}
 
-	private void initializeApkList()
+	/**
+	 * @함수명 : initializeApkListView
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 디바이스에 설치된 Package를 가져와서 분류
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 6. 26.
+	 */
+	private void initializeApkListView()
 	{
 		List<PackageInfo> packageList = packageManager.getInstalledPackages(PackageManager.GET_PERMISSIONS);
-		List<PackageInfo> packageTempList = new ArrayList<PackageInfo>();
+		packageInstalled = new ArrayList<PackageInfo>();
+		packageSystem = new ArrayList<PackageInfo>();
 
 		for ( PackageInfo packageInfo : packageList )
 		{
 			if ( !isSystemPackage(packageInfo) )
 			{
-				packageTempList.add(packageInfo);
+				packageInstalled.add(packageInfo);
+			}
+			else
+			{
+				packageSystem.add(packageInfo);
 			}
 		}
-		apkAdapter = new ApkAdapter(this, R.layout.apklist_item, packageTempList, packageManager);
-		apkList.setAdapter(apkAdapter);
-		apkList.setOnItemClickListener(this);
+	}
+
+	private Comparator<PackageInfo> comparator = new Comparator<PackageInfo>()
+	{
+		private final Collator collator = Collator.getInstance();
+
+		@Override
+		public int compare( PackageInfo object1, PackageInfo object2 )
+		{
+			String firstString = packageManager.getApplicationLabel(object1.applicationInfo).toString();
+			String secondString = packageManager.getApplicationLabel(object2.applicationInfo).toString();
+			return collator.compare(firstString, secondString);
+		}
+	};
+
+	/**
+	 * @함수명 : changeAppListView
+	 * @매개변수 : boolean isApp
+	 * @반환 : void
+	 * @기능(역할) : System App과 User App을 카테고리로 나누어 리스트 전환 (처음 불러올 때만 정렬) / isApp이 true면 System App, false면 User App이다.
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 26.
+	 */
+	@SuppressWarnings("unchecked")
+	private void changeAppListView( boolean isApp )
+	{
+		if ( isApp )
+		{
+			if ( !isSystem )
+			{
+				new ApkAsyncTask().execute(packageSystem);
+				isSystem = true;
+			}
+			apkAdapter = new ApkAdapter(this, R.layout.apklist_item, packageSystem, packageManager);
+		}
+		else
+		{
+			if ( !isUser )
+			{
+				new ApkAsyncTask().execute(packageInstalled);
+				isUser = true;
+			}
+			apkAdapter = new ApkAdapter(this, R.layout.apklist_item, packageInstalled, packageManager);
+		}
+		apkListView.setAdapter(apkAdapter);
+		apkListView.setOnItemClickListener(this);
 	}
 
 	/**
@@ -66,7 +211,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	 * @매개변수 :
 	 * @반환 : boolean
 	 * @기능(역할) : System Application인지 판별
-	 * @작성자 : 13 JHPark
+	 * @작성자 : JHPark
 	 * @작성일 : 2014. 6. 2.
 	 */
 	private boolean isSystemPackage( PackageInfo pkgInfo )
@@ -81,6 +226,34 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
 		finish();
 	}
+
+	OnClickListener clickListener = new OnClickListener()
+	{
+		@Override
+		public void onClick( View v )
+		{
+			if ( v == userButton )
+			{
+				userButton.setTextColor(Color.CYAN);
+				systemButton.setTextColor(Color.WHITE);
+
+				userButton.setEnabled(false);
+				systemButton.setEnabled(true);
+
+				changeAppListView(false);
+			}
+			else if ( v == systemButton )
+			{
+				userButton.setTextColor(Color.WHITE);
+				systemButton.setTextColor(Color.CYAN);
+
+				userButton.setEnabled(true);
+				systemButton.setEnabled(false);
+
+				changeAppListView(true);
+			}
+		}
+	};
 
 	public void homeKeyPressed()
 	{
