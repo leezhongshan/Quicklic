@@ -282,6 +282,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		context = this;
 
+		// 화면 회전의 방향에 따른 resize 비율
 		if ( getOrientation() == Surface.ROTATION_0 )
 		{
 			IMG_PADDING = 12;

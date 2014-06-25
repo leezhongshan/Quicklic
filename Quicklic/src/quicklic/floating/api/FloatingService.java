@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
@@ -33,6 +34,7 @@ public class FloatingService extends Service
 	private static final int NOTIFICATION_ID = 1;
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
+	private static final float SURFACE_HORIZON_RATIO = 0.55f;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
@@ -44,7 +46,8 @@ public class FloatingService extends Service
 	private int deviceHeight;
 	private int deviceHorizontalCenter;
 	private int deviceVerticalCenter;
-	private int isOrientation;
+	private int imageWidth;
+	private int imageHeight;
 
 	private boolean moveToSide;
 	private boolean isDoubleClicked = false;
@@ -137,6 +140,13 @@ public class FloatingService extends Service
 	}
 
 	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		displayMetrics();
+	}
+
+	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
@@ -188,42 +198,47 @@ public class FloatingService extends Service
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 	}
 
+	/**
+	 * @함수명 : displayMetrics
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : Display 정보구하기
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 6. 25.
+	 */
 	private void displayMetrics()
 	{
 		Display windowDisplay = windowManager.getDefaultDisplay();
-
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		windowDisplay.getMetrics(displayMetrics);
-		isOrientation = windowDisplay.getRotation();
 
+		// Device의 Display에서 width와 height 구하기
 		deviceWidth = displayMetrics.widthPixels;
 		deviceHeight = displayMetrics.heightPixels;
-	}
 
-	private void quicklicCreate()
-	{
-		int imageWidth;
-		int imageHeight;
-
-		if ( isOrientation == Surface.ROTATION_0 )
+		// 화면 회전의 방향에 따른 floating resize
+		if ( windowDisplay.getRotation() == Surface.ROTATION_0 )
 		{
 			imageWidth = (int) (deviceWidth * floatingInterface.setSize());
 			imageHeight = (int) (deviceWidth * floatingInterface.setSize());
 		}
 		else
 		{
-			imageWidth = (int) (deviceWidth * floatingInterface.setSize() * 0.55f);
-			imageHeight = (int) (deviceWidth * floatingInterface.setSize() * 0.55f);
+			imageWidth = (int) (deviceWidth * floatingInterface.setSize() * SURFACE_HORIZON_RATIO);
+			imageHeight = (int) (deviceWidth * floatingInterface.setSize() * SURFACE_HORIZON_RATIO);
 		}
 
+		// Device의 Display에서 가운데 위치 구하기
+		deviceHorizontalCenter = (deviceWidth - imageWidth) >> 1;
+		deviceVerticalCenter = (deviceHeight - imageHeight) >> 1;
+	}
+
+	private void quicklicCreate()
+	{
 		quicklic = new ImageView(this);
 
 		// 이미지 설정
 		getQuicklic().setImageResource(floatingInterface.setDrawableQuicklic());
-
-		// Device의 Display에서 가운데 위치 구하기
-		deviceHorizontalCenter = (deviceWidth - imageWidth) / 2;
-		deviceVerticalCenter = (deviceHeight - imageHeight) / 2;
 
 		/* WindowManager.LayoutParams.TYPE_PHONE : Window를 최상위로 유지
 		 * WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE :  다른 영역에 TouchEvent가 발생했을 때 인지 하지 않음
