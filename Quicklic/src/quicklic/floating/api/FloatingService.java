@@ -482,6 +482,14 @@ public class FloatingService extends Service
 			return false;
 		}
 
+		/**
+		 * @함수명 : moveToSide
+		 * @매개변수 :
+		 * @반환 : void
+		 * @기능(역할) : 자석효과를 준다
+		 * @작성자 : JHPark
+		 * @작성일 : 2014. 6. 26.
+		 */
 		private void moveToSide()
 		{
 

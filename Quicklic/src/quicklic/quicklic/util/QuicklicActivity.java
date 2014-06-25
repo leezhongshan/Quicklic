@@ -9,8 +9,6 @@ import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import android.content.Context;
-import android.content.res.Configuration;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -49,8 +47,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private int viewCount;
 	private int sizeOfQuicklicMain;
 	private int deviceWidth;
-
-	private boolean isOrientation;
 
 	/**************************************
 	 * Support Function Section
@@ -238,22 +234,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		super.setContentView(layoutResID);
 		initialize();
-	}
-
-	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		if ( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
-		{
-			Log.d("Quicklic", "Portrait");
-			isOrientation = true;
-		}
-		else
-		{
-			isOrientation = false;
-			Log.d("Quicklic", "Landscape");
-		}
 	}
 
 	/**
