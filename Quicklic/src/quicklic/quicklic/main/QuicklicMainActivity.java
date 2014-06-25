@@ -8,6 +8,7 @@ import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
 import quicklic.quicklic.hardware.QuicklicHardwareActivity;
 import quicklic.quicklic.scrollkey.QuicklicScrollKeyService;
 import quicklic.quicklic.test.SettingFloatingInterface;
+import quicklic.quicklic.util.QuicklicActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

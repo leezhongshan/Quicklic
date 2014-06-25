@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.main.QuicklicActivity;
 import quicklic.quicklic.test.SettingFloatingInterface;
+import quicklic.quicklic.util.QuicklicActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;

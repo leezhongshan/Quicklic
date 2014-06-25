@@ -1,4 +1,4 @@
-package quicklic.quicklic.main;
+package quicklic.quicklic.util;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -8,7 +8,6 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.test.SettingFloatingInterface;
-import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.util.Log;

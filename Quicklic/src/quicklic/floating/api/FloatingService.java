@@ -282,7 +282,7 @@ public class FloatingService extends Service
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : Quicklic 서비스를 수행 시, Notification 창에 알림 설정
-	 * @작성자 : THYang
+	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 5.
 	 */
 	private void quicklicNotification()
