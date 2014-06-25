@@ -9,6 +9,7 @@ import android.view.WindowManager;
 public class DeviceMetricActivity extends Activity {
 
 	private WindowManager windowManager;
+	private Display windowDisplay;
 	private int deviceWidth;
 	private int deviceHeight;
 
@@ -22,6 +23,11 @@ public class DeviceMetricActivity extends Activity {
 		getWindow().setWindowAnimations(android.R.style.Animation_Dialog);
 
 		super.setContentView(layoutResID);
+	}
+
+	protected int getOrientation()
+	{
+		return windowDisplay.getRotation();
 	}
 
 	/**
@@ -75,7 +81,7 @@ public class DeviceMetricActivity extends Activity {
 	{
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
-		Display windowDisplay = windowManager.getDefaultDisplay();
+		windowDisplay = windowManager.getDefaultDisplay();
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		windowDisplay.getMetrics(displayMetrics);
 

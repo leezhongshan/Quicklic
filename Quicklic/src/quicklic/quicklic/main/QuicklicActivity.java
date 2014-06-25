@@ -10,10 +10,13 @@ import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.DeviceMetricActivity;
 import android.content.Context;
+import android.content.res.Configuration;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -29,10 +32,10 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
-	private final static int IMG_PADDING = 12;
-	private final static int MAIN_PADDING = 20;
-	private final static float SIZE_QUICKLIC_RATE = 0.7f;
-	private final static float SIZE_ITEM_RATE = 0.125f;
+	private int IMG_PADDING = 12;
+	private int MAIN_PADDING = 20;
+	private float SIZE_QUICKLIC_RATE = 0.7f;
+	private float SIZE_ITEM_RATE = 0.125f;
 
 	private Context context;
 	private GestureDetector gestureDetector;
@@ -47,6 +50,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private int viewCount;
 	private int sizeOfQuicklicMain;
 	private int deviceWidth;
+
+	private boolean isOrientation;
 
 	/**************************************
 	 * Support Function Section
@@ -70,9 +75,9 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		this.centerView = centerView;
 	}
 
-	protected void updateCenterView( ImageView centeView )
+	protected void updateCenterView()
 	{
-		quicklicFrameLayout.updateViewLayout(centeView, centerLayoutParams);
+		getQuicklicFrameLayout().invalidate();
 	}
 
 	protected ImageView getCenterView()
@@ -236,6 +241,22 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		initialize();
 	}
 
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		if ( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
+		{
+			Log.d("Quicklic", "Portrait");
+			isOrientation = true;
+		}
+		else
+		{
+			isOrientation = false;
+			Log.d("Quicklic", "Landscape");
+		}
+	}
+
 	/**
 	 * @함수명 : onTouchEvent
 	 * @매개변수 :
@@ -260,10 +281,25 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private void initialize()
 	{
 		context = this;
+
+		if ( getOrientation() == Surface.ROTATION_0 )
+		{
+			IMG_PADDING = 12;
+			MAIN_PADDING = 20;
+			SIZE_QUICKLIC_RATE = 0.7f;
+			SIZE_ITEM_RATE = 0.12f;
+		}
+		else
+		{
+			IMG_PADDING = 12;
+			MAIN_PADDING = 20;
+			SIZE_QUICKLIC_RATE = 0.4f;
+			SIZE_ITEM_RATE = 0.07f;
+		}
+
 		viewCount = 0;
 		deviceWidth = getDeviceWidth();
 		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
-
 		gestureDetector = new GestureDetector(this, onGestureListener);
 
 		mainLayoutParams = new FrameLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain);

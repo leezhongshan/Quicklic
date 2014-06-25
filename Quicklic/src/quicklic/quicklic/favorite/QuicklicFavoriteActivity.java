@@ -10,8 +10,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -28,7 +31,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private ArrayList<String> pkgArrayList;
 
 	private boolean delEnabled;
-	private boolean listActivity;
+	private boolean isActivity;
 	private int item_count;
 	public static Activity activity;
 
@@ -48,9 +51,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		super.onResume();
 		resetQuicklic();
 		initializeView();
-		listActivity = false;
-
-		System.out.println("Res");
 	}
 
 	private void resetQuicklic()
@@ -66,15 +66,14 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		imageArrayList = new ArrayList<Item>();
 		pkgArrayList = new ArrayList<String>();
 		delEnabled = false;
-		listActivity = false;
 	}
 
 	private void initializeView()
 	{
+		isActivity = false;
+
 		getPreference();
-
 		setCenterView();
-
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
@@ -121,7 +120,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			System.out.println("click");
 			if ( v == getCenterView() )
 			{
 				if ( isItemFull(item_count) )
@@ -130,7 +128,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					return;
 				}
 
-				listActivity = true;
+				isActivity = true;
 				intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startActivity(intent);
@@ -166,12 +164,16 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		}
 	};
 
+	public void onDraw( Canvas canvas )
+	{
+		System.out.println("aa");
+	}
+
 	private OnLongClickListener onLongClickListener = new OnLongClickListener()
 	{
 		@Override
 		public boolean onLongClick( View v )
 		{
-			System.out.println("long");
 			if ( delEnabled )
 			{
 				delEnabled = false;
@@ -182,21 +184,22 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				delEnabled = true;
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
-			//			onResume();
+			setCenterView();
+			updateCenterView();
+
 			return true;
 		}
 	};
 
 	protected void onUserLeaveHint()
 	{
-		System.out.println("hint");
-		if ( !listActivity )
+		if ( !isActivity )
 		{
 			if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 			{
 				homeKeyPressed();
 			}
-			finish();
+			//			finish();
 		}
 	};
 }

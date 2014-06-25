@@ -19,6 +19,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -43,6 +44,7 @@ public class FloatingService extends Service
 	private int deviceHeight;
 	private int deviceHorizontalCenter;
 	private int deviceVerticalCenter;
+	private int isOrientation;
 
 	private boolean moveToSide;
 	private boolean isDoubleClicked = false;
@@ -192,6 +194,7 @@ public class FloatingService extends Service
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 		windowDisplay.getMetrics(displayMetrics);
+		isOrientation = windowDisplay.getRotation();
 
 		deviceWidth = displayMetrics.widthPixels;
 		deviceHeight = displayMetrics.heightPixels;
@@ -199,8 +202,19 @@ public class FloatingService extends Service
 
 	private void quicklicCreate()
 	{
-		int imageWidth = (int) (deviceWidth * floatingInterface.setSize());
-		int imageHeight = (int) (deviceWidth * floatingInterface.setSize());
+		int imageWidth;
+		int imageHeight;
+
+		if ( isOrientation == Surface.ROTATION_0 )
+		{
+			imageWidth = (int) (deviceWidth * floatingInterface.setSize());
+			imageHeight = (int) (deviceWidth * floatingInterface.setSize());
+		}
+		else
+		{
+			imageWidth = (int) (deviceWidth * floatingInterface.setSize() * 0.55f);
+			imageHeight = (int) (deviceWidth * floatingInterface.setSize() * 0.55f);
+		}
 
 		quicklic = new ImageView(this);
 

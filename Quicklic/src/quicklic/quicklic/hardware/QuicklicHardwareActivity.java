@@ -7,14 +7,15 @@ import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.main.QuicklicActivity;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import android.content.Context;
+import android.content.Intent;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 public class QuicklicHardwareActivity extends QuicklicActivity {
@@ -26,10 +27,14 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_WIFI = 4;
 	private final int COMP_BLUETOOTH = 5;
 	private final int COMP_ROTATE = 6;
+	private final int COMP_GPS = 7;
+
+	private boolean isActivity;
 
 	private ArrayList<Item> imageArrayList;
 	private ComponentWifi componentWifi;
 	private ComponentBluetooth componentBluetooth;
+	private ComponentGPS componentGPS;
 	private ComponentRotate componentRotate;
 	private ComponentVolume componentVolume;
 
@@ -48,15 +53,34 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		initialize();
 	}
 
+	/**
+	 * @함수명 : resetQuicklic
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 메인 뷰를 제외한 나머지 를 모두 제거
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 6. 25.
+	 */
 	private void resetQuicklic()
 	{
 		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
+	/**
+	 * @함수명 : initialize
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : Component 초기화 및 상태에 따른 그림 설정
+	 * @작성자 : SBKim, THYang
+	 * @작성일 : 2014. 6. 25.
+	 */
 	private void initialize()
 	{
+		isActivity = true;
+
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
 		componentBluetooth = new ComponentBluetooth();
+		componentGPS = new ComponentGPS(getApplicationContext());
 		componentRotate = new ComponentRotate(getApplicationContext());
 		componentVolume = new ComponentVolume((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 
@@ -64,6 +88,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_SOUND_DEC, R.drawable.sound_decrease));
 		imageArrayList.add(new Item(COMP_WIFI, componentWifi.getDrawable()));
 		imageArrayList.add(new Item(COMP_BLUETOOTH, componentBluetooth.getDrawable()));
+		imageArrayList.add(new Item(COMP_GPS, componentGPS.getDrawable()));
 		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
@@ -76,6 +101,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
+			/**
+			 * 클릭된 view (즉, 컴포넌트)에 따라 기능 수행
+			 */
 			switch ( v.getId() )
 			{
 			case COMP_SOUND_RING:
@@ -99,6 +127,13 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			case COMP_ROTATE:
 				componentRotate.controlRotate();
 				break;
+
+			case COMP_GPS:
+				isActivity = false;
+				Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				return;
 
 			default:
 				switch ( v.getId() )
@@ -132,10 +167,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-		if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+		if ( isActivity && SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 		{
 			homeKeyPressed();
 		}
-		finish();
 	}
 }
