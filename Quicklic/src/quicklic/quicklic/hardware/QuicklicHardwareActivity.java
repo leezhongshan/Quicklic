@@ -58,7 +58,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : 메인 뷰를 제외한 나머지 를 모두 제거
-	 * @작성자 : 13 JHPark
+	 * @작성자 : JHPark
 	 * @작성일 : 2014. 6. 25.
 	 */
 	private void resetQuicklic()

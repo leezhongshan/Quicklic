@@ -134,12 +134,6 @@ public class FloatingService extends Service
 	}
 
 	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-	}
-
-	@Override
 	public void onConfigurationChanged( Configuration newConfig )
 	{
 		super.onConfigurationChanged(newConfig);

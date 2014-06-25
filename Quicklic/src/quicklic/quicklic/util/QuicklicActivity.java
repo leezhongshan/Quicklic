@@ -255,7 +255,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : 초기화
-	 * @작성자 : THYang 9 * @작성일 : 2014. 5. 5.
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
 	 */
 	private void initialize()
 	{
@@ -349,6 +350,13 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		{
 		}
 
+		/**
+		 * @함수명 : onFling
+		 * @매개변수 :
+		 * @기능(역할) : 상하좌우에 대한 Touch 이벤트
+		 * @작성자 : THYang
+		 * @작성일 : 2014. 6. 26.
+		 */
 		@Override
 		public boolean onFling( MotionEvent e1, MotionEvent e2, float velocityX, float velocityY )
 		{
@@ -366,22 +374,22 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			{
 				if ( xLorR < 0 )
 				{
-					// to Right
+					//TODO to Right
 				}
 				else
 				{
-					// to Left
+					//TODO to Left
 				}
 			}
 			else
 			{
 				if ( yUorD < 0 )
 				{
-					// to Down
+					//TODO to Down
 				}
 				else
 				{
-					// to Up
+					//TODO to Up
 				}
 			}
 			return false;
