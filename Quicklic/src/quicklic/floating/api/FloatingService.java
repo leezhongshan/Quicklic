@@ -203,7 +203,7 @@ public class FloatingService extends Service
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : Display 정보구하기
-	 * @작성자 : 13 JHPark
+	 * @작성자 : THYang
 	 * @작성일 : 2014. 6. 25.
 	 */
 	private void displayMetrics()
