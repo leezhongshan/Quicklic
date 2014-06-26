@@ -18,7 +18,6 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-// TODO 작업중
 public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private PreferencesManager preferencesManager;

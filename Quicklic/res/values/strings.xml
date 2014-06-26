@@ -10,9 +10,9 @@
     <string name="favorite_run_no">실행할 수 없는 App입니다.</string>
     <string name="favorite_system">시스템</string>
     <string name="favorite_user">사용자</string>
-    <string name="scroll_move_finish">마지막 입니다.</string>
-    <string name="scroll_move_first">처음 입니다.</string>
-    <string name="scroll_move_no">실행된 Application이 없습니다.</string>
+    <string name="keyboard_move_finish">마지막 입니다.</string>
+    <string name="keyboard_move_first">처음 입니다.</string>
+    <string name="keyboard_move_no">실행된 Application이 없습니다.</string>
     <string name="hardware_volume_max">최대 음량입니다.</string>
     <string name="hardware_volume_min">최소 음량입니다.</string>
     <string name="quicklic_loading">불러오는 중...</string>

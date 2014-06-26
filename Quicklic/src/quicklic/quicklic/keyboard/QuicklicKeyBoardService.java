@@ -1,4 +1,4 @@
-package quicklic.quicklic.scrollkey;
+package quicklic.quicklic.keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,8 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-// TODO 작업중
-public class QuicklicScrollKeyService extends Service {
+public class QuicklicKeyBoardService extends Service {
 
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
@@ -44,15 +42,13 @@ public class QuicklicScrollKeyService extends Service {
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
 
-	private LinearLayout scrollLinearLayout;
+	private LinearLayout keyboardLinearLayout;
 
 	private int keyboardHeight;
 	private int keyboardWidth;
 	private int deviceWidth;
 	private int deviceHeight;
 
-	private Button upButton;
-	private Button downButton;
 	private Button leftButton;
 	private Button rightButton;
 	private Button moveButton;
@@ -60,7 +56,6 @@ public class QuicklicScrollKeyService extends Service {
 
 	private Intent intent;
 
-	private boolean moveToSide;
 	private boolean isDoubleClicked = false;
 	private boolean isMoved = false;
 	private Timer timer;
@@ -80,14 +75,17 @@ public class QuicklicScrollKeyService extends Service {
 	public void onConfigurationChanged( Configuration newConfig )
 	{
 		super.onConfigurationChanged(newConfig);
-		System.out.println("config");
+		if ( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
+			System.out.println("");
+		else
+			System.out.println("");
+
+		displayMetrics();
 	}
 
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-		Log.d("TAG", "onStartCommand - flags :" + flags + ", id : " + startId);
-
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
 		if ( startId == 1 || flags == 1 )
 		{
@@ -95,8 +93,9 @@ public class QuicklicScrollKeyService extends Service {
 			SettingFloatingInterface.getFloatingService().setVisibility(false);
 
 			initialize(intent);
+			displayMetrics();
 			createManager();
-			createScrollLayout();
+			createKeyBoardLayout();
 			getRunningTaskList();
 			addViewInWindowManager();
 		}
@@ -110,21 +109,26 @@ public class QuicklicScrollKeyService extends Service {
 
 	public void onDestroy()
 	{
-		if ( scrollLinearLayout != null )
-			windowManager.removeView(scrollLinearLayout);
+		if ( keyboardLinearLayout != null )
+			windowManager.removeView(keyboardLinearLayout);
 		super.onDestroy();
+	}
+
+	private void displayMetrics()
+	{
+		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
+		keyboardWidth = (int) (deviceWidth * 0.4);
 	}
 
 	private void initialize( Intent intent )
 	{
 		this.intent = intent;
 		timer = new Timer();
-		deviceWidth = intent.getIntExtra("deviceWidth", 0);
-		deviceHeight = intent.getIntExtra("deviceHeight", 0);
-		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
-		keyboardWidth = (int) (deviceWidth * 0.4);
 		packageArrayList = new ArrayList<String>();
 		pacakgeIndex = 0;
+
+		deviceWidth = intent.getIntExtra("deviceWidth", 0);
+		deviceHeight = intent.getIntExtra("deviceHeight", 0);
 	}
 
 	private void createManager()
@@ -153,34 +157,32 @@ public class QuicklicScrollKeyService extends Service {
 		layoutParams.y = deviceHeight - layoutParams.height;
 
 		// WindowManager에 layoutParams속성을 갖는 Quicklic ImageView 추가
-		windowManager.addView(scrollLinearLayout, layoutParams);
+		windowManager.addView(keyboardLinearLayout, layoutParams);
 	}
 
-	private void createScrollLayout()
+	private void createKeyBoardLayout()
 	{
-		scrollLinearLayout = new LinearLayout(this);
+		keyboardLinearLayout = new LinearLayout(this);
 		LinearLayout backSectionLinearLayout = new LinearLayout(this);
 		LinearLayout firstSectionLinearLayout = new LinearLayout(this);
 		LinearLayout secondSectionLinearLayout = new LinearLayout(this);
 
-		FrameLayout.LayoutParams scrollLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+		FrameLayout.LayoutParams keyboardLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout.LayoutParams sectionLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
 
 		sectionLayoutParams.weight = 0.5f;
-		buttonLayoutParams.weight = 1 / 3f;
+		buttonLayoutParams.weight = 0.5f;
 
-		upButton = new Button(this);
-		downButton = new Button(this);
 		leftButton = new Button(this);
 		rightButton = new Button(this);
 		moveButton = new Button(this);
 		exitButton = new Button(this);
 
-		scrollLinearLayout.setOrientation(LinearLayout.VERTICAL);
-		scrollLinearLayout.setBackgroundColor(Color.TRANSPARENT);
-		scrollLinearLayout.setWeightSum(1);
-		scrollLinearLayout.setLayoutParams(scrollLayoutParams);
+		keyboardLinearLayout.setOrientation(LinearLayout.VERTICAL);
+		keyboardLinearLayout.setBackgroundColor(Color.TRANSPARENT);
+		keyboardLinearLayout.setWeightSum(1);
+		keyboardLinearLayout.setLayoutParams(keyboardLayoutParams);
 
 		backSectionLinearLayout.setOrientation(LinearLayout.VERTICAL);
 		backSectionLinearLayout.setBackgroundColor(Color.WHITE);
@@ -201,38 +203,26 @@ public class QuicklicScrollKeyService extends Service {
 		secondSectionLinearLayout.setWeightSum(1);
 		secondSectionLinearLayout.setLayoutParams(sectionLayoutParams);
 
-		upButton.setHeight(keyboardHeight);
-		upButton.setLayoutParams(buttonLayoutParams);
-		upButton.setTextAppearance(this, R.style.Scroll_Button);
-		upButton.setBackgroundResource(R.drawable.key_up);
-
-		downButton.setHeight(keyboardHeight);
-		downButton.setLayoutParams(buttonLayoutParams);
-		downButton.setTextAppearance(this, R.style.Scroll_Button);
-		downButton.setBackgroundResource(R.drawable.key_down);
-
 		leftButton.setHeight(keyboardHeight);
 		leftButton.setLayoutParams(buttonLayoutParams);
-		leftButton.setTextAppearance(this, R.style.Scroll_Button);
+		leftButton.setTextAppearance(this, R.style.KeyBoard_Button);
 		leftButton.setBackgroundResource(R.drawable.key_left);
 
 		rightButton.setHeight(keyboardHeight);
 		rightButton.setLayoutParams(buttonLayoutParams);
-		rightButton.setTextAppearance(this, R.style.Scroll_Button);
+		rightButton.setTextAppearance(this, R.style.KeyBoard_Button);
 		rightButton.setBackgroundResource(R.drawable.key_right);
 
 		moveButton.setHeight(keyboardHeight);
 		moveButton.setLayoutParams(buttonLayoutParams);
-		moveButton.setTextAppearance(this, R.style.Scroll_Button);
+		moveButton.setTextAppearance(this, R.style.KeyBoard_Button);
 		moveButton.setBackgroundResource(R.drawable.key_move);
 
 		exitButton.setHeight(keyboardHeight);
 		exitButton.setLayoutParams(buttonLayoutParams);
-		exitButton.setTextAppearance(this, R.style.Scroll_Button);
+		exitButton.setTextAppearance(this, R.style.KeyBoard_Button);
 		exitButton.setBackgroundResource(R.drawable.key_exit);
 
-		upButton.setOnClickListener(clickListener);
-		downButton.setOnClickListener(clickListener);
 		leftButton.setOnClickListener(clickListener);
 		rightButton.setOnClickListener(clickListener);
 		moveButton.setOnClickListener(clickListener);
@@ -241,17 +231,15 @@ public class QuicklicScrollKeyService extends Service {
 		moveButton.setOnTouchListener(onTouchListener);
 
 		firstSectionLinearLayout.addView(moveButton);
-		firstSectionLinearLayout.addView(upButton);
 		firstSectionLinearLayout.addView(exitButton);
 
 		secondSectionLinearLayout.addView(leftButton);
-		secondSectionLinearLayout.addView(downButton);
 		secondSectionLinearLayout.addView(rightButton);
 
 		backSectionLinearLayout.addView(firstSectionLinearLayout);
 		backSectionLinearLayout.addView(secondSectionLinearLayout);
 
-		scrollLinearLayout.addView(backSectionLinearLayout);
+		keyboardLinearLayout.addView(backSectionLinearLayout);
 	}
 
 	private void getRunningTaskList()
@@ -261,7 +249,6 @@ public class QuicklicScrollKeyService extends Service {
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
-			System.out.println(packageName); // TODO 제거
 			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone") || packageName.contains("quicklic")) )
 			{
 				packageArrayList.add(packageName);
@@ -275,17 +262,11 @@ public class QuicklicScrollKeyService extends Service {
 		public void onClick( View v )
 		{
 			PackageManager packageManager = getPackageManager();
-			if ( v == upButton )
-			{
-			}
-			else if ( v == downButton )
-			{
-			}
-			else if ( v == leftButton )
+			if ( v == leftButton )
 			{
 				if ( packageArrayList.size() == 0 )
 				{
-					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
 					return;
 				}
 				if ( pacakgeIndex > 0 )
@@ -294,7 +275,7 @@ public class QuicklicScrollKeyService extends Service {
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), R.string.scroll_move_first, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.keyboard_move_first, Toast.LENGTH_SHORT).show();
 				}
 				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
 				startActivity(intent);
@@ -303,7 +284,7 @@ public class QuicklicScrollKeyService extends Service {
 			{
 				if ( packageArrayList.size() == 0 )
 				{
-					Toast.makeText(getApplicationContext(), R.string.scroll_move_no, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
 					return;
 				}
 				if ( pacakgeIndex != packageArrayList.size() - 1 )
@@ -312,7 +293,7 @@ public class QuicklicScrollKeyService extends Service {
 				}
 				else
 				{
-					Toast.makeText(getApplicationContext(), R.string.scroll_move_finish, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getApplicationContext(), R.string.keyboard_move_finish, Toast.LENGTH_SHORT).show();
 				}
 				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
 				startActivity(intent);
@@ -361,7 +342,7 @@ public class QuicklicScrollKeyService extends Service {
 				stopService(intent);
 
 				// MainActivity 시작
-				intent = new Intent(QuicklicScrollKeyService.this, QuicklicMainActivity.class);
+				intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 			}
@@ -398,7 +379,7 @@ public class QuicklicScrollKeyService extends Service {
 						moveTouchY = (int) (event.getRawY() - initialTouchY);
 						layoutParams.x = initialX + moveTouchX;
 						layoutParams.y = initialY + moveTouchY;
-						windowManager.updateViewLayout(scrollLinearLayout, layoutParams);
+						windowManager.updateViewLayout(keyboardLinearLayout, layoutParams);
 
 						// 터치 감지 : X와 Y좌표가 10이하인 경우에는 움직임이 없다고 판단하고 single touch 이벤트 발생.
 						isMoved = true;
@@ -418,11 +399,6 @@ public class QuicklicScrollKeyService extends Service {
 									isMoved = false;
 								}
 							}, DOUBLE_PRESS_INTERVAL + 100);
-						}
-
-						if ( moveToSide && isMoved )
-						{
-							//	moveToSide();
 						}
 						break;
 					}

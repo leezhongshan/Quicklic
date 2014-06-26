@@ -6,7 +6,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
 import quicklic.quicklic.hardware.QuicklicHardwareActivity;
-import quicklic.quicklic.scrollkey.QuicklicScrollKeyService;
+import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.content.Intent;
@@ -89,7 +89,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		imageArrayList = new ArrayList<Item>();
 
 		imageArrayList.add(new Item(HARDWARE, R.drawable.hardware));
-		imageArrayList.add(new Item(SCROLL, R.drawable.scroll));
+		imageArrayList.add(new Item(SCROLL, R.drawable.keyboard));
 		imageArrayList.add(new Item(FAVORITE, R.drawable.favorite));
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
@@ -115,7 +115,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			case SCROLL:
 				isScrollService = true;
 
-				intent = new Intent(QuicklicMainActivity.this, QuicklicScrollKeyService.class);
+				intent = new Intent(QuicklicMainActivity.this, QuicklicKeyBoardService.class);
 				intent.putExtra("deviceWidth", getDeviceWidth());
 				intent.putExtra("deviceHeight", getDeviceHeight());
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
