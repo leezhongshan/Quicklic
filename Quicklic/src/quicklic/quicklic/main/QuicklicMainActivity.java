@@ -21,7 +21,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	private final int FAVORITE = 2;
 
 	private ArrayList<Item> imageArrayList;
-	private boolean isScrollService;
+	private boolean isKeyBoardService;
 	private boolean isNotHomeKey;
 
 	@Override
@@ -63,7 +63,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	protected void onDestroy()
 	{
 		// Activity가 제거될 때, Floating Image를 보여지게 함
-		if ( !isScrollService )
+		if ( !isKeyBoardService )
 			SettingFloatingInterface.getFloatingService().setVisibility(true);
 
 		super.onDestroy();
@@ -84,7 +84,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 	private void initialize()
 	{
-		isScrollService = false;
+		isKeyBoardService = false;
 		isNotHomeKey = false;
 		imageArrayList = new ArrayList<Item>();
 
@@ -113,11 +113,9 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				break;
 
 			case SCROLL:
-				isScrollService = true;
+				isKeyBoardService = true;
 
 				intent = new Intent(QuicklicMainActivity.this, QuicklicKeyBoardService.class);
-				intent.putExtra("deviceWidth", getDeviceWidth());
-				intent.putExtra("deviceHeight", getDeviceHeight());
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
 				finish();

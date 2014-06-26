@@ -155,9 +155,6 @@ public class QuicklicKeyBoardService extends Service {
 
 		KEY_HEIGHT_RATE = 0.125f;
 		KEY_WIDTH_RATE = 0.25f;
-
-		deviceWidth = intent.getIntExtra("deviceWidth", 0);
-		deviceHeight = intent.getIntExtra("deviceHeight", 0);
 	}
 
 	private void createManager()
