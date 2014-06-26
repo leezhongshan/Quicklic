@@ -84,6 +84,14 @@ public class FloatingService extends Service
 		return moveToSide;
 	}
 
+	/**
+	 * @함수명 : setVisibility
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : Quicklic 이미지 뷰의 Visible을 설정
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 5. 5.
+	 */
 	public void setVisibility( boolean bool )
 	{
 		if ( bool )
@@ -100,7 +108,7 @@ public class FloatingService extends Service
 	 * @함수명 : getQuicklic
 	 * @매개변수 :
 	 * @반환 : ImageView
-	 * @기능(역할) : Quicklic 이미지 객체 가져오기
+	 * @기능(역할) : Quicklic 이미지뷰 가져오기
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 30.
 	 */
@@ -133,6 +141,13 @@ public class FloatingService extends Service
 		return null;
 	}
 
+	/**
+	 * @함수명 : onConfigurationChanged
+	 * @매개변수 :
+	 * @기능(역할) : 화면 회전이 감지될 때마다, display 정보를 다시 생성함
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 26.
+	 */
 	@Override
 	public void onConfigurationChanged( Configuration newConfig )
 	{
@@ -187,6 +202,14 @@ public class FloatingService extends Service
 		}
 	}
 
+	/**
+	 * @함수명 : createManager
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : WindowManager 생성
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 6. 26.
+	 */
 	private void createManager()
 	{
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -227,6 +250,14 @@ public class FloatingService extends Service
 		deviceVerticalCenter = (deviceHeight - imageHeight) >> 1;
 	}
 
+	/**
+	 * @함수명 : createQuicklic
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : Quicklic 이미지 뷰 생성 및 WindowManager에 추가
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 5. 5.
+	 */
 	private void createQuicklic()
 	{
 		quicklic = new ImageView(this);
@@ -253,7 +284,6 @@ public class FloatingService extends Service
 
 		// WindowManager에 layoutParams속성을 갖는 Quicklic ImageView 추가
 		windowManagerAddView(getQuicklic(), layoutParams);
-
 	}
 
 	/**
@@ -444,7 +474,6 @@ public class FloatingService extends Service
 						isMoved = true;
 						if ( Math.abs(moveTouchX) < LIMITED_MOVE_DISTANCE && Math.abs(moveTouchY) < LIMITED_MOVE_DISTANCE )
 							isMoved = false;
-
 						break;
 
 					case MotionEvent.ACTION_UP:

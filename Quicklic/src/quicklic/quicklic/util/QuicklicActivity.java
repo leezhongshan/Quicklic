@@ -120,7 +120,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		final float frameWidth = sizeOfQuicklicMain;
 		final float frameHeight = sizeOfQuicklicMain;
 
-		// 반지름 길이 구하기 : 아이템이 놓일 위치에서 20만큼의 여유공간 확보
+		// 반지름 길이 구하기 : 아이템이 놓일 위치에서 MAIN_PADDING만큼의 여유공간 확보
 		int radius = (int) (frameHeight - itemSize) / 2 - MAIN_PADDING;
 
 		// 중심 좌표 구하기

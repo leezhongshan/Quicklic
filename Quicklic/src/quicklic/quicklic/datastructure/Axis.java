@@ -1,3 +1,5 @@
+// Integer 형식의 X와 Y 값을 저장
+
 package quicklic.quicklic.datastructure;
 
 public class Axis {

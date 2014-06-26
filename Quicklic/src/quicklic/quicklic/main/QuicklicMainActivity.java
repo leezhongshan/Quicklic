@@ -69,19 +69,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		super.onDestroy();
 	}
 
-	/**
-	 * @함수명 : onBackPressed
-	 * @매개변수 :
-	 * @기능(역할) : 뒤로가기 버튼을 눌렀을 때, quicklic 뷰가 다시 생성되도록 함
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 9.
-	 */
-	@Override
-	public void onBackPressed()
-	{
-		super.onBackPressed();
-	}
-
 	private void initialize()
 	{
 		isKeyBoardService = false;

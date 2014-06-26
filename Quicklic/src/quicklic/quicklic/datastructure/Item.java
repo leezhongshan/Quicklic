@@ -1,3 +1,7 @@
+/*
+ * Favorite 서비스에서 사용되어지며, Quicklic 액티비티에 추가되어지는 어플리케이션의 데이터를 저장
+ */
+
 package quicklic.quicklic.datastructure;
 
 import android.graphics.drawable.Drawable;
