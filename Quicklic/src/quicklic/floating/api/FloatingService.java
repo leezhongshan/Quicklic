@@ -147,10 +147,10 @@ public class FloatingService extends Service
 		if ( startId == 1 || flags == 1 )
 		{
 			initialize(intent);
-			managerCreate();
+			createManager();
 			displayMetrics();
-			quicklicCreate();
-			quicklicSetting();
+			createQuicklic();
+			settingQuicklic();
 			quicklicNotification();
 		}
 		else
@@ -187,7 +187,7 @@ public class FloatingService extends Service
 		}
 	}
 
-	private void managerCreate()
+	private void createManager()
 	{
 		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 	}
@@ -227,7 +227,7 @@ public class FloatingService extends Service
 		deviceVerticalCenter = (deviceHeight - imageHeight) >> 1;
 	}
 
-	private void quicklicCreate()
+	private void createQuicklic()
 	{
 		quicklic = new ImageView(this);
 
@@ -257,14 +257,14 @@ public class FloatingService extends Service
 	}
 
 	/**
-	 * @함수명 : quicklicSetting
+	 * @함수명 : settingQuicklic
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : quicklic에 click,longClick,touch Listener 를 설정
 	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 5.
 	 */
-	private void quicklicSetting()
+	private void settingQuicklic()
 	{
 		getQuicklic().setOnTouchListener(touchListener);
 		getQuicklic().setOnClickListener(clickListener);

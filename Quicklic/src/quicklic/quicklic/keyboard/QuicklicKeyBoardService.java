@@ -14,14 +14,16 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
@@ -35,7 +37,8 @@ public class QuicklicKeyBoardService extends Service {
 
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
-	private static final float DEVICE_RATE = 0.13f;
+	private static float KEY_HEIGHT_RATE;
+	private static float KEY_WIDTH_RATE;
 	private static final float VIEW_ALPHA = 0.8f;
 	private static final int MAX_TASK_NUM = 300;
 
@@ -72,32 +75,27 @@ public class QuicklicKeyBoardService extends Service {
 	}
 
 	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		if ( newConfig.orientation == Configuration.ORIENTATION_PORTRAIT )
-			System.out.println("");
-		else
-			System.out.println("");
-
-		displayMetrics();
-	}
-
-	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
 		if ( startId == 1 || flags == 1 )
 		{
 			// Quicklic View 숨기기
-			SettingFloatingInterface.getFloatingService().setVisibility(false);
+			try
+			{
+				SettingFloatingInterface.getFloatingService().setVisibility(false);
 
-			initialize(intent);
-			displayMetrics();
-			createManager();
-			createKeyBoardLayout();
-			getRunningTaskList();
-			addViewInWindowManager();
+				initialize(intent);
+				createManager();
+				displayMetrics();
+				createKeyBoard();
+				getRunningTaskList();
+				addViewInWindowManager();
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		else
 		{
@@ -116,8 +114,28 @@ public class QuicklicKeyBoardService extends Service {
 
 	private void displayMetrics()
 	{
-		keyboardHeight = (int) (deviceWidth * DEVICE_RATE) << 1;
-		keyboardWidth = (int) (deviceWidth * 0.4);
+		Display windowDisplay = windowManager.getDefaultDisplay();
+		DisplayMetrics displayMetrics = new DisplayMetrics();
+		windowDisplay.getMetrics(displayMetrics);
+
+		// Device의 Display에서 width와 height 구하기
+		deviceWidth = displayMetrics.widthPixels;
+		deviceHeight = displayMetrics.heightPixels;
+
+		// 화면 회전의 방향에 따른 floating resize
+		if ( windowDisplay.getRotation() == Surface.ROTATION_0 )
+		{
+			KEY_HEIGHT_RATE = 0.125f;
+			KEY_WIDTH_RATE = 0.25f;
+		}
+		else
+		{
+			KEY_HEIGHT_RATE = 0.07f;
+			KEY_WIDTH_RATE = 0.14f;
+		}
+
+		keyboardHeight = (int) (deviceWidth * KEY_HEIGHT_RATE) << 1;
+		keyboardWidth = (int) (deviceWidth * KEY_WIDTH_RATE);
 	}
 
 	private void initialize( Intent intent )
@@ -126,6 +144,9 @@ public class QuicklicKeyBoardService extends Service {
 		timer = new Timer();
 		packageArrayList = new ArrayList<String>();
 		pacakgeIndex = 0;
+
+		KEY_HEIGHT_RATE = 0.125f;
+		KEY_WIDTH_RATE = 0.25f;
 
 		deviceWidth = intent.getIntExtra("deviceWidth", 0);
 		deviceHeight = intent.getIntExtra("deviceHeight", 0);
@@ -160,7 +181,7 @@ public class QuicklicKeyBoardService extends Service {
 		windowManager.addView(keyboardLinearLayout, layoutParams);
 	}
 
-	private void createKeyBoardLayout()
+	private void createKeyBoard()
 	{
 		keyboardLinearLayout = new LinearLayout(this);
 		LinearLayout backSectionLinearLayout = new LinearLayout(this);
