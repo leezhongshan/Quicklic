@@ -80,6 +80,14 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
+	/**
+	 * @함수명 : setCenterView
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 삭제모드에 따라서 + / - 를 전환
+	 * @작성자 : JHPark, THYang
+	 * @작성일 : 2014. 6. 26.
+	 */
 	private void setCenterView()
 	{
 
@@ -95,6 +103,14 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		setCenterView(imageView);
 	}
 
+	/**
+	 * @함수명 : getPreference
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : Favorite에 보여줄 어플리케이션을 모두 가져오기
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 5. 22.
+	 */
 	private void getPreference()
 	{
 		pkgArrayList.clear();
@@ -124,7 +140,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-
 			if ( v == getCenterView() )
 			{
 				if ( isItemFull(item_count) )
@@ -186,7 +201,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			}
 
 			onResume();
-
 			return true;
 		}
 	};
