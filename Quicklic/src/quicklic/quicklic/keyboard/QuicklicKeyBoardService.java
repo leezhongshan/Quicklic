@@ -268,10 +268,17 @@ public class QuicklicKeyBoardService extends Service {
 		keyboardLinearLayout.addView(backSectionLinearLayout);
 	}
 
+	/**
+	 * @함수명 : getRunningTaskList
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 현재 실행중인 Task의 목록을 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 18.
+	 */
 	private void getRunningTaskList()
 	{
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
-		System.out.println("Task " + taskinfo.size());
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
@@ -284,6 +291,13 @@ public class QuicklicKeyBoardService extends Service {
 
 	private OnClickListener clickListener = new OnClickListener()
 	{
+		/**
+		 * @함수명 : onClick
+		 * @매개변수 : View v
+		 * @기능(역할) : 키보드에 등록된 버튼에 대한 어플리케이션 간 전환 및 키보드 서비스의 이동과 종료
+		 * @작성자 : THYang
+		 * @작성일 : 2014. 6. 18.
+		 */
 		@Override
 		public void onClick( View v )
 		{
