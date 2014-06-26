@@ -17,7 +17,7 @@ import android.view.View.OnClickListener;
 public class QuicklicMainActivity extends QuicklicActivity {
 
 	private final int HARDWARE = 0;
-	private final int SCROLL = 1;
+	private final int KEYBOARD = 1;
 	private final int FAVORITE = 2;
 
 	private ArrayList<Item> imageArrayList;
@@ -89,7 +89,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		imageArrayList = new ArrayList<Item>();
 
 		imageArrayList.add(new Item(HARDWARE, R.drawable.hardware));
-		imageArrayList.add(new Item(SCROLL, R.drawable.keyboard));
+		imageArrayList.add(new Item(KEYBOARD, R.drawable.keyboard));
 		imageArrayList.add(new Item(FAVORITE, R.drawable.favorite));
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
@@ -112,7 +112,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				startActivity(intent);
 				break;
 
-			case SCROLL:
+			case KEYBOARD:
 				isKeyBoardService = true;
 
 				intent = new Intent(QuicklicMainActivity.this, QuicklicKeyBoardService.class);
