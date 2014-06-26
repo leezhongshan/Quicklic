@@ -186,6 +186,14 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 	}
 
+	/**
+	 * @함수명 : homeKeyPressed
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 홈키가 눌렸을 때, 타이머를 이용하여 일정 시간 뒤에 Floating이 화면에 보여짐
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 6. 26.
+	 */
 	protected void homeKeyPressed()
 	{
 		SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.GONE);
