@@ -14,6 +14,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Handler;
@@ -72,6 +73,13 @@ public class QuicklicKeyBoardService extends Service {
 	public IBinder onBind( Intent intent )
 	{
 		return null;
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		displayMetrics();
 	}
 
 	@Override
