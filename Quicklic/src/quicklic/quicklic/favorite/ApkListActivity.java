@@ -124,10 +124,9 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 
 		systemButton.setHeight(buttonHeight);
 		userButton.setHeight(buttonHeight);
-		userButton.setTextColor(Color.CYAN);
 
-		userButton.setEnabled(false);
 		systemButton.setEnabled(true);
+		userButton.setEnabled(false);
 
 		systemButton.setOnClickListener(clickListener);
 		userButton.setOnClickListener(clickListener);
@@ -234,8 +233,11 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		{
 			if ( v == userButton )
 			{
-				userButton.setTextColor(Color.CYAN);
+				userButton.setTextColor(Color.parseColor("#ff00B4CC"));
 				systemButton.setTextColor(Color.WHITE);
+
+				userButton.setBackgroundColor(Color.WHITE);
+				systemButton.setBackgroundColor(Color.parseColor("#ff00B4CC"));
 
 				userButton.setEnabled(false);
 				systemButton.setEnabled(true);
@@ -245,7 +247,10 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			else if ( v == systemButton )
 			{
 				userButton.setTextColor(Color.WHITE);
-				systemButton.setTextColor(Color.CYAN);
+				systemButton.setTextColor(Color.parseColor("#ff00B4CC"));
+
+				userButton.setBackgroundColor(Color.parseColor("#ff00B4CC"));
+				systemButton.setBackgroundColor(Color.WHITE);
 
 				userButton.setEnabled(true);
 				systemButton.setEnabled(false);

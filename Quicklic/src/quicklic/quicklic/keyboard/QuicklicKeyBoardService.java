@@ -14,6 +14,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -67,7 +68,7 @@ public class QuicklicKeyBoardService extends Service {
 
 	private ActivityManager activityManager;
 	private ArrayList<String> packageArrayList;
-	private int pacakgeIndex;
+	private int packageIndex;
 
 	@Override
 	public IBinder onBind( Intent intent )
@@ -151,7 +152,7 @@ public class QuicklicKeyBoardService extends Service {
 		this.intent = intent;
 		timer = new Timer();
 		packageArrayList = new ArrayList<String>();
-		pacakgeIndex = 0;
+		packageIndex = 0;
 
 		KEY_HEIGHT_RATE = 0.125f;
 		KEY_WIDTH_RATE = 0.25f;
@@ -278,11 +279,16 @@ public class QuicklicKeyBoardService extends Service {
 	 */
 	private void getRunningTaskList()
 	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_HOME);
+		ResolveInfo resolveInfo = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		String launcherName = resolveInfo.activityInfo.packageName;
+
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
-			if ( !(packageName.contains("app.launcher") || packageName.contains(".phone") || packageName.contains("quicklic")) )
+			if ( !(packageName.contains(launcherName) || packageName.contains(".phone") || packageName.contains("quicklic")) )
 			{
 				packageArrayList.add(packageName);
 			}
@@ -309,16 +315,27 @@ public class QuicklicKeyBoardService extends Service {
 					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
 					return;
 				}
-				if ( pacakgeIndex > 0 )
+
+				if ( packageIndex > 0 )
 				{
-					--pacakgeIndex;
+					--packageIndex;
+
+					try
+					{
+						Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(packageIndex));
+						startActivity(intent);
+					}
+					catch (Exception e)
+					{
+						Toast.makeText(getApplicationContext(), R.string.keyboard_run_no, Toast.LENGTH_SHORT).show();
+						packageArrayList.remove(packageIndex);
+					}
 				}
 				else
 				{
 					Toast.makeText(getApplicationContext(), R.string.keyboard_move_first, Toast.LENGTH_SHORT).show();
 				}
-				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
-				startActivity(intent);
+
 			}
 			else if ( v == rightButton )
 			{
@@ -327,16 +344,27 @@ public class QuicklicKeyBoardService extends Service {
 					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
 					return;
 				}
-				if ( pacakgeIndex != packageArrayList.size() - 1 )
+				if ( packageIndex != packageArrayList.size() - 1 )
 				{
-					++pacakgeIndex;
+					++packageIndex;
+
+					try
+					{
+						Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(packageIndex));
+						startActivity(intent);
+					}
+					catch (Exception e)
+					{
+						Toast.makeText(getApplicationContext(), R.string.keyboard_run_no, Toast.LENGTH_SHORT).show();
+						packageArrayList.remove(packageIndex);
+						packageIndex--;
+					}
 				}
 				else
 				{
 					Toast.makeText(getApplicationContext(), R.string.keyboard_move_finish, Toast.LENGTH_SHORT).show();
 				}
-				Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(pacakgeIndex));
-				startActivity(intent);
+
 			}
 			else if ( v == moveButton )
 			{

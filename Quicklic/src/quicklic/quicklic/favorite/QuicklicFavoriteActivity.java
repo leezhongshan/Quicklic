@@ -140,27 +140,24 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			if ( v == getCenterView() )
+			if ( v == getCenterView() ) // Add / Delete Button
 			{
-				if ( isItemFull(item_count) )
+				if ( !delEnabled )
 				{
-					Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
-					return;
+					if ( isItemFull(item_count) ) // check full count
+					{
+						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
+						return;
+					}
+					isActivity = true;
+					intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(intent);
 				}
-
-				isActivity = true;
-				intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
 			}
 			else
 			{
-				if ( delEnabled )
-				{
-					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					onResume();
-				}
-				else
+				if ( !delEnabled )
 				{
 					/* 실행할 수 없는 앱을 추가한 상태에서
 					 *  앱 실행을 요청했을 때,
@@ -179,6 +176,11 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					{
 						Toast.makeText(getApplicationContext(), R.string.favorite_run_no, Toast.LENGTH_SHORT).show();
 					}
+				}
+				else
+				{
+					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
+					onResume();
 				}
 			}
 		}

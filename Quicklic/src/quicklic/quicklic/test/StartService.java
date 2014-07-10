@@ -16,7 +16,7 @@ public class StartService extends Activity {
 
 		testingFunction = new SettingFloatingInterface();
 		Intent intent = new Intent(StartService.this, FloatingService.class);
-		intent.putExtra("push", testingFunction);
+		intent.putExtra("interface", testingFunction);
 		startService(intent);
 		overridePendingTransition(0, 0);
 		finish();
@@ -28,4 +28,5 @@ public class StartService extends Activity {
 		super.onPause();
 		finish();
 	}
+
 }

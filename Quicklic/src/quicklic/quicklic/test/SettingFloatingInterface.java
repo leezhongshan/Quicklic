@@ -31,7 +31,7 @@ public class SettingFloatingInterface implements Serializable, FloatingInterface
 	@Override
 	public float setSize()
 	{
-		return 0.17f;
+		return 0.14f;
 	}
 
 	@Override

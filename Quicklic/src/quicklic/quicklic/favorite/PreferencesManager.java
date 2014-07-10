@@ -1,23 +1,33 @@
 package quicklic.quicklic.favorite;
 
+import quicklic.floating.api.R;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 public class PreferencesManager extends Activity
 {
 	private SharedPreferences pref;
 	private SharedPreferences.Editor editor;
 
+	private static final String APP_NUM = "app_num";
+	private static final String APP_DATA = "app_data";
+
 	public PreferencesManager(Context context)
 	{
-		pref = context.getSharedPreferences("appData", MODE_PRIVATE);
+		pref = context.getSharedPreferences(APP_DATA, MODE_PRIVATE);
 		editor = pref.edit();
-		if ( pref.getInt("appNum", -1) < 0 )
+		if ( pref.getInt(APP_NUM, -1) < 0 )
 		{
-			editor.putInt("appNum", 0);
-			editor.commit();
+			editor.putInt(APP_NUM, 0);
+			commit();
 		}
+	}
+
+	public void commit()
+	{
+		editor.commit();
 	}
 
 	/**
@@ -30,7 +40,7 @@ public class PreferencesManager extends Activity
 	 */
 	public int getNumPreferences( Context context )
 	{
-		return pref.getInt("appNum", 0);
+		return pref.getInt(APP_NUM, 0);
 	}
 
 	/**
@@ -45,9 +55,18 @@ public class PreferencesManager extends Activity
 	{
 		int num = getNumPreferences(context);
 
-		editor.putString("appData" + num, pkgName);
-		editor.putInt("appNum", ++num);
-		editor.commit();
+		for ( int i = 0; i < num; i++ )
+		{
+			if ( getAppPreferences(context, i).equals(pkgName) )
+			{
+				Toast.makeText(context, R.string.favorite_duplication_warning, Toast.LENGTH_SHORT).show();
+				return;
+			}
+		}
+
+		editor.putString(APP_DATA + num, pkgName);
+		editor.putInt(APP_NUM, ++num);
+		commit();
 	}
 
 	/**
@@ -60,7 +79,7 @@ public class PreferencesManager extends Activity
 	 */
 	public String getAppPreferences( Context context, int pkgNum )
 	{
-		return pref.getString("appData" + pkgNum, null);
+		return pref.getString(APP_DATA + pkgNum, null);
 	}
 
 	/**
@@ -77,10 +96,10 @@ public class PreferencesManager extends Activity
 
 		for ( int j = pkgNum; j < num; j++ )
 		{
-			editor.putString("appData" + j, getAppPreferences(context, j + 1));
+			editor.putString(APP_DATA + j, getAppPreferences(context, j + 1));
 		}
-		editor.remove("appData" + num);
-		editor.putInt("appNum", --num);
-		editor.commit();
+		editor.remove(APP_DATA + num);
+		editor.putInt(APP_NUM, --num);
+		commit();
 	}
 }

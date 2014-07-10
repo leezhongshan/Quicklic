@@ -176,6 +176,13 @@ public class FloatingService extends Service
 		return Service.START_NOT_STICKY;
 	}
 
+	/**
+	 * @함수명 : onDestroy
+	 * @매개변수 :
+	 * @기능(역할) : WindowManager에서 Quicklic View와 Notification을 제거
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 28.
+	 */
 	public void onDestroy()
 	{
 		super.onDestroy();
@@ -188,13 +195,14 @@ public class FloatingService extends Service
 
 	private void initialize( Intent intent )
 	{
-		context = this;
-		timer = new Timer();
 		try
 		{
-			floatingInterface = (FloatingInterface) intent.getSerializableExtra("push");
+			context = this;
+			floatingInterface = (FloatingInterface) intent.getSerializableExtra("interface");
 			floatingInterface.setContext(this);
+
 			moveToSide = floatingInterface.setAnimation();
+			timer = new Timer();
 		}
 		catch (Exception e)
 		{
