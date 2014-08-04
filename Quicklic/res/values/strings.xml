@@ -29,5 +29,6 @@
     <!-- Hardware -->
     <string name="hardware_volume_max">최대 음량입니다.</string>
     <string name="hardware_volume_min">최소 음량입니다.</string>
-
+	<string name="device_admin">기기 관리자</string>
+	<string name="device_admin_description">화면 잠금을 활성화 하기위해서 기기관리자 권한이 필요합니다.</string>
 </resources>

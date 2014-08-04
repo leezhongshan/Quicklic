@@ -43,6 +43,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		initialize();
 		initializeView();
 		setCenterView();
+
 	}
 
 	@Override
@@ -59,7 +60,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private void resetQuicklic()
 	{
-		getQuicklicFrameLayout().removeViews(1, getViewCount());
+		if ( getQuicklicFrameLayout() != null )
+		{
+			getQuicklicFrameLayout().removeAllViews();
+		}
 	}
 
 	private void initialize()
@@ -117,7 +121,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		imageArrayList.clear();
 		item_count = preferencesManager.getNumPreferences(this);
 
-		for ( int i = 0; i < item_count && !isItemFull(i); i++ )
+		for ( int i = 0; i < item_count /*&& !isItemFull(i)*/; i++ )
 		{
 			String packageName = preferencesManager.getAppPreferences(this, i);
 			pkgArrayList.add(packageName);
@@ -140,15 +144,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			if ( v == getCenterView() ) // Add / Delete Button
+			if ( v == getCenterView() )
 			{
 				if ( !delEnabled )
 				{
-					if ( isItemFull(item_count) ) // check full count
-					{
-						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
-						return;
-					}
 					isActivity = true;
 					intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -209,7 +208,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-		if ( !isActivity )
+		if ( SettingFloatingInterface.getFloatingService() != null && !isActivity )
 		{
 			if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 			{
@@ -217,4 +216,5 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			}
 		}
 	};
+
 }

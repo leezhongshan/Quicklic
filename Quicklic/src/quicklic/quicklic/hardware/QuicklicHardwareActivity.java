@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
+import quicklic.quicklic.hardware.ComponentPower.DeviceAdmin;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.QuicklicActivity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -28,6 +31,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_BLUETOOTH = 5;
 	private final int COMP_ROTATE = 6;
 	private final int COMP_GPS = 7;
+	private final int COMP_POWER = 8;
+	private final int COMP_HOME = 9;
 
 	private boolean isActivity;
 
@@ -37,6 +42,10 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private ComponentGPS componentGPS;
 	private ComponentRotate componentRotate;
 	private ComponentVolume componentVolume;
+	private ComponentPower componentPower;
+
+	private DevicePolicyManager mPolicy;
+	private ComponentName mReceiverComponent;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -63,7 +72,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	 */
 	private void resetQuicklic()
 	{
-		getQuicklicFrameLayout().removeViews(1, getViewCount());
+		//getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
 	/**
@@ -78,11 +87,15 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	{
 		isActivity = true;
 
+		mPolicy = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+		mReceiverComponent = new ComponentName(this, DeviceAdmin.class);
+
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
 		componentBluetooth = new ComponentBluetooth();
 		componentGPS = new ComponentGPS(getApplicationContext());
 		componentRotate = new ComponentRotate(getApplicationContext());
 		componentVolume = new ComponentVolume((AudioManager) getSystemService(Context.AUDIO_SERVICE));
+		componentPower = new ComponentPower(getApplicationContext(), mPolicy, mReceiverComponent);
 
 		imageArrayList = new ArrayList<Item>();
 		imageArrayList.add(new Item(COMP_SOUND_DEC, R.drawable.sound_decrease));
@@ -92,6 +105,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
+		imageArrayList.add(new Item(COMP_POWER, R.drawable.screen_off));
+		imageArrayList.add(new Item(COMP_HOME, R.drawable.home));
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
@@ -135,6 +150,30 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				startActivity(intent);
 				return;
 
+			case COMP_HOME:
+				//isActivity = false;
+				Intent startMain = new Intent(Intent.ACTION_MAIN);
+				startMain.addCategory(Intent.CATEGORY_HOME);
+				startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(startMain);
+
+				return;
+
+			case COMP_POWER:
+				isActivity = false;
+
+				if ( !mPolicy.isAdminActive(mReceiverComponent) )
+				{
+					startActivity(componentPower.createIntent());
+				}
+				else
+				{
+					componentPower.screenOff();
+					finish();
+				}
+
+				return;
+
 			default:
 				switch ( v.getId() )
 				{
@@ -167,9 +206,12 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 	protected void onUserLeaveHint()
 	{
-		if ( isActivity && SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+		if ( isActivity
+				&& SettingFloatingInterface.getFloatingService() != null
+				&& SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 		{
 			homeKeyPressed();
 		}
 	}
+
 }
