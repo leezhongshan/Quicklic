@@ -60,6 +60,8 @@ public final class R {
         /**  System 
          */
         public static final int app_name=0x7f040000;
+        public static final int device_admin=0x7f040014;
+        public static final int device_admin_description=0x7f040015;
         public static final int err_limited_item_count=0x7f040004;
         public static final int favorite_disable_delete=0x7f040009;
         public static final int favorite_duplication_warning=0x7f04000d;
