@@ -101,7 +101,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 			case KEYBOARD:
 				isKeyBoardService = true;
-
 				intent = new Intent(QuicklicMainActivity.this, QuicklicKeyBoardService.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
