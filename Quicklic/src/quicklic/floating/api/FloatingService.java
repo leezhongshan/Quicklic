@@ -4,6 +4,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.quicklic.test.FinishService;
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -17,6 +21,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
+import android.util.Property;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -27,7 +32,9 @@ import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class FloatingService extends Service
 {
@@ -35,11 +42,13 @@ public class FloatingService extends Service
 	private static final int DOUBLE_PRESS_INTERVAL = 300;
 	private static final int LIMITED_MOVE_DISTANCE = 10;
 	private static final float SURFACE_HORIZON_RATIO = 0.55f;
+	private static final long ANIMATION_DURATION = 100;
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
 
 	private ImageView quicklic;
+	private RelativeLayout quicklicContainer;
 
 	private Context context;
 	private int deviceWidth;
@@ -107,14 +116,14 @@ public class FloatingService extends Service
 	/**
 	 * @함수명 : getQuicklic
 	 * @매개변수 :
-	 * @반환 : ImageView
-	 * @기능(역할) : Quicklic 이미지뷰 가져오기
+	 * @반환 : RelativeLayout
+	 * @기능(역할) : Quicklic 이미지뷰 Layout 가져오기
 	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 30.
+	 * @작성일 : 2014. 8. 7.
 	 */
-	public ImageView getQuicklic()
+	public RelativeLayout getQuicklic()
 	{
-		return quicklic;
+		return quicklicContainer;
 	}
 
 	/**
@@ -268,10 +277,15 @@ public class FloatingService extends Service
 	 */
 	private void createQuicklic()
 	{
-		quicklic = new ImageView(this);
-
 		// 이미지 설정
-		getQuicklic().setImageResource(floatingInterface.setDrawableQuicklic());
+		quicklic = new ImageView(this);
+		quicklic.setImageResource(floatingInterface.setDrawableQuicklic());
+		quicklic.setLayoutParams(new RelativeLayout.LayoutParams(imageWidth, imageHeight));
+
+		//animation위해서 quicklicContainer 추가함
+		quicklicContainer = new RelativeLayout(this);
+		quicklicContainer.addView(quicklic);
+		//quicklicContainer.setBackgroundResource(android.R.color.transparent);
 
 		/* WindowManager.LayoutParams.TYPE_PHONE : Window를 최상위로 유지
 		 * WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE :  다른 영역에 TouchEvent가 발생했을 때 인지 하지 않음
@@ -449,7 +463,7 @@ public class FloatingService extends Service
 		private float initialTouchY;
 		private int moveTouchX;
 		private int moveTouchY;
-		ImageView imageView;
+		private RelativeLayout imageView;
 
 		@Override
 		public boolean onTouch( View v, MotionEvent event )
@@ -523,7 +537,6 @@ public class FloatingService extends Service
 		 */
 		private void moveToSide()
 		{
-
 			initialX = layoutParams.x;
 			initialY = layoutParams.y;
 
@@ -584,7 +597,78 @@ public class FloatingService extends Service
 			layoutParams.x = toX;
 			layoutParams.y = toY;
 
-			windowManagerUpdateViewLayout(imageView, layoutParams);
+			//			if ( !moveToSide )
+			animateFromTo(quicklic, initialX, initialY, toX, toY);
+			//			else
+			//				windowManagerUpdateViewLayout(imageView, layoutParams);
 		}
 	};
+
+	public void animateFromTo( View v, int fromX, int fromY, final int toX, final int toY )
+	{
+		layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+		layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT;
+		windowManagerUpdateViewLayout(getQuicklic(), layoutParams);
+
+		/**
+		 * object animator
+		 */
+		Property<View, Float> xProp = View.X;
+		Property<View, Float> yProp = View.Y;
+
+		float[] xFloat = new float[2];
+		xFloat[0] = fromX;
+		xFloat[1] = toX;
+
+		float[] yFloat = new float[2];
+		yFloat[0] = fromY;
+		yFloat[1] = toY;
+
+		ObjectAnimator xAnimator = ObjectAnimator.ofFloat(v, xProp, xFloat);
+		ObjectAnimator yAnimator = ObjectAnimator.ofFloat(v, yProp, yFloat);
+
+		final AnimatorSet localAnimatorSet = new AnimatorSet();
+		localAnimatorSet.setInterpolator(new LinearInterpolator());
+		localAnimatorSet.setDuration(ANIMATION_DURATION);
+
+		localAnimatorSet.addListener(new AnimatorListener()
+		{
+			@Override
+			public void onAnimationStart( Animator animation )
+			{
+				getQuicklic().setEnabled(false);
+			}
+
+			@Override
+			public void onAnimationRepeat( Animator animation )
+			{
+
+			}
+
+			@Override
+			public void onAnimationEnd( Animator animation )
+			{
+				getQuicklic().setEnabled(true);
+
+				layoutParams.width = imageWidth;
+				layoutParams.height = imageHeight;
+
+				layoutParams.x = toX;
+				layoutParams.y = toY;
+				windowManagerUpdateViewLayout(getQuicklic(), layoutParams);
+
+				quicklic.setX(0);
+				quicklic.setY(0);
+			}
+
+			@Override
+			public void onAnimationCancel( Animator animation )
+			{
+
+			}
+		});
+
+		localAnimatorSet.playTogether(xAnimator, yAnimator);
+		localAnimatorSet.start();
+	}
 }

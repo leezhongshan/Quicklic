@@ -28,8 +28,10 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_BLUETOOTH = 5;
 	private final int COMP_ROTATE = 6;
 	private final int COMP_GPS = 7;
+	private final int COMP_HOME_KEY = 8;
 
 	private boolean isActivity;
+	private boolean isHomeKey;
 
 	private ArrayList<Item> imageArrayList;
 	private ComponentWifi componentWifi;
@@ -77,6 +79,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private void initialize()
 	{
 		isActivity = true;
+		isHomeKey = false;
 
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
 		componentBluetooth = new ComponentBluetooth();
@@ -92,6 +95,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
+		imageArrayList.add(new Item(COMP_HOME_KEY, R.drawable.ic_launcher));
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
@@ -130,11 +134,19 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 			case COMP_GPS:
 				isActivity = false;
-				Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
+				Intent gps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+				gps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(gps);
 				return;
 
+			case COMP_HOME_KEY:
+				isActivity = false;
+				isHomeKey = true;
+				Intent homekey = new Intent(Intent.ACTION_MAIN);
+				homekey.addCategory(Intent.CATEGORY_HOME);
+				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(homekey);
+				return;
 			default:
 				switch ( v.getId() )
 				{
@@ -170,6 +182,11 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		if ( isActivity && SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
 		{
 			homeKeyPressed();
+		}
+		if ( isHomeKey )
+		{
+			SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+			finish();
 		}
 	}
 }
