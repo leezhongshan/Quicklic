@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.hardware.ComponentPower.DeviceAdmin;
 import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.QuicklicActivity;
+import android.app.admin.DeviceAdminReceiver;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -53,6 +53,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
+
+		mPolicy = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+		mReceiverComponent = new ComponentName(this, DeviceAdmin.class);
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	 */
 	private void resetQuicklic()
 	{
-		getQuicklicFrameLayout().removeViews(1, getViewCount());
+		//		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
 	/**
@@ -89,15 +92,15 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		isActivity = true;
 		isHomeKey = false;
 
-		mPolicy = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-		mReceiverComponent = new ComponentName(this, DeviceAdmin.class);
+		//		mPolicy = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+		//		mReceiverComponent = new ComponentName(this, DeviceAdmin.class);
 
 		componentWifi = new ComponentWifi((WifiManager) getSystemService(Context.WIFI_SERVICE));
 		componentBluetooth = new ComponentBluetooth();
 		componentGPS = new ComponentGPS(getApplicationContext());
 		componentRotate = new ComponentRotate(getApplicationContext());
 		componentVolume = new ComponentVolume((AudioManager) getSystemService(Context.AUDIO_SERVICE));
-		componentPower = new ComponentPower(getApplicationContext(), mPolicy, mReceiverComponent);
+		//		componentPower = new ComponentPower(getApplicationContext(), mPolicy, mReceiverComponent);
 
 		imageArrayList = new ArrayList<Item>();
 		imageArrayList.add(new Item(COMP_SOUND_DEC, R.drawable.sound_decrease));
@@ -164,16 +167,16 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 			case COMP_POWER:
 				isActivity = false;
-
-				if ( !mPolicy.isAdminActive(mReceiverComponent) )
-				{
-					startActivity(componentPower.createIntent());
-				}
-				else
-				{
-					componentPower.screenOff();
-					finish();
-				}
+				getAdministratorForPower();
+				//				if ( !mPolicy.isAdminActive(mReceiverComponent) )
+				//				{
+				//					startActivity(componentPower.createIntent());
+				//				}
+				//				else
+				//				{
+				//					componentPower.screenOff();
+				//					finish();
+				//				}
 
 				return;
 
@@ -222,4 +225,50 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		}
 	}
 
+	private final int REQ_ACTIVATE_DEVICE_ADMIN = 100;
+
+	private void getAdministratorForPower()
+	{
+		if ( !mPolicy.isAdminActive(mReceiverComponent) )
+		{
+			Intent activateDeviceAdminIntent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+
+			activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mReceiverComponent);
+			activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.device_admin_description));
+
+			startActivityForResult(activateDeviceAdminIntent, REQ_ACTIVATE_DEVICE_ADMIN);
+		}
+		else
+		{
+			mPolicy.lockNow();
+			finish();
+
+			if ( SettingFloatingInterface.getFloatingService() != null )
+			{
+				SettingFloatingInterface.getFloatingService().setVisibility(true);
+			}
+		}
+	}
+
+	public static class DeviceAdmin extends DeviceAdminReceiver
+	{
+		public DeviceAdmin()
+		{
+
+		}
+
+		@Override
+		public void onEnabled( Context context, Intent intent )
+		{
+			Toast.makeText(context, "기기관리자가 활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+			super.onEnabled(context, intent);
+		}
+
+		@Override
+		public void onDisabled( Context context, Intent intent )
+		{
+			Toast.makeText(context, "기기관리자가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+			super.onDisabled(context, intent);
+		}
+	}
 }

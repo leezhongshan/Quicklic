@@ -30,7 +30,7 @@ public class ComponentPower extends Activity {
 		Intent activateDeviceAdminIntent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 
 		activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mReceiverComponent);
-		activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.device_admin_description));
+		activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "dd");//getResources().getString(R.string.device_admin_description));
 
 		return activateDeviceAdminIntent;
 	}
@@ -67,26 +67,26 @@ public class ComponentPower extends Activity {
 		}
 	}
 
-	public static class DeviceAdmin extends DeviceAdminReceiver
-	{
-		public DeviceAdmin()
-		{
-
-		}
-
-		@Override
-		public void onEnabled( Context context, Intent intent )
-		{
-			Toast.makeText(context, "기기관리자가 활성화 되었습니다.", Toast.LENGTH_SHORT).show();
-			super.onEnabled(context, intent);
-		}
-
-		@Override
-		public void onDisabled( Context context, Intent intent )
-		{
-			Toast.makeText(context, "기기관리자가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
-			super.onDisabled(context, intent);
-		}
-	}
+	//	public static class DeviceAdmin extends DeviceAdminReceiver
+	//	{
+	//			public DeviceAdmin()
+	//			{
+	//	
+	//			}
+	//	
+	//			@Override
+	//			public void onEnabled( Context context, Intent intent )
+	//			{
+	//				Toast.makeText(context, "기기관리자가 활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+	//				super.onEnabled(context, intent);
+	//			}
+	//	
+	//			@Override
+	//			public void onDisabled( Context context, Intent intent )
+	//			{
+	//				Toast.makeText(context, "기기관리자가 비활성화 되었습니다.", Toast.LENGTH_SHORT).show();
+	//				super.onDisabled(context, intent);
+	//			}
+	//	}
 
 }
