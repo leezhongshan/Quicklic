@@ -31,12 +31,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_BLUETOOTH = 5;
 	private final int COMP_ROTATE = 6;
 	private final int COMP_GPS = 7;
-<<<<<<< HEAD
 	private final int COMP_POWER = 8;
 	private final int COMP_HOME = 9;
-=======
-	private final int COMP_HOME_KEY = 8;
->>>>>>> master
 
 	private boolean isActivity;
 	private boolean isHomeKey;
@@ -77,7 +73,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	 */
 	private void resetQuicklic()
 	{
-		//getQuicklicFrameLayout().removeViews(1, getViewCount());
+		getQuicklicFrameLayout().removeViews(1, getViewCount());
 	}
 
 	/**
@@ -111,12 +107,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		imageArrayList.add(new Item(COMP_ROTATE, componentRotate.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_RING, componentVolume.getDrawable()));
 		imageArrayList.add(new Item(COMP_SOUND_INC, R.drawable.sound_increase));
-<<<<<<< HEAD
 		imageArrayList.add(new Item(COMP_POWER, R.drawable.screen_off));
 		imageArrayList.add(new Item(COMP_HOME, R.drawable.home));
-=======
-		imageArrayList.add(new Item(COMP_HOME_KEY, R.drawable.ic_launcher));
->>>>>>> master
 
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
@@ -160,9 +152,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				startActivity(gps);
 				return;
 
-<<<<<<< HEAD
 			case COMP_HOME:
-				//isActivity = false;
+				//				isActivity = false;
+				//				isHomeKey = true;
 				Intent startMain = new Intent(Intent.ACTION_MAIN);
 				startMain.addCategory(Intent.CATEGORY_HOME);
 				startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -185,16 +177,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 
 				return;
 
-=======
-			case COMP_HOME_KEY:
-				isActivity = false;
-				isHomeKey = true;
-				Intent homekey = new Intent(Intent.ACTION_MAIN);
-				homekey.addCategory(Intent.CATEGORY_HOME);
-				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(homekey);
-				return;
->>>>>>> master
 			default:
 				switch ( v.getId() )
 				{
