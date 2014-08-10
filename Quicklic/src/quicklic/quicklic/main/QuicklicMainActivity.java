@@ -7,7 +7,6 @@ import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
 import quicklic.quicklic.hardware.QuicklicHardwareActivity;
 import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
-import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,6 +19,8 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	private final int KEYBOARD = 1;
 	private final int FAVORITE = 2;
 
+	private final int HARDWARE_POWER = 0;
+
 	private ArrayList<Item> imageArrayList;
 	private boolean isKeyBoardService;
 	private boolean isNotHomeKey;
@@ -27,20 +28,20 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 	{
-		// Activity가 생성될 때, Floating Image를 사라지게 함
-		SettingFloatingInterface.getFloatingService().setVisibility(false);
-
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_quicklic);
 
 		initialize();
+
+		// Activity가 생성될 때, Floating Image를 사라지게 함
+		setFloatingVisibility(false);
 	}
 
 	protected void onResume()
 	{
 		isNotHomeKey = false;
 		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
-		if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() == View.VISIBLE )
+		if ( getFloatingVisibility() == View.VISIBLE )
 		{
 			getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
 		}
@@ -64,9 +65,27 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	{
 		// Activity가 제거될 때, Floating Image를 보여지게 함
 		if ( !isKeyBoardService )
-			SettingFloatingInterface.getFloatingService().setVisibility(true);
+			setFloatingVisibility(true);
 
 		super.onDestroy();
+	}
+
+	@Override
+	protected void onActivityResult( int requestCode, int resultCode, Intent data )
+	{
+		switch ( requestCode )
+		{
+		case HARDWARE:
+			if ( resultCode == HARDWARE_POWER )
+			{
+				finish();
+			}
+			break;
+
+		default:
+			break;
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	private void initialize()
@@ -96,7 +115,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			case HARDWARE:
 				intent = new Intent(QuicklicMainActivity.this, QuicklicHardwareActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivity(intent);
+				startActivityForResult(intent, HARDWARE);
 				break;
 
 			case KEYBOARD:
@@ -104,6 +123,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent = new Intent(QuicklicMainActivity.this, QuicklicKeyBoardService.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
+				setFloatingVisibility(false);
 				finish();
 				break;
 
@@ -111,7 +131,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
-				startActivityForResult(intent, 2);
+				startActivityForResult(intent, FAVORITE);
 				break;
 
 			default:

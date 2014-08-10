@@ -3,22 +3,27 @@ package quicklic.floating.api;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.test.FinishService;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.RemoteException;
 import android.support.v4.app.NotificationCompat;
 import android.util.DisplayMetrics;
 import android.util.Property;
@@ -35,6 +40,7 @@ import android.view.WindowManager.LayoutParams;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class FloatingService extends Service
 {
@@ -48,9 +54,9 @@ public class FloatingService extends Service
 	private WindowManager.LayoutParams layoutParams;
 
 	private ImageView quicklic;
-	private RelativeLayout quicklicContainer;
+	private static RelativeLayout quicklicRelativeLayout;
 
-	private Context context;
+	private static Context context;
 	private int deviceWidth;
 	private int deviceHeight;
 	private int deviceHorizontalCenter;
@@ -58,19 +64,20 @@ public class FloatingService extends Service
 	private int imageWidth;
 	private int imageHeight;
 
-	private boolean moveToSide;
+	private static boolean moveToSide;
 	private boolean isDoubleClicked = false;
 	private boolean isMoved = false;
 
-	private FloatingInterface floatingInterface;
 	private NotificationManager notificationManager;
 
 	private Timer timer;
 	private long lastPressTime;
 
-	/*****************************************************************************/
+	public static RemoteBinder remoteBinder;
+
+	/*********************************************************/
 	/** API Section **/
-	/*****************************************************************************/
+	/*********************************************************/
 
 	/**
 	 * @함수명 : changeMoveToSide
@@ -80,7 +87,7 @@ public class FloatingService extends Service
 	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 5.
 	 */
-	public boolean changeMoveToSide()
+	public static boolean changeMoveToSide()
 	{
 		if ( moveToSide )
 		{
@@ -101,7 +108,7 @@ public class FloatingService extends Service
 	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 5.
 	 */
-	public void setVisibility( boolean bool )
+	public static void setVisibility( boolean bool )
 	{
 		if ( bool )
 		{
@@ -121,9 +128,9 @@ public class FloatingService extends Service
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 8. 7.
 	 */
-	public RelativeLayout getQuicklic()
+	public static RelativeLayout getQuicklic()
 	{
-		return quicklicContainer;
+		return quicklicRelativeLayout;
 	}
 
 	/**
@@ -134,20 +141,112 @@ public class FloatingService extends Service
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 30.
 	 */
-	public void stopQuicklicService()
+	public static void stopQuicklicService()
 	{
+		context.unbindService(serviceConnection);
+
 		Intent intent = new Intent(context, FinishService.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		startActivity(intent);
+		context.startActivity(intent);
 	}
 
 	/*****************************************************************************/
 	/** Developer Section **/
 	/*****************************************************************************/
-	@Override
-	public IBinder onBind( Intent arg0 )
+
+	/**
+	 * @author 태훈 AIDL을 활용한 Interface Binder 클래스
+	 */
+	public static class RemoteBinder extends FloatingInterfaceAIDL.Stub
 	{
-		return null;
+
+		@Override
+		public int setDrawableQuicklic() throws RemoteException
+		{
+			return R.drawable.floating;
+		}
+
+		@Override
+		public void setFloatingVisibility( boolean value ) throws RemoteException
+		{
+			setVisibility(value);
+		}
+
+		@Override
+		public int getFloatingVisibility() throws RemoteException
+		{
+			return getQuicklic().getVisibility();
+		}
+
+		@Override
+		public float setSize() throws RemoteException
+		{
+			return 0.14f;
+		}
+
+		@Override
+		public boolean setAnimation() throws RemoteException
+		{
+			return true;
+		}
+
+		@Override
+		public void touched() throws RemoteException
+		{
+			Intent intent = new Intent(context, QuicklicMainActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 서비스 도중 실행 시, New Task 플래그가 필요하다.
+			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // 한 번 호출된 Activity에 대해서는 중복 호출 되지 않는다. (중복 불가 적용)
+			setFloatingVisibility(false);
+			context.startActivity(intent);
+		}
+
+		@Override
+		public void doubleTouched() throws RemoteException
+		{
+			boolean mode = changeMoveToSide();
+			if ( mode )
+				Toast.makeText(context, R.string.quicklic_magnet_mode, Toast.LENGTH_SHORT).show();
+			else
+				Toast.makeText(context, R.string.quicklic_floating_mode, Toast.LENGTH_SHORT).show();
+		}
+
+		@Override
+		public void longTouched() throws RemoteException
+		{
+			stopQuicklicService();
+		}
+	}
+
+	/**
+	 * Service Connection
+	 */
+	private static ServiceConnection serviceConnection = new ServiceConnection()
+	{
+		@Override
+		public void onServiceDisconnected( ComponentName componentName )
+		{
+
+		}
+
+		@Override
+		public void onServiceConnected( ComponentName componentName, IBinder iBinder )
+		{
+			// Binder 객체 변환
+			remoteBinder = (RemoteBinder) iBinder;
+		}
+	};
+
+	/**
+	 * @함수명 : onBind
+	 * @매개변수 : Intent intent
+	 * @기능(역할) : Binder 객체 반환
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 10.
+	 */
+	@Override
+	public IBinder onBind( Intent intent )
+	{
+		return remoteBinder;
 	}
 
 	/**
@@ -161,27 +260,39 @@ public class FloatingService extends Service
 	public void onConfigurationChanged( Configuration newConfig )
 	{
 		super.onConfigurationChanged(newConfig);
-		displayMetrics();
+		try
+		{
+			displayMetrics();
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
-		if ( startId == 1 || flags == 1 )
+		try
 		{
-			initialize(intent);
-			createManager();
-			displayMetrics();
-			createQuicklic();
-			settingQuicklic();
-			quicklicNotification();
+			if ( startId == 1 || flags == 1 )
+			{
+				initialize(intent);
+				createManager();
+				displayMetrics();
+				createQuicklic();
+				settingQuicklic();
+				quicklicNotification();
+			}
+			else
+			{
+				stopService(intent);
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			stopService(intent);
+			e.printStackTrace();
 		}
-
 		return Service.START_NOT_STICKY;
 	}
 
@@ -202,15 +313,25 @@ public class FloatingService extends Service
 		notificationManager.cancel(NOTIFICATION_ID);
 	}
 
+	/**
+	 * @함수명 : initialize
+	 * @매개변수 : Intent intent
+	 * @반환 : void
+	 * @기능(역할) : 기초 작업 Binder 설정 등
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 10.
+	 */
 	private void initialize( Intent intent )
 	{
 		try
 		{
-			context = this;
-			floatingInterface = (FloatingInterface) intent.getSerializableExtra("interface");
-			floatingInterface.setContext(this);
+			remoteBinder = new RemoteBinder();
 
-			moveToSide = floatingInterface.setAnimation();
+			bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+
+			context = this;
+
+			moveToSide = remoteBinder.setAnimation();
 			timer = new Timer();
 		}
 		catch (Exception e)
@@ -233,6 +354,7 @@ public class FloatingService extends Service
 	}
 
 	/**
+	 * @throws RemoteException
 	 * @함수명 : displayMetrics
 	 * @매개변수 :
 	 * @반환 : void
@@ -240,7 +362,7 @@ public class FloatingService extends Service
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 6. 25.
 	 */
-	private void displayMetrics()
+	private void displayMetrics() throws RemoteException
 	{
 		Display windowDisplay = windowManager.getDefaultDisplay();
 		DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -253,13 +375,13 @@ public class FloatingService extends Service
 		// 화면 회전의 방향에 따른 floating resize
 		if ( windowDisplay.getRotation() == Surface.ROTATION_0 )
 		{
-			imageWidth = (int) (deviceWidth * floatingInterface.setSize());
-			imageHeight = (int) (deviceWidth * floatingInterface.setSize());
+			imageWidth = (int) (deviceWidth * remoteBinder.setSize());
+			imageHeight = (int) (deviceWidth * remoteBinder.setSize());
 		}
 		else
 		{
-			imageWidth = (int) (deviceWidth * floatingInterface.setSize() * SURFACE_HORIZON_RATIO);
-			imageHeight = (int) (deviceWidth * floatingInterface.setSize() * SURFACE_HORIZON_RATIO);
+			imageWidth = (int) (deviceWidth * remoteBinder.setSize() * SURFACE_HORIZON_RATIO);
+			imageHeight = (int) (deviceWidth * remoteBinder.setSize() * SURFACE_HORIZON_RATIO);
 		}
 
 		// Device의 Display에서 가운데 위치 구하기
@@ -268,6 +390,7 @@ public class FloatingService extends Service
 	}
 
 	/**
+	 * @throws RemoteException
 	 * @함수명 : createQuicklic
 	 * @매개변수 :
 	 * @반환 : void
@@ -275,17 +398,17 @@ public class FloatingService extends Service
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 5.
 	 */
-	private void createQuicklic()
+	private void createQuicklic() throws RemoteException
 	{
 		// 이미지 설정
 		quicklic = new ImageView(this);
-		quicklic.setImageResource(floatingInterface.setDrawableQuicklic());
+		quicklic.setImageResource(remoteBinder.setDrawableQuicklic());
 		quicklic.setLayoutParams(new RelativeLayout.LayoutParams(imageWidth, imageHeight));
 
-		//animation위해서 quicklicContainer 추가함
-		quicklicContainer = new RelativeLayout(this);
-		quicklicContainer.addView(quicklic);
-		//quicklicContainer.setBackgroundResource(android.R.color.transparent);
+		//animation위해서 quicklicRelativeLayout 추가함
+		quicklicRelativeLayout = new RelativeLayout(this);
+		quicklicRelativeLayout.addView(quicklic);
+		quicklicRelativeLayout.setBackgroundResource(android.R.color.transparent);
 
 		/* WindowManager.LayoutParams.TYPE_PHONE : Window를 최상위로 유지
 		 * WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE :  다른 영역에 TouchEvent가 발생했을 때 인지 하지 않음
@@ -387,12 +510,10 @@ public class FloatingService extends Service
 
 	private OnClickListener clickListener = new OnClickListener()
 	{
-		private View view;
-
+		@SuppressLint("HandlerLeak")
 		@Override
 		public void onClick( View v )
 		{
-			this.view = v;
 			try
 			{
 				if ( v == getQuicklic() )
@@ -405,8 +526,7 @@ public class FloatingService extends Service
 					 */
 					if ( (pressTime - lastPressTime) <= DOUBLE_PRESS_INTERVAL )
 					{
-						floatingInterface.doubleTouched(view);
-
+						remoteBinder.doubleTouched();
 						// Double Clicked 인 경우, 핸들러가 실행되도 Single Click 작업 하지 않음.
 						isDoubleClicked = true;
 					}
@@ -424,7 +544,14 @@ public class FloatingService extends Service
 								// Double Clicked 가 아니고 객체의 이동 수행을 하지 않았다면 실행.
 								if ( !isDoubleClicked && isMoved == false )
 								{
-									floatingInterface.touched(view);
+									try
+									{
+										remoteBinder.touched();
+									}
+									catch (RemoteException e)
+									{
+										e.printStackTrace();
+									}
 								}
 							}
 						};
@@ -449,7 +576,14 @@ public class FloatingService extends Service
 		{
 			if ( !isMoved )
 			{
-				floatingInterface.longTouched(v);
+				try
+				{
+					remoteBinder.longTouched();
+				}
+				catch (RemoteException e)
+				{
+					e.printStackTrace();
+				}
 			}
 			return true;
 		}

@@ -7,7 +7,7 @@ import java.util.TimerTask;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainActivity;
-import quicklic.quicklic.test.SettingFloatingInterface;
+import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
@@ -92,8 +92,6 @@ public class QuicklicKeyBoardService extends Service {
 			// Quicklic View 숨기기
 			try
 			{
-				SettingFloatingInterface.getFloatingService().setVisibility(false);
-
 				initialize(intent);
 				createManager();
 				displayMetrics();
@@ -304,6 +302,7 @@ public class QuicklicKeyBoardService extends Service {
 		 * @작성자 : THYang
 		 * @작성일 : 2014. 6. 18.
 		 */
+		@SuppressLint("HandlerLeak")
 		@Override
 		public void onClick( View v )
 		{
@@ -376,7 +375,6 @@ public class QuicklicKeyBoardService extends Service {
 				 */
 				if ( (pressTime - lastPressTime) <= DOUBLE_PRESS_INTERVAL )
 				{
-					// TODO Double Clicked
 					// Double Clicked 인 경우, 핸들러가 실행되도 Single Click 작업 하지 않음.
 					isDoubleClicked = true;
 				}

@@ -4,11 +4,18 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import quicklic.floating.api.FloatingService.RemoteBinder;
+import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.test.SettingFloatingInterface;
+import android.app.Service;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -27,7 +34,7 @@ import android.widget.Toast;
 public class QuicklicActivity extends DeviceMetricActivity {
 
 	private final static int HOMEKEY_DELAY_TIME = 5000;
-	private final static int LIMTED_ITEM_COUNT = 10;
+	private final static int LIMTED_ITEM_COUNT = 6;
 	private final static int DEFALT_POSITION = 270;
 	private int IMG_PADDING = 12;
 	private int MAIN_PADDING = 20;
@@ -47,6 +54,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private int viewCount;
 	private int sizeOfQuicklicMain;
 	private int deviceWidth;
+
+	private RemoteBinder remoteBinder;
 
 	/**************************************
 	 * Support Function Section
@@ -187,43 +196,67 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	}
 
 	/**
-	 * @함수명 : homeKeyPressed
-	 * @매개변수 :
+	 * @함수명 : setFloatingVisibility
+	 * @매개변수 : boolean enable
 	 * @반환 : void
-	 * @기능(역할) : 홈키가 눌렸을 때, 타이머를 이용하여 일정 시간 뒤에 Floating이 화면에 보여짐
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 6. 26.
+	 * @기능(역할) : floating image 의 visibility 설정
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 10.
 	 */
-	protected void homeKeyPressed()
+	protected void setFloatingVisibility( boolean enable )
 	{
-		SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.GONE);
-		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
-
-		TimerTask checkTask;
-		checkTask = new TimerTask()
+		try
 		{
-			@Override
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
-						finish();
-					}
-				});
-			}
-		};
+			remoteBinder.setFloatingVisibility(enable);
+		}
+		catch (RemoteException e)
+		{
+			e.printStackTrace();
+		}
+	}
 
-		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
+	/**
+	 * @함수명 : getFloatingVisibility
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : floating image 의 visibility 상태 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 10.
+	 */
+	protected int getFloatingVisibility()
+	{
+		try
+		{
+			return remoteBinder.getFloatingVisibility();
+		}
+		catch (RemoteException e)
+		{
+			e.printStackTrace();
+		}
+		return View.VISIBLE;
 	}
 
 	/**************************************
 	 * Developer Section
 	 **************************************/
+
+	/**
+	 * Service Connection
+	 */
+	private ServiceConnection serviceConnection = new ServiceConnection()
+	{
+		@Override
+		public void onServiceDisconnected( ComponentName componentName )
+		{
+
+		}
+
+		@Override
+		public void onServiceConnected( ComponentName componentName, IBinder iBinder )
+		{
+			remoteBinder = (RemoteBinder) iBinder;
+		}
+	};
 
 	/**
 	 * @함수명 : setContentView
@@ -239,21 +272,18 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		initialize();
 	}
 
-	/**
-	 * @함수명 : onTouchEvent
-	 * @매개변수 :
-	 * @기능(역할) : 영역 밖이 눌렸을 경우 창이 닫히도록 한다.
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 13.
-	 */
 	@Override
-	public boolean onTouchEvent( MotionEvent event )
+	protected void onResume()
 	{
-		if ( event.getAction() == MotionEvent.ACTION_DOWN )
-		{
-			finish();
-		}
-		return super.onTouchEvent(event);
+		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+		super.onResume();
+	}
+
+	@Override
+	protected void onPause()
+	{
+		unbindService(serviceConnection);
+		super.onPause();
 	}
 
 	/**
@@ -266,6 +296,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 */
 	private void initialize()
 	{
+		remoteBinder = new RemoteBinder();
 		context = this;
 
 		// 화면 회전의 방향에 따른 resize 비율
@@ -295,6 +326,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
 		quicklicImageView.setLayoutParams(mainLayoutParams);
 		quicklicImageView.setOnTouchListener(touchListener);
+
+		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
 	}
 
 	/**
@@ -312,6 +345,58 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		axis.setAxis_x((int) (origin_x + radius * Math.cos(angles)));
 		axis.setAxis_y((int) (origin_y + radius * Math.sin(angles)));
 		return axis;
+	}
+
+	/**
+	 * @함수명 : homeKeyPressed
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 홈키가 눌렸을 때, 타이머를 이용하여 일정 시간 뒤에 Floating이 화면에 보여짐
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 6. 26.
+	 */
+	protected void homeKeyPressed()
+	{
+		setFloatingVisibility(false);
+		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
+
+		TimerTask checkTask;
+		checkTask = new TimerTask()
+		{
+			@Override
+			public void run()
+			{
+				runOnUiThread(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						setFloatingVisibility(true);
+						finish();
+					}
+				});
+			}
+		};
+
+		Timer mTimer = new Timer();
+		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
+	}
+
+	/**
+	 * @함수명 : onTouchEvent
+	 * @매개변수 :
+	 * @기능(역할) : 영역 밖이 눌렸을 경우 창이 닫히도록 한다.
+	 * @작성자 : JHPark
+	 * @작성일 : 2014. 5. 13.
+	 */
+	@Override
+	public boolean onTouchEvent( MotionEvent event )
+	{
+		if ( event.getAction() == MotionEvent.ACTION_DOWN )
+		{
+			finish();
+		}
+		return super.onTouchEvent(event);
 	}
 
 	private OnTouchListener touchListener = new OnTouchListener()

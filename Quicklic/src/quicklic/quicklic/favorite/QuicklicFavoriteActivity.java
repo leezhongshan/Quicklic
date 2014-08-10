@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.test.SettingFloatingInterface;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.app.Activity;
 import android.content.Intent;
@@ -169,7 +168,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 						Intent intent = packageManager.getLaunchIntentForPackage(packageName);
 						startActivity(intent);
 
-						SettingFloatingInterface.getFloatingService().getQuicklic().setVisibility(View.VISIBLE);
+						setFloatingVisibility(true);
 						finish();
 					}
 					catch (Exception e)
@@ -211,7 +210,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	{
 		if ( !isActivity )
 		{
-			if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
+			if ( getFloatingVisibility() != View.VISIBLE )
 			{
 				homeKeyPressed();
 			}
