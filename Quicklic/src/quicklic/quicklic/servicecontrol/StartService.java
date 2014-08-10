@@ -1,4 +1,4 @@
-package quicklic.quicklic.test;
+package quicklic.quicklic.servicecontrol;
 
 import quicklic.floating.api.FloatingService;
 import android.app.Activity;

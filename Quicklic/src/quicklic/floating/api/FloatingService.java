@@ -4,7 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.quicklic.main.QuicklicMainActivity;
-import quicklic.quicklic.test.FinishService;
+import quicklic.quicklic.servicecontrol.FinishService;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorSet;
@@ -530,9 +530,9 @@ public class FloatingService extends Service
 						// Double Clicked 인 경우, 핸들러가 실행되도 Single Click 작업 하지 않음.
 						isDoubleClicked = true;
 					}
-					// Single Clicked
 					else
 					{
+						// Single Clicked
 						isDoubleClicked = false;
 
 						// Handler 에 Single Click 시 수행할 작업을 등록

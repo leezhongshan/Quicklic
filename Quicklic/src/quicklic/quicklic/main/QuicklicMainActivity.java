@@ -19,7 +19,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	private final int KEYBOARD = 1;
 	private final int FAVORITE = 2;
 
-	private final int HARDWARE_POWER = 0;
+	private final int HARDWARE_POWER = 100;
 
 	private ArrayList<Item> imageArrayList;
 	private boolean isKeyBoardService;

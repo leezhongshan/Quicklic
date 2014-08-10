@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import quicklic.floating.api.FloatingService.RemoteBinder;
 import quicklic.floating.api.FloatingService;
+import quicklic.floating.api.FloatingService.RemoteBinder;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.v4.view.ViewPager;
 import android.view.GestureDetector;
 import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
@@ -34,7 +35,7 @@ import android.widget.Toast;
 public class QuicklicActivity extends DeviceMetricActivity {
 
 	private final static int HOMEKEY_DELAY_TIME = 5000;
-	private final static int LIMTED_ITEM_COUNT = 6;
+	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
 	private int IMG_PADDING = 12;
 	private int MAIN_PADDING = 20;
@@ -45,10 +46,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private GestureDetector gestureDetector;
 
 	private FrameLayout quicklicFrameLayout;
-	private FrameLayout.LayoutParams mainLayoutParams;
 	private FrameLayout.LayoutParams centerLayoutParams;
 
-	private ImageView quicklicImageView;
 	private ImageView centerView;
 
 	private int viewCount;
@@ -56,6 +55,10 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private int deviceWidth;
 
 	private RemoteBinder remoteBinder;
+
+	private ArrayList<FrameLayout> quickPagerArrayList = new ArrayList<FrameLayout>();
+	private ViewPager viewPager;
+	private ItemPagerAdapter itemPagerAdapter;
 
 	/**************************************
 	 * Support Function Section
@@ -107,7 +110,10 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 */
 	protected boolean isItemFull( int item_count )
 	{
-		return LIMTED_ITEM_COUNT <= item_count;
+		if ( item_count != 0 )
+			return (item_count % LIMTED_ITEM_COUNT) == 0;
+		else
+			return false;
 	}
 
 	/**
@@ -122,9 +128,12 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 */
 	protected void addViewsForBalance( int item_count, ArrayList<Item> imageArrayList, OnClickListener clickListener )
 	{
+		FrameLayout pagerFrameLayout = new FrameLayout(this);
+		quickPagerArrayList.clear();
+		viewPager = new ViewPager(this);
+
 		viewCount = item_count;
 
-		Axis axis = new Axis(); // 아이템이 놓일 좌표를 저장하는 자료구조 (float x, float y)
 		final float itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
 		final float frameWidth = sizeOfQuicklicMain;
 		final float frameHeight = sizeOfQuicklicMain;
@@ -136,63 +145,82 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		float origin_x = (frameWidth - itemSize) / 2;
 		float origin_y = (frameHeight - itemSize) / 2;
 
-		if ( centerView != null )
+		int pagerCount = 1;
+
+		if ( item_count != 0 )
 		{
-			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			centerLayoutParams.leftMargin = (int) origin_x;
-			centerLayoutParams.topMargin = (int) origin_y;
+			// item 개수에 따른 page 수 구하기
+			pagerCount = (item_count / LIMTED_ITEM_COUNT);
+			if ( item_count % LIMTED_ITEM_COUNT != 0 )
+				pagerCount += 1;
 
-			centerView.setScaleType(ScaleType.CENTER_INSIDE);
-			centerView.setLayoutParams(centerLayoutParams);
-			quicklicFrameLayout.addView(centerView);
-			viewCount++;
-		}
+			// item 개수에 따른 각도 구하기
+			final int ANGLE = 360 / ((item_count > LIMTED_ITEM_COUNT) ? LIMTED_ITEM_COUNT : item_count); // 360 / (Item 개수)
 
-		if ( item_count == 0 )
-			return;
-
-		// item 개수에 따른 각도 구하기
-		final int ANGLE = 360 / item_count; // 360 / (Item 개수)
-
-		int angle_sum = 0; // 각도 누적
-
-		for ( int i = 0; i < item_count; i++ )
-		{
-			// 레이아웃 설정 : 기본적인 크기는 정해져 있으며, 좌표 값만 설정
-			ImageView itemImageView = new ImageView(context);
-			itemImageView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
-			itemImageView.setScaleType(ScaleType.CENTER_INSIDE);
-			itemImageView.setPadding(IMG_PADDING, IMG_PADDING, IMG_PADDING, IMG_PADDING);
-
-			// image 그림 추가
-			if ( imageArrayList != null && i < imageArrayList.size() )
+			for ( int pageNum = 0; pageNum < pagerCount; pageNum++ ) //pager count 만큼 뷰를 생성해서 돌린다.
 			{
-				if ( imageArrayList.get(i).getIconDrawable() != null )
-					itemImageView.setImageDrawable(imageArrayList.get(i).getIconDrawable());
-				else
-					itemImageView.setImageResource(imageArrayList.get(i).getDrawResId());
+				pagerFrameLayout = new FrameLayout(this);
+
+				int angle_sum = 0; // 각도 누적
+				int pagerItemCount = item_count / (LIMTED_ITEM_COUNT * (pageNum + 1)) > 0 ? LIMTED_ITEM_COUNT : item_count % LIMTED_ITEM_COUNT; // 각 Page 당 Item 개수 계산
+				int begin = pageNum * LIMTED_ITEM_COUNT;
+				int finish = begin + pagerItemCount;
+
+				for ( int itemNum = begin; itemNum < finish; itemNum++ )
+				{
+					Axis axis = new Axis(); // 아이템이 놓일 좌표를 저장하는 자료구조 (float x, float y)
+
+					// 레이아웃 설정 : 기본적인 크기는 정해져 있으며, 좌표 값만 설정
+					ImageView itemImageView = new ImageView(context);
+					itemImageView.setLayoutParams(new LayoutParams((int) itemSize, (int) itemSize));
+					itemImageView.setScaleType(ScaleType.CENTER_INSIDE);
+					itemImageView.setPadding(IMG_PADDING, IMG_PADDING, IMG_PADDING, IMG_PADDING);
+
+					// image 그림 추가
+					if ( imageArrayList != null && itemNum < imageArrayList.size() )
+					{
+						if ( imageArrayList.get(itemNum).getIconDrawable() != null )
+							itemImageView.setImageDrawable(imageArrayList.get(itemNum).getIconDrawable());
+						else
+							itemImageView.setImageResource(imageArrayList.get(itemNum).getDrawResId());
+					}
+
+					// 추가한 아이템을 구별하기 위한 id 와 Listener
+					itemImageView.setId(imageArrayList.get(itemNum).getViewId());
+					itemImageView.setOnClickListener(clickListener);
+
+					// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
+					axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
+
+					FrameLayout.LayoutParams itemBackLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize);
+					itemBackLayoutParams.leftMargin = axis.getAxis_x();
+					itemBackLayoutParams.topMargin = axis.getAxis_y();
+
+					LinearLayout itemBackLinearLayout = new LinearLayout(this);
+					itemBackLinearLayout.setGravity(Gravity.CENTER);
+					itemBackLinearLayout.setOrientation(LinearLayout.VERTICAL);
+					itemBackLinearLayout.setLayoutParams(itemBackLayoutParams);
+					itemBackLinearLayout.setBackgroundResource(R.drawable.rendering_item);
+					itemBackLinearLayout.addView(itemImageView);
+
+					pagerFrameLayout.addView(itemBackLinearLayout);
+				}
+				pagerFrameLayout.setBackgroundResource(R.drawable.rendering_circle);
+				quickPagerArrayList.add(pagerFrameLayout);
 			}
-
-			// 추가한 아이템을 구별하기 위한 Id와 Listener
-			itemImageView.setId(imageArrayList.get(i).getViewId());
-			itemImageView.setOnClickListener(clickListener);
-
-			// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
-			axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
-
-			LinearLayout itemBackLinearLayout = new LinearLayout(this);
-			FrameLayout.LayoutParams itemBackLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize);
-			itemBackLayoutParams.leftMargin = axis.getAxis_x();
-			itemBackLayoutParams.topMargin = axis.getAxis_y();
-
-			itemBackLinearLayout.setGravity(Gravity.CENTER);
-			itemBackLinearLayout.setOrientation(LinearLayout.VERTICAL);
-			itemBackLinearLayout.setLayoutParams(itemBackLayoutParams);
-			itemBackLinearLayout.setBackgroundResource(R.drawable.rendering_item);
-
-			itemBackLinearLayout.addView(itemImageView);
-			quicklicFrameLayout.addView(itemBackLinearLayout);
 		}
+		else
+		{
+			pagerFrameLayout.setBackgroundResource(R.drawable.rendering_circle);
+			quickPagerArrayList.add(pagerFrameLayout);
+		}
+		// ViewPager setting
+		itemPagerAdapter = new ItemPagerAdapter(this, pagerCount, quickPagerArrayList);
+		viewPager.setLayoutParams(new FrameLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain));
+		viewPager.setAdapter(itemPagerAdapter);
+		quicklicFrameLayout.addView(viewPager);
+
+		setCenterView(itemSize, origin_x, origin_y);
 	}
 
 	/**
@@ -272,6 +300,21 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		initialize();
 	}
 
+	private void setCenterView( float itemSize, float origin_x, float origin_y )
+	{
+		if ( centerView != null )
+		{
+			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			centerLayoutParams.leftMargin = (int) origin_x;
+			centerLayoutParams.topMargin = (int) origin_y;
+
+			centerView.setScaleType(ScaleType.CENTER_INSIDE);
+			centerView.setLayoutParams(centerLayoutParams);
+			quicklicFrameLayout.addView(centerView);
+			viewCount++;
+		}
+	}
+
 	@Override
 	protected void onResume()
 	{
@@ -320,12 +363,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
 		gestureDetector = new GestureDetector(this, onGestureListener);
 
-		mainLayoutParams = new FrameLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain);
 		quicklicFrameLayout = (FrameLayout) findViewById(R.id.quicklic_main_FrameLayout);
-
-		quicklicImageView = (ImageView) findViewById(R.id.quicklic_main_ImageView);
-		quicklicImageView.setLayoutParams(mainLayoutParams);
-		quicklicImageView.setOnTouchListener(touchListener);
 
 		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
 	}

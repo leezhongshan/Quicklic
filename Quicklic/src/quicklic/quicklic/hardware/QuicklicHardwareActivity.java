@@ -23,7 +23,7 @@ import android.widget.Toast;
 
 public class QuicklicHardwareActivity extends QuicklicActivity {
 
-	private final int HARDWARE_POWER = 0;
+	private final int HARDWARE_POWER = 100;
 
 	private final int DELAY_TIME = 2000;
 	private final int COMP_SOUND_RING = 1;
@@ -75,7 +75,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	 */
 	private void resetQuicklic()
 	{
-		getQuicklicFrameLayout().removeViews(1, getViewCount());
+		getQuicklicFrameLayout().removeAllViews();
 	}
 
 	/**

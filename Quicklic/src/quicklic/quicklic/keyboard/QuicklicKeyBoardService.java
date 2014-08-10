@@ -286,8 +286,11 @@ public class QuicklicKeyBoardService extends Service {
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
-			if ( !(packageName.contains(launcherName) || packageName.contains(".phone") || packageName.contains("quicklic")) )
+
+			if ( !(packageName.contains(launcherName) || packageName.contains(".phone") || packageName.contains("quicklic")
+					|| packageName.contains(".contacts") || packageName.contains("skt.prod")) )
 			{
+				System.out.println(packageName);
 				packageArrayList.add(packageName);
 			}
 		}
