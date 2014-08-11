@@ -45,6 +45,14 @@ public class QuicklicMainService extends BaseQuicklic {
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
+	/**
+	 * @함수명 : restartService
+	 * @매개변수 : Class<?> cls
+	 * @반환 : void
+	 * @기능(역할) : Service를 재시작
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	private void restartService( Class<?> cls )
 	{
 		Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);

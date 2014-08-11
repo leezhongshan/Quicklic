@@ -18,6 +18,7 @@ public class DeviceAdminActivity extends Activity {
 
 		ComponentName componentName = new ComponentName(this, DeviceAdmin.class);
 
+		// 디바이스 관리자 활성화 액티비티 호출
 		Intent power = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 		power.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
 		power.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.hardware_device_admin_description));

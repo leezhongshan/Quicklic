@@ -89,7 +89,6 @@ public class QuicklicKeyBoardService extends Service {
 		// 이미 실행중인 Service 가 있다면, 추가 수행 금지
 		if ( startId == 1 || flags == 1 )
 		{
-			// Quicklic View 숨기기
 			try
 			{
 				initialize(intent);
@@ -167,7 +166,6 @@ public class QuicklicKeyBoardService extends Service {
 	{
 		/* WindowManager.LayoutParams.TYPE_PHONE : Window를 최상위로 유지
 		 * WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE :  다른 영역에 TouchEvent가 발생했을 때 인지 하지 않음
-		 * PixelFormat.RGBA_8888 : 투명
 		 */
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
 				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
@@ -175,10 +173,8 @@ public class QuicklicKeyBoardService extends Service {
 
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
 		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
-
 		layoutParams.width = keyboardWidth;
 		layoutParams.height = keyboardHeight;
-
 		layoutParams.x = deviceWidth - layoutParams.width;
 		layoutParams.y = deviceHeight - layoutParams.height;
 
@@ -186,6 +182,14 @@ public class QuicklicKeyBoardService extends Service {
 		windowManager.addView(keyboardLinearLayout, layoutParams);
 	}
 
+	/**
+	 * @함수명 : createKeyBoard
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : KeyBoard 레이아웃 생성
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	private void createKeyBoard()
 	{
 		keyboardLinearLayout = new LinearLayout(this);
@@ -291,6 +295,7 @@ public class QuicklicKeyBoardService extends Service {
 			if ( !(packageName.contains(launcherName) || packageName.contains(".phone") || packageName.contains("quicklic")
 					|| packageName.contains(".contacts") || packageName.contains("skt.prod")) )
 			{
+				// TODO 
 				System.out.println(packageName);
 				packageArrayList.add(packageName);
 			}
@@ -412,7 +417,7 @@ public class QuicklicKeyBoardService extends Service {
 				stopService(intent);
 
 				// MainActivity 시작
-				intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainService.class);
+				Intent intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainService.class);
 				startService(intent);
 			}
 		}

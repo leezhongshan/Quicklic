@@ -153,57 +153,65 @@ public class QuicklicHardwareService extends BaseQuicklic {
 		public void onClick( View v )
 		{
 			/**
-			 * 클릭된 view (즉, 컴포넌트)에 따라 기능 수행
+			 * 클릭된 view (즉, 컴포넌트)에 따라 해당 기능 수행
 			 */
 			switch ( v.getId() )
 			{
-			case COMP_SOUND_RING:
+			case COMP_SOUND_RING: // Ring 모드 변경
 				componentVolume.controlVolume();
 				break;
 
-			case COMP_SOUND_INC:
+			case COMP_SOUND_INC: // 벨 소리 증가
 				if ( componentVolume.isMaxVolume() )
 					Toast.makeText(getApplicationContext(), R.string.hardware_volume_max, Toast.LENGTH_SHORT).show();
 				else
 					componentVolume.upVolume();
 				break;
 
-			case COMP_SOUND_DEC:
+			case COMP_SOUND_DEC: // 벨 소리 감소
 				if ( componentVolume.isMinVolume() )
 					Toast.makeText(getApplicationContext(), R.string.hardware_volume_min, Toast.LENGTH_SHORT).show();
 				else
 					componentVolume.downVolume();
 				break;
 
-			case COMP_ROTATE:
+			case COMP_ROTATE: // 화면 회전 on/off
 				componentRotate.controlRotate();
 				break;
 
-			case COMP_BLUETOOTH:
+			case COMP_BLUETOOTH: // 블루투스  on/off
 				componentBluetooth.controlBluetooth();
 				return;
 
-			case COMP_WIFI:
+			case COMP_WIFI: // Wifi  on/off
 				componentWifi.controlWifi();
 				return;
 
-			case COMP_GPS:
+			case COMP_GPS: // GPS on/off
 				Intent gps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 				gps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(gps);
 
-				resetToQuicklic();
+				stopToService();
 				return;
 
-			case COMP_HOME_KEY:
+				/**
+				 * @도움 : Kylee
+				 * @내용 : Soft HomeKey 구현 - Intent에 category를 추가하여 해결
+				 */
+			case COMP_HOME_KEY: // Soft Home-Key
 				Intent homekey = new Intent(Intent.ACTION_MAIN);
 				homekey.addCategory(Intent.CATEGORY_HOME);
 				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(homekey);
 
-				resetToQuicklic();
+				stopToService();
 				return;
 
+				/**
+				 * @도움 : Kylee
+				 * @내용 : Screen Lock 구현 - 디바이스 관리자를 통해서 권한을 얻은 뒤 처리
+				 */
 			case COMP_POWER:
 				if ( !devicePolicyManager.isAdminActive(componentName) )
 				{
@@ -216,7 +224,7 @@ public class QuicklicHardwareService extends BaseQuicklic {
 					devicePolicyManager.lockNow();
 				}
 
-				resetToQuicklic();
+				stopToService();
 				return;
 
 			case COMP_AIR_PLANE:
@@ -224,7 +232,7 @@ public class QuicklicHardwareService extends BaseQuicklic {
 				airplane.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(airplane);
 
-				resetToQuicklic();
+				stopToService();
 				return;
 
 			default:
@@ -233,7 +241,15 @@ public class QuicklicHardwareService extends BaseQuicklic {
 			resetQuicklic();
 		}
 
-		private void resetToQuicklic()
+		/**
+		 * @함수명 : stopToService
+		 * @매개변수 :
+		 * @반환 : void
+		 * @기능(역할) : Quicklic 서비스 종료
+		 * @작성자 : 13 JHPark
+		 * @작성일 : 2014. 8. 21.
+		 */
+		private void stopToService()
 		{
 			setFloatingVisibility(true);
 

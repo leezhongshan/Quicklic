@@ -409,25 +409,20 @@ public class FloatingService extends Service
 		quicklic.setImageResource(remoteBinder.setDrawableQuicklic());
 		quicklic.setLayoutParams(new RelativeLayout.LayoutParams(imageWidth, imageHeight));
 
-		//animation위해서 quicklicRelativeLayout 추가함
+		//animation위해서 quicklicRelativeLayout 추가
 		quicklicRelativeLayout = new RelativeLayout(this);
 		quicklicRelativeLayout.addView(quicklic);
 		quicklicRelativeLayout.setBackgroundResource(android.R.color.transparent);
 
 		/* WindowManager.LayoutParams.TYPE_PHONE : Window를 최상위로 유지
 		 * WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE :  다른 영역에 TouchEvent가 발생했을 때 인지 하지 않음
-		 * PixelFormat.TRANSLUCENT : 투명
 		 */
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
-
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.RGBA_8888);
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
-
 		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
 		layoutParams.x = deviceHorizontalCenter;
 		layoutParams.y = deviceVerticalCenter;
-
 		layoutParams.width = imageWidth;
 		layoutParams.height = imageHeight;
 
@@ -464,8 +459,9 @@ public class FloatingService extends Service
 
 		PendingIntent intent = PendingIntent.getActivity(context, 0, new Intent(context, FinishService.class), Intent.FLAG_ACTIVITY_NEW_TASK);
 
-		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText(getResources().getString(R.string.stop_quicklic))
-				.setSmallIcon(R.drawable.ic_launcher).setTicker(getResources().getString(R.string.hello_quicklic)).setOngoing(true).setContentIntent(intent).build();
+		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle(getString(R.string.app_name))
+				.setContentText(getResources().getString(R.string.stop_quicklic)).setSmallIcon(R.drawable.ic_launcher).setTicker(getResources().getString(R.string.hello_quicklic)).setOngoing(true)
+				.setContentIntent(intent).build();
 		notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
 
 		notificationManager.notify(NOTIFICATION_ID, notification);

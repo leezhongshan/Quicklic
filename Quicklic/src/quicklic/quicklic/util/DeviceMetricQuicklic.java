@@ -31,6 +31,13 @@ public class DeviceMetricQuicklic extends Service {
 		super.onCreate();
 	}
 
+	/**
+	 * @함수명 : onConfigurationChanged
+	 * @매개변수 : Configuration newConfig
+	 * @기능(역할) : 화면 회전시 레이아웃 비율 유지
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	@Override
 	public void onConfigurationChanged( Configuration newConfig )
 	{
@@ -110,7 +117,6 @@ public class DeviceMetricQuicklic extends Service {
 				PixelFormat.RGBA_8888);
 
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
-
 		layoutParams.width = deviceWidth;
 		layoutParams.height = deviceHeight;
 	}

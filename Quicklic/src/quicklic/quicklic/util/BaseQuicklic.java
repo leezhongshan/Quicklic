@@ -63,38 +63,6 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 
 	private LinearLayout detectLayout;
 
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-		initializeQuicklic();
-		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-	}
-
-	@Override
-	public void onDestroy()
-	{
-		if ( serviceConnection != null )
-			unbindService(serviceConnection);
-		try
-		{
-			getWindowManager().removeView(getDetectLayout());
-		}
-		catch (Exception e)
-		{
-			// TODO: handle exception
-		}
-		super.onDestroy();
-	}
-
-	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		getWindowManager().removeView(detectLayout);
-		initializeQuicklic();
-	}
-
 	/**************************************
 	 * Support Function Section
 	 **************************************/
@@ -112,11 +80,27 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		return viewCount;
 	}
 
+	/**
+	 * @함수명 : setCenterView
+	 * @매개변수 : ImageView centerView
+	 * @반환 : void
+	 * @기능(역할) : 가운데에 삽입할 Image 설정
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	protected void setCenterView( ImageView centerView )
 	{
 		this.centerView = centerView;
 	}
 
+	/**
+	 * @함수명 : getCenterView
+	 * @매개변수 :
+	 * @반환 : ImageView
+	 * @기능(역할) : 가운데 Image 객체 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	protected ImageView getCenterView()
 	{
 		return centerView;
@@ -226,6 +210,7 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 					// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
 					axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
 
+					// 좌표에 맞게 아이템들을 배치한 뒤 레이아웃에 추가
 					FrameLayout.LayoutParams itemBackLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize);
 					itemBackLayoutParams.leftMargin = axis.getAxis_x();
 					itemBackLayoutParams.topMargin = axis.getAxis_y();
@@ -313,6 +298,44 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 	 * Developer Section
 	 **************************************/
 
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+		initializeQuicklic();
+		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		if ( serviceConnection != null )
+			unbindService(serviceConnection);
+		try
+		{
+			getWindowManager().removeView(getDetectLayout());
+		}
+		catch (Exception e)
+		{
+		}
+		super.onDestroy();
+	}
+
+	/**
+	 * @함수명 : onConfigurationChanged
+	 * @매개변수 : Configuration newConfig
+	 * @기능(역할) : 화면 회전시 레이아웃 비율 유지
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		getWindowManager().removeView(detectLayout);
+		initializeQuicklic();
+	}
+
 	/**
 	 * Service Connection
 	 */
@@ -363,18 +386,26 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		deviceWidth = getDeviceWidth();
 		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
 
+		quicklicLayout = new FrameLayout(this);
+		quicklicLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+
 		detectLayout = new LinearLayout(this);
 		detectLayout.setGravity(Gravity.CENTER);
 		detectLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 		detectLayout.setOnTouchListener(detectListener);
-
-		quicklicLayout = new FrameLayout(this);
-		quicklicLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 		detectLayout.addView(quicklicLayout);
 
 		getWindowManager().addView(detectLayout, getLayoutParams());
 	}
 
+	/**
+	 * @함수명 : setCenterView
+	 * @매개변수 : float itemSize, float origin_x, float origin_y
+	 * @반환 : void
+	 * @기능(역할) : 가운데 버튼에 이미지 추가
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	private void setCenterView( float itemSize, float origin_x, float origin_y )
 	{
 		if ( centerView != null )
@@ -425,6 +456,13 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 
 	private OnTouchListener detectListener = new OnTouchListener()
 	{
+		/**
+		 * @함수명 : onTouch
+		 * @매개변수 : View v, MotionEvent event
+		 * @기능(역할) : Quicklic 원판 외의 영역에서 touch event가 감지 된 경우, 현재 실행중인 모든 서비스를 종료
+		 * @작성자 : 13 JHPark
+		 * @작성일 : 2014. 8. 21.
+		 */
 		@Override
 		public boolean onTouch( View v, MotionEvent event )
 		{
@@ -432,8 +470,20 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 
 			FloatingService.setVisibility(true);
 
-			//TODO HOW TO SET?
+			stopServices();
+			return false;
+		}
 
+		/**
+		 * @함수명 : stopServices
+		 * @매개변수 :
+		 * @반환 : void
+		 * @기능(역할) : 실행 되는 모든 Service를 종료
+		 * @작성자 : 13 JHPark
+		 * @작성일 : 2014. 8. 21.
+		 */
+		private void stopServices()
+		{
 			Intent intent;
 
 			intent = new Intent(getApplicationContext(), QuicklicMainService.class);
@@ -447,8 +497,6 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 
 			intent = new Intent(getApplicationContext(), QuicklicKeyBoardService.class);
 			stopService(intent);
-
-			return false;
 		}
 	};
 

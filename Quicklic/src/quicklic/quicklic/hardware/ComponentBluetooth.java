@@ -2,7 +2,6 @@ package quicklic.quicklic.hardware;
 
 import quicklic.floating.api.R;
 import android.bluetooth.BluetoothAdapter;
-import android.util.Log;
 
 public class ComponentBluetooth {
 
@@ -88,10 +87,6 @@ public class ComponentBluetooth {
 			{
 				offBluetooth();
 			}
-		}
-		else
-		{
-			Log.i("DEBUG_TAG", "블루투스지원안함");
 		}
 	}
 
