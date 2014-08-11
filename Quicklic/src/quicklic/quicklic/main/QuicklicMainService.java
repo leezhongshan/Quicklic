@@ -7,13 +7,13 @@ import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteService;
 import quicklic.quicklic.hardware.QuicklicHardwareService;
 import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
-import quicklic.quicklic.util.QuicklicBase;
+import quicklic.quicklic.util.BaseQuicklic;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class QuicklicMainService extends QuicklicBase {
+public class QuicklicMainService extends BaseQuicklic {
 
 	private final int HARDWARE = 0;
 	private final int KEYBOARD = 1;

@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
-public class QuicklicBase extends DeviceMetric {
+public class BaseQuicklic extends DeviceMetricQuicklic {
 
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;

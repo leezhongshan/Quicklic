@@ -1,4 +1,6 @@
-// Integer 형식의 X와 Y 값을 저장
+/*
+ * 좌표 값을 저장하는 자료구조로, Integer 형식의 X와 Y 값을 저장
+ */
 
 package quicklic.quicklic.datastructure;
 

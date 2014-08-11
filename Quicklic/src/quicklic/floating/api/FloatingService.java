@@ -161,11 +161,10 @@ public class FloatingService extends Service
 	/*****************************************************************************/
 
 	/**
-	 * @author 태훈 AIDL을 활용한 Interface Binder 클래스
+	 * @author THYang AIDL을 활용한 Interface Binder 클래스
 	 */
 	public static class RemoteBinder extends FloatingInterfaceAIDL.Stub
 	{
-
 		@Override
 		public int setDrawableQuicklic() throws RemoteException
 		{
@@ -191,7 +190,7 @@ public class FloatingService extends Service
 		}
 
 		@Override
-		public boolean setAnimation() throws RemoteException
+		public boolean getAnimation() throws RemoteException
 		{
 			return true;
 		}
@@ -199,8 +198,6 @@ public class FloatingService extends Service
 		@Override
 		public void touched() throws RemoteException
 		{
-			System.out.println("touched");
-
 			Intent intent = new Intent(context, QuicklicMainService.class);
 			setFloatingVisibility(false);
 			context.startService(intent);
@@ -338,7 +335,7 @@ public class FloatingService extends Service
 
 			context = this;
 
-			moveToSide = remoteBinder.setAnimation();
+			moveToSide = remoteBinder.getAnimation();
 			timer = new Timer();
 		}
 		catch (Exception e)
@@ -606,6 +603,13 @@ public class FloatingService extends Service
 		private int moveTouchY;
 		private RelativeLayout imageView;
 
+		/**
+		 * @함수명 : onTouch
+		 * @매개변수 : View v, MotionEvent event
+		 * @기능(역할) : Quick View의 움직임 refresh
+		 * @작성자 : 13 JHPark
+		 * @작성일 : 2014. 8. 21.
+		 */
 		@Override
 		public boolean onTouch( View v, MotionEvent event )
 		{
@@ -738,13 +742,19 @@ public class FloatingService extends Service
 			layoutParams.x = toX;
 			layoutParams.y = toY;
 
-			//			if ( !moveToSide )
 			animateFromTo(quicklic, initialX, initialY, toX, toY);
-			//			else
-			//				windowManagerUpdateViewLayout(imageView, layoutParams);
 		}
 	};
 
+	/**
+	 * @도움 : Kyle
+	 * @함수명 : animateFromTo
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : WindowManager에 추가된 View에 애니메이션 효과주기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	public void animateFromTo( View v, int fromX, int fromY, final int toX, final int toY )
 	{
 		layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;

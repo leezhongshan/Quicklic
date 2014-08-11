@@ -164,6 +164,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		}
 	}
 
+	// Comparator : 파일명으로 List를 정렬하기 위해 사용되는 비교자
 	private Comparator<PackageInfo> comparator = new Comparator<PackageInfo>()
 	{
 		private final Collator collator = Collator.getInstance();
