@@ -95,6 +95,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			{
 				Dialog.dismiss();
 			}
+		
 			apkAdapter.notifyDataSetChanged();
 		}
 	}
@@ -266,37 +267,37 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		}
 	};
 
-	public void homeKeyPressed()
-	{
-		FloatingService.getQuicklic().setVisibility(View.GONE);
-		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
-
-		TimerTask checkTask;
-		checkTask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						FloatingService.getQuicklic().setVisibility(View.VISIBLE);
-						QuicklicFavoriteActivity.activity.finish();
-						finish();
-					}
-				});
-			}
-		};
-
-		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
-	}
-
-	protected void onUserLeaveHint()
-	{
-		homeKeyPressed();
-		finish();
-	};
+	//	public void homeKeyPressed()
+	//	{
+	//		FloatingService.getQuicklic().setVisibility(View.GONE);
+	//		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
+	//
+	//		TimerTask checkTask;
+	//		checkTask = new TimerTask()
+	//		{
+	//			@Override
+	//			public void run()
+	//			{
+	//				runOnUiThread(new Runnable()
+	//				{
+	//					@Override
+	//					public void run()
+	//					{
+	//						FloatingService.getQuicklic().setVisibility(View.VISIBLE);
+	//						QuicklicFavoriteActivity.activity.finish();
+	//						finish();
+	//					}
+	//				});
+	//			}
+	//		};
+	//
+	//		Timer mTimer = new Timer();
+	//		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
+	//	}
+	//
+	//	protected void onUserLeaveHint()
+	//	{
+	//		homeKeyPressed();
+	//		finish();
+	//	};
 }
