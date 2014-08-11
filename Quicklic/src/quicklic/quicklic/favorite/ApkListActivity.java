@@ -64,6 +64,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		super.onPause();
 		Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
+		intent.putExtra("page", getIntent().getIntExtra("page", 0));
 		intent.putExtra("add", isAdded);
 		startService(intent);
 	};
