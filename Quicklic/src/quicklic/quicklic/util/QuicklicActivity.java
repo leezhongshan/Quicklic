@@ -8,6 +8,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
+import quicklic.quicklic.hardware.QuicklicHardwareActivity;
 import quicklic.quicklic.main.QuicklicMainActivity;
 import android.app.Service;
 import android.content.ComponentName;
@@ -395,6 +396,9 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 			stopService(intent2);
+
+			Intent intent3 = new Intent(getApplicationContext(), QuicklicHardwareActivity.class);
+			stopService(intent3);
 
 			return false;
 		}
