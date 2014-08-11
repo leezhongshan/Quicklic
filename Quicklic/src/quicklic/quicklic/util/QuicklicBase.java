@@ -9,6 +9,7 @@ import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.favorite.QuicklicFavoriteService;
 import quicklic.quicklic.hardware.QuicklicHardwareService;
+import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
 import quicklic.quicklic.main.QuicklicMainService;
 import android.app.Service;
 import android.content.ComponentName;
@@ -428,14 +429,19 @@ public class QuicklicBase extends DeviceMetric {
 
 			//TODO HOW TO SET?
 
-			Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
+			Intent intent;
+
+			intent = new Intent(getApplicationContext(), QuicklicMainService.class);
 			stopService(intent);
 
-			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
-			stopService(intent2);
+			intent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
+			stopService(intent);
 
-			Intent intent3 = new Intent(getApplicationContext(), QuicklicHardwareService.class);
-			stopService(intent3);
+			intent = new Intent(getApplicationContext(), QuicklicHardwareService.class);
+			stopService(intent);
+
+			intent = new Intent(getApplicationContext(), QuicklicKeyBoardService.class);
+			stopService(intent);
 
 			return false;
 		}
