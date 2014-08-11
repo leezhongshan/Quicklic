@@ -46,12 +46,12 @@ public class PreferencesManager extends Activity
 	/**
 	 * @함수명 : setPreference
 	 * @매개변수 : String pkgName, Context context
-	 * @반환 : void
+	 * @반환 : boolean
 	 * @기능(역할) : Favorite에 사용되는 어플리케이션 추가
 	 * @작성자 : JHPark
 	 * @작성일 : 2014. 5. 20.
 	 */
-	public void setPreference( String pkgName, Context context )
+	public boolean setPreference( String pkgName, Context context )
 	{
 		int num = getNumPreferences(context);
 
@@ -60,13 +60,15 @@ public class PreferencesManager extends Activity
 			if ( getAppPreferences(context, i).equals(pkgName) )
 			{
 				Toast.makeText(context, R.string.favorite_duplication_warning, Toast.LENGTH_SHORT).show();
-				return;
+				return false;
 			}
 		}
 
 		editor.putString(APP_DATA + num, pkgName);
 		editor.putInt(APP_NUM, ++num);
 		commit();
+
+		return true;
 	}
 
 	/**

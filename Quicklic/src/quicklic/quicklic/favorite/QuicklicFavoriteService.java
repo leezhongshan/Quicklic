@@ -25,6 +25,8 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	private ArrayList<String> pkgArrayList;
 
 	private boolean delEnabled;
+	private boolean isAdded;
+
 	private int item_count;
 
 	@Override
@@ -37,6 +39,8 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
+		isAdded = intent.getBooleanExtra("add", false);
+
 		initializeImage();
 		return START_NOT_STICKY;
 	}
@@ -84,6 +88,11 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	{
 		getPreference();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
+
+		if ( isAdded )
+		{
+			getViewPager().setCurrentItem(getViewCount());
+		}
 	}
 
 	/**

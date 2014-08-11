@@ -258,6 +258,11 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		setCenterView(itemSize, origin_x, origin_y);
 	}
 
+	public ViewPager getViewPager()
+	{
+		return viewPager;
+	}
+
 	/**
 	 * @함수명 : setFloatingVisibility
 	 * @매개변수 : boolean enable
