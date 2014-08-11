@@ -160,9 +160,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			// Center Button Click
 			if ( v == getCenterView() )
 			{
-				getWindowManager().removeView(getDetectLayout());
 				if ( !delEnabled )
 				{
+					getWindowManager().removeView(getDetectLayout());
+
 					if ( isItemFull(item_count) ) // check full count
 					{
 						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
@@ -174,14 +175,12 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 					stopService();
 				}
-				else
-				{
-					restartService();
-				}
 			}
 			// Application Click
 			else
 			{
+				getWindowManager().removeView(getDetectLayout());
+
 				if ( !delEnabled ) // ADD Mode
 				{
 					/* 실행할 수 없는 앱을 추가한 상태에서
@@ -206,7 +205,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				else
 				{
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					resetQuicklic();
+					restartService();
 				}
 			}
 		}

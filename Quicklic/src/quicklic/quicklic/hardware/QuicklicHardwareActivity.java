@@ -197,6 +197,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				Intent gps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 				gps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(gps);
+
+				resetToQuicklic();
+
 				return;
 
 			case COMP_HOME_KEY:
@@ -204,7 +207,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				homekey.addCategory(Intent.CATEGORY_HOME);
 				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(homekey);
-				setFloatingVisibility(true);
+
+				resetToQuicklic();
+
 				return;
 
 			case COMP_POWER:
@@ -226,6 +231,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				Intent airplane = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
 				airplane.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(airplane);
+
+				resetToQuicklic();
+
 				return;
 
 			default:
@@ -251,6 +259,16 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				return;
 			}
 			resetQuicklic();
+		}
+
+		private void resetToQuicklic()
+		{
+			setFloatingVisibility(true);
+
+			getWindowManager().removeView(getDetectLayout());
+
+			Intent intent = new Intent(getApplicationContext(), QuicklicHardwareActivity.class);
+			stopService(intent);
 		}
 	};
 
