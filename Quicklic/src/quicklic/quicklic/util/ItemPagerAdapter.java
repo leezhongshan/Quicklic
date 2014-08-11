@@ -1,5 +1,5 @@
 /**
- * Product by Kylee
+ * 도움 by Kylee
  */
 package quicklic.quicklic.util;
 

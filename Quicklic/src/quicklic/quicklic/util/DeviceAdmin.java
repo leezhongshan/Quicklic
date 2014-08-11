@@ -1,3 +1,6 @@
+/**
+ * 도움 by Kylee
+ */
 package quicklic.quicklic.util;
 
 import quicklic.floating.api.R;
