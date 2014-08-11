@@ -243,7 +243,15 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		setCenterView(itemSize, origin_x, origin_y);
 	}
 
-	public ViewPager getViewPager()
+	/**
+	 * @함수명 : getViewPager
+	 * @매개변수 :
+	 * @반환 : ViewPager
+	 * @기능(역할) : viewPager 객체 가져오기
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 8. 21.
+	 */
+	protected ViewPager getViewPager()
 	{
 		return viewPager;
 	}
