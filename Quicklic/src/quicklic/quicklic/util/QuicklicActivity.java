@@ -1,14 +1,14 @@
 package quicklic.quicklic.util;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.FloatingService.RemoteBinder;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
+import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
+import quicklic.quicklic.main.QuicklicMainActivity;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,11 +30,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 public class QuicklicActivity extends DeviceMetricActivity {
 
-	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
 	private int IMG_PADDING = 12;
@@ -45,7 +43,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private Context context;
 	private GestureDetector gestureDetector;
 
-	private FrameLayout quicklicFrameLayout;
+	private FrameLayout quicklicLayout;
 	private FrameLayout.LayoutParams centerLayoutParams;
 
 	private ImageView centerView;
@@ -59,6 +57,16 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private ArrayList<FrameLayout> quickPagerArrayList = new ArrayList<FrameLayout>();
 	private ViewPager viewPager;
 	private ItemPagerAdapter itemPagerAdapter;
+	private float origin_x;
+	private float origin_y;
+	private float itemSize;
+
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+		initialize();
+	}
 
 	/**************************************
 	 * Support Function Section
@@ -80,6 +88,19 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	protected void setCenterView( ImageView centerView )
 	{
 		this.centerView = centerView;
+
+		if ( centerView != null )
+		{
+
+			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			centerLayoutParams.leftMargin = (int) origin_x;
+			centerLayoutParams.topMargin = (int) origin_y;
+
+			centerView.setScaleType(ScaleType.CENTER_INSIDE);
+			centerView.setLayoutParams(centerLayoutParams);
+			quicklicLayout.addView(centerView);
+			viewCount++;
+		}
 	}
 
 	protected ImageView getCenterView()
@@ -97,7 +118,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 */
 	protected FrameLayout getQuicklicFrameLayout()
 	{
-		return quicklicFrameLayout;
+		return quicklicLayout;
 	}
 
 	/**
@@ -134,7 +155,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 		viewCount = item_count;
 
-		final float itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
+		itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
 		final float frameWidth = sizeOfQuicklicMain;
 		final float frameHeight = sizeOfQuicklicMain;
 
@@ -142,8 +163,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		int radius = (int) (frameHeight - itemSize) / 2 - MAIN_PADDING;
 
 		// 중심 좌표 구하기
-		float origin_x = (frameWidth - itemSize) / 2;
-		float origin_y = (frameHeight - itemSize) / 2;
+		origin_x = (frameWidth - itemSize) / 2;
+		origin_y = (frameHeight - itemSize) / 2;
 
 		int pagerCount = 1;
 
@@ -216,11 +237,11 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 		// ViewPager setting
 		itemPagerAdapter = new ItemPagerAdapter(this, pagerCount, quickPagerArrayList);
-		viewPager.setLayoutParams(new FrameLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain));
+		LinearLayout.LayoutParams viewPagerLayoutParams = new LinearLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain);
+		viewPager.setLayoutParams(viewPagerLayoutParams);
 		viewPager.setAdapter(itemPagerAdapter);
-		quicklicFrameLayout.addView(viewPager);
 
-		setCenterView(itemSize, origin_x, origin_y);
+		quicklicLayout.addView(viewPager);
 	}
 
 	/**
@@ -285,6 +306,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			remoteBinder = (RemoteBinder) iBinder;
 		}
 	};
+	private LinearLayout detectLayout;
 
 	/**
 	 * @함수명 : setContentView
@@ -293,41 +315,12 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 21.
 	 */
-	@Override
-	public void setContentView( int layoutResID )
-	{
-		super.setContentView(layoutResID);
-		initialize();
-	}
-
-	private void setCenterView( float itemSize, float origin_x, float origin_y )
-	{
-		if ( centerView != null )
-		{
-			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			centerLayoutParams.leftMargin = (int) origin_x;
-			centerLayoutParams.topMargin = (int) origin_y;
-
-			centerView.setScaleType(ScaleType.CENTER_INSIDE);
-			centerView.setLayoutParams(centerLayoutParams);
-			quicklicFrameLayout.addView(centerView);
-			viewCount++;
-		}
-	}
-
-	@Override
-	protected void onResume()
-	{
-		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause()
-	{
-		unbindService(serviceConnection);
-		super.onPause();
-	}
+	//	@Override
+	//	public void setContentView( int layoutResID )
+	//	{
+	//		super.setContentView(layoutResID);
+	//			initialize();
+	//	}
 
 	/**
 	 * @함수명 : initialize
@@ -363,10 +356,54 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
 		gestureDetector = new GestureDetector(this, onGestureListener);
 
-		quicklicFrameLayout = (FrameLayout) findViewById(R.id.quicklic_main_FrameLayout);
+		detectLayout = new LinearLayout(this);
+		LinearLayout.LayoutParams detectLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+		detectLayout.setGravity(Gravity.CENTER);
+		detectLayout.setLayoutParams(detectLayoutParams);
+		detectLayout.setOnTouchListener(detectListener);
 
+		quicklicLayout = new FrameLayout(this);
+		FrameLayout.LayoutParams quicklicLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+		quicklicLayout.setLayoutParams(quicklicLayoutParams);
+
+		detectLayout.addView(quicklicLayout);
+
+		getWindowManager().addView(detectLayout, getLayoutParams());
 		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+
+		unbindService(serviceConnection);
 	}
+
+	public LinearLayout getDetectLayout()
+	{
+		return detectLayout;
+	}
+
+	private OnTouchListener detectListener = new OnTouchListener()
+	{
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			getWindowManager().removeView(detectLayout);
+
+			FloatingService.setVisibility(true);
+
+			//TODO HOW TO SET?
+
+			Intent intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+			stopService(intent);
+
+			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+			stopService(intent2);
+
+			return false;
+		}
+	};
+
+	//	public void onDestroy()
+	//	{
+	//		fini
+	//	};
 
 	/**
 	 * @함수명 : getAxis
@@ -385,74 +422,22 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		return axis;
 	}
 
-	/**
-	 * @함수명 : homeKeyPressed
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 홈키가 눌렸을 때, 타이머를 이용하여 일정 시간 뒤에 Floating이 화면에 보여짐
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 6. 26.
-	 */
-	protected void homeKeyPressed()
-	{
-		setFloatingVisibility(false);
-		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
-
-		TimerTask checkTask;
-		checkTask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						setFloatingVisibility(true);
-						finish();
-					}
-				});
-			}
-		};
-
-		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
-	}
-
-	/**
-	 * @함수명 : onTouchEvent
-	 * @매개변수 :
-	 * @기능(역할) : 영역 밖이 눌렸을 경우 창이 닫히도록 한다.
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 13.
-	 */
-	@Override
-	public boolean onTouchEvent( MotionEvent event )
-	{
-		if ( event.getAction() == MotionEvent.ACTION_DOWN )
-		{
-			finish();
-		}
-		return super.onTouchEvent(event);
-	}
-
-	private OnTouchListener touchListener = new OnTouchListener()
-	{
-		/**
-		 * @함수명 : onTouch
-		 * @매개변수 : View v, MotionEvent event
-		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
-		 * @작성자 : THYang
-		 * @작성일 : 2014. 5. 5.
-		 */
-		@Override
-		public boolean onTouch( View v, MotionEvent event )
-		{
-			gestureDetector.onTouchEvent(event);
-			return true;
-		}
-	};
+	//	private OnTouchListener touchListener = new OnTouchListener()
+	//	{
+	//		/**
+	//		 * @함수명 : onTouch
+	//		 * @매개변수 : View v, MotionEvent event
+	//		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
+	//		 * @작성자 : THYang
+	//		 * @작성일 : 2014. 5. 5.
+	//		 */
+	//		@Override
+	//		public boolean onTouch( View v, MotionEvent event )
+	//		{
+	//			gestureDetector.onTouchEvent(event);
+	//			return true;
+	//		}
+	//	};
 
 	private OnGestureListener onGestureListener = new OnGestureListener()
 	{
@@ -503,22 +488,22 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			{
 				if ( xLorR < 0 )
 				{
-					//TODO to Right
+					//to Right
 				}
 				else
 				{
-					//TODO to Left
+					//to Left
 				}
 			}
 			else
 			{
 				if ( yUorD < 0 )
 				{
-					//TODO to Down
+					//to Down
 				}
 				else
 				{
-					//TODO to Up
+					//to Up
 				}
 			}
 			return false;
@@ -530,4 +515,20 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			return false;
 		}
 	};
+
+	public float getOrigin_x()
+	{
+		return origin_x;
+	}
+
+	public float getOrigin_y()
+	{
+		return origin_y;
+	}
+
+	public float getItemSize()
+	{
+		return itemSize;
+	}
+
 }

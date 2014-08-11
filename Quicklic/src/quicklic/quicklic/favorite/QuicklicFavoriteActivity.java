@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
+import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.app.Activity;
 import android.content.Intent;
@@ -32,28 +33,14 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	public static Activity activity;
 
 	@Override
-	protected void onCreate( Bundle savedInstanceState )
+	public void onCreate()
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_quicklic);
-		activity = QuicklicFavoriteActivity.this;
-		imageView = new ImageView(this);
+		super.onCreate();
 
+		imageView = new ImageView(this);
 		initialize();
 		initializeView();
 		setCenterView();
-	}
-
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-
-		resetQuicklic();
-
-		setCenterView();
-
-		initializeView();
 	}
 
 	private void resetQuicklic()
@@ -141,6 +128,11 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
+			getWindowManager().removeView(getDetectLayout());
+
+			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+			stopService(intent2);
+
 			if ( v == getCenterView() ) // Add / Delete Button
 			{
 				if ( !delEnabled )
@@ -152,6 +144,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					isActivity = true;
 					intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(intent);
 				}
 			}
@@ -170,7 +163,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 						startActivity(intent);
 
 						setFloatingVisibility(true);
-						finish();
+						//						finish();
 					}
 					catch (Exception e)
 					{
@@ -180,7 +173,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				else
 				{
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					onResume();
+					//					onResume();
 				}
 			}
 		}
@@ -202,19 +195,9 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
 
-			onResume();
+			//			onResume();
 			return true;
 		}
 	};
 
-	protected void onUserLeaveHint()
-	{
-		if ( !isActivity )
-		{
-			if ( getFloatingVisibility() != View.VISIBLE )
-			{
-				homeKeyPressed();
-			}
-		}
-	};
 }

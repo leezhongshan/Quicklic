@@ -1,29 +1,20 @@
 package quicklic.quicklic.util;
 
-import android.app.Activity;
+import android.app.Service;
+import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.IBinder;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class DeviceMetricActivity extends Activity {
+public class DeviceMetricActivity extends Service {
 
 	private WindowManager windowManager;
+	private WindowManager.LayoutParams layoutParams;
 	private Display windowDisplay;
 	private int deviceWidth;
 	private int deviceHeight;
-
-	@Override
-	public void setContentView( int layoutResID )
-	{
-		displayMetrics();
-
-		getWindow().setFormat(PixelFormat.RGBA_8888);
-		getWindow().setType(WindowManager.LayoutParams.TYPE_PHONE);
-		getWindow().setWindowAnimations(android.R.style.Animation_Dialog);
-
-		super.setContentView(layoutResID);
-	}
 
 	protected int getOrientation()
 	{
@@ -88,4 +79,41 @@ public class DeviceMetricActivity extends Activity {
 		deviceWidth = displayMetrics.widthPixels;
 		deviceHeight = displayMetrics.heightPixels;
 	}
+
+	@Override
+	public IBinder onBind( Intent arg0 )
+	{
+		return null;
+	}
+
+	@Override
+	public void onCreate()
+	{
+		displayMetrics();
+		createLayoutParams();
+		super.onCreate();
+	}
+
+	private void createLayoutParams()
+	{
+		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+				PixelFormat.RGBA_8888);
+
+		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
+
+		layoutParams.width = deviceWidth;
+		layoutParams.height = deviceHeight;
+	}
+
+	public WindowManager.LayoutParams getLayoutParams()
+	{
+		return layoutParams;
+	}
+
+	public WindowManager getWindowManager()
+	{
+		return windowManager;
+	}
+
 }

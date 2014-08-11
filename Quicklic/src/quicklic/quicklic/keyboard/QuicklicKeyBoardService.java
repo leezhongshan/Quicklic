@@ -412,8 +412,7 @@ public class QuicklicKeyBoardService extends Service {
 
 				// MainActivity 시작
 				intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(intent);
+				startService(intent);
 			}
 		}
 	};

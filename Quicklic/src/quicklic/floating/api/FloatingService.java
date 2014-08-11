@@ -193,11 +193,11 @@ public class FloatingService extends Service
 		@Override
 		public void touched() throws RemoteException
 		{
+			System.out.println("touched");
+
 			Intent intent = new Intent(context, QuicklicMainActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 서비스 도중 실행 시, New Task 플래그가 필요하다.
-			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // 한 번 호출된 Activity에 대해서는 중복 호출 되지 않는다. (중복 불가 적용)
 			setFloatingVisibility(false);
-			context.startActivity(intent);
+			context.startService(intent);
 		}
 
 		@Override

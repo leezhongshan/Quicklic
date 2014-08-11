@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: F:\\Dropbox\\Git_Quicklic\\Quicklic\\src\\quicklic\\floating\\api\\FloatingInterfaceAIDL.aidl
+ * Original file: C:\\Users\\Administrator\\Quicklic\\Quicklic\\src\\quicklic\\floating\\api\\FloatingInterfaceAIDL.aidl
  */
 package quicklic.floating.api;
 public interface FloatingInterfaceAIDL extends android.os.IInterface

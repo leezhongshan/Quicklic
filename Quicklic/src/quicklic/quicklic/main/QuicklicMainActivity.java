@@ -26,66 +26,10 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	private boolean isNotHomeKey;
 
 	@Override
-	protected void onCreate( Bundle savedInstanceState )
+	public void onCreate()
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_quicklic);
-
+		super.onCreate();
 		initialize();
-
-		// Activity가 생성될 때, Floating Image를 사라지게 함
-		setFloatingVisibility(false);
-	}
-
-	protected void onResume()
-	{
-		isNotHomeKey = false;
-		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
-		if ( getFloatingVisibility() == View.VISIBLE )
-		{
-			getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
-		}
-		else
-		{
-			getQuicklicFrameLayout().setVisibility(View.VISIBLE);
-		}
-		super.onResume();
-	}
-
-	@Override
-	protected void onPause()
-	{
-		// Activity가 재실행되었을 때, Main Layout이 보여지게 함.
-		getQuicklicFrameLayout().setVisibility(View.GONE);
-		super.onPause();
-	}
-
-	@Override
-	protected void onDestroy()
-	{
-		// Activity가 제거될 때, Floating Image를 보여지게 함
-		if ( !isKeyBoardService )
-			setFloatingVisibility(true);
-
-		super.onDestroy();
-	}
-
-	@Override
-	protected void onActivityResult( int requestCode, int resultCode, Intent data )
-	{
-		switch ( requestCode )
-		{
-		case HARDWARE:
-			if ( resultCode == HARDWARE_POWER )
-			{
-				finish();
-			}
-			break;
-
-		default:
-			break;
-		}
-		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	private void initialize()
@@ -113,25 +57,38 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			switch ( v.getId() )
 			{
 			case HARDWARE:
+				intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+				stopService(intent);
+
+				getWindowManager().removeView(getDetectLayout());
+
 				intent = new Intent(QuicklicMainActivity.this, QuicklicHardwareActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				startActivityForResult(intent, HARDWARE);
+				startService(intent);
 				break;
 
 			case KEYBOARD:
+				intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+				stopService(intent);
+
+				getWindowManager().removeView(getDetectLayout());
+
 				isKeyBoardService = true;
 				intent = new Intent(QuicklicMainActivity.this, QuicklicKeyBoardService.class);
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
 				setFloatingVisibility(false);
-				finish();
+				//				finish();
 				break;
 
 			case FAVORITE:
+				intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+				stopService(intent);
+
+				getWindowManager().removeView(getDetectLayout());
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
-				startActivityForResult(intent, FAVORITE);
+				startService(intent);
+
 				break;
 
 			default:
@@ -140,11 +97,11 @@ public class QuicklicMainActivity extends QuicklicActivity {
 		}
 	};
 
-	protected void onUserLeaveHint()
-	{
-		if ( !isNotHomeKey )
-		{
-			homeKeyPressed();
-		}
-	};
+	//	protected void onUserLeaveHint()
+	//	{
+	//		if ( !isNotHomeKey )
+	//		{
+	//			homeKeyPressed();
+	//		}
+	//	};
 }

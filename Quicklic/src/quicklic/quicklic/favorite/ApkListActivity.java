@@ -10,8 +10,10 @@ import java.util.TimerTask;
 
 import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
+import quicklic.quicklic.main.QuicklicMainActivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -223,6 +225,10 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		PackageInfo packageInfo = (PackageInfo) parent.getItemAtPosition(position);
 		preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
+
+		Intent intent = new Intent(ApkListActivity.this, QuicklicFavoriteActivity.class);
+		startService(intent);
+
 		finish();
 	}
 

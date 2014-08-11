@@ -51,19 +51,26 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private ComponentAirPlane componentAirPlane;
 
 	@Override
-	protected void onCreate( Bundle savedInstanceState )
+	public void onCreate()
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main_quicklic);
-	}
-
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		resetQuicklic();
+		super.onCreate();
 		initialize();
 	}
+
+	//	@Override
+	//	protected void onCreate( Bundle savedInstanceState )
+	//	{
+	//		super.onCreate(savedInstanceState);
+	//		setContentView(R.layout.activity_main_quicklic);
+	//	}
+	//
+	//	@Override
+	//	protected void onResume()
+	//	{
+	//		super.onResume();
+	//		resetQuicklic();
+	//		initialize();
+	//	}
 
 	/**
 	 * @함수명 : resetQuicklic
@@ -164,7 +171,8 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(homekey);
 				setFloatingVisibility(true);
-				finish();
+				//TODO
+				//				finish();
 				return;
 
 			case COMP_POWER:
@@ -179,8 +187,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				else
 				{
 					devicePolicyManager.lockNow();
-					setResult(HARDWARE_POWER);
-					finish();
+					//TODO
+					//					setResult(HARDWARE_POWER);
+					//					finish();
 				}
 				return;
 
@@ -210,22 +219,16 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				{
 					public void handleMessage( Message message )
 					{
-						onResume();
+						resetQuicklic();
+						initialize();
 					}
 				};
 				// DOUBLE_PRESS_INTERVAL 시간동안 Handler 를 Delay 시킴.
 				handler.sendMessageDelayed(message, DELAY_TIME);
 				return;
 			}
-			onResume();
+			//			onResume();
 		}
 	};
 
-	protected void onUserLeaveHint()
-	{
-		if ( isActivity && getFloatingVisibility() != View.VISIBLE )
-		{
-			homeKeyPressed();
-		}
-	}
 }
