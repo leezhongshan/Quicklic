@@ -43,6 +43,20 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		setCenterView();
 	}
 
+	@Override
+	public int onStartCommand( Intent intent, int flags, int startId )
+	{
+		System.out.println("aa");
+		return START_NOT_STICKY;
+	}
+
+	private void onResume()
+	{
+		resetQuicklic();
+		initializeView();
+		setCenterView();
+	}
+
 	private void resetQuicklic()
 	{
 		if ( getQuicklicFrameLayout() != null )
@@ -123,15 +137,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private OnClickListener clickListener = new OnClickListener()
 	{
-		private Intent intent;
-
 		@Override
 		public void onClick( View v )
 		{
 			getWindowManager().removeView(getDetectLayout());
-
-			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-			stopService(intent2);
 
 			if ( v == getCenterView() ) // Add / Delete Button
 			{
@@ -142,10 +151,13 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
 					}
 					isActivity = true;
-					intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(intent);
+					Intent apkIntent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
+					apkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					apkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(apkIntent);
+
+					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+					stopService(stopIntent);
 				}
 			}
 			else
@@ -159,21 +171,29 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					try
 					{
 						String packageName = preferencesManager.getAppPreferences(getApplicationContext(), v.getId());
-						Intent intent = packageManager.getLaunchIntentForPackage(packageName);
-						startActivity(intent);
+						Intent runIntent = packageManager.getLaunchIntentForPackage(packageName);
+						startActivity(runIntent);
 
 						setFloatingVisibility(true);
-						//						finish();
 					}
 					catch (Exception e)
 					{
 						Toast.makeText(getApplicationContext(), R.string.favorite_run_no, Toast.LENGTH_SHORT).show();
 					}
+					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+					//					stopService(stopIntent);
+					
+					onResume();
 				}
 				else
 				{
+					System.out.println("Del");
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					//					onResume();
+
+//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+//					stopService(stopIntent);
+
+					onResume();
 				}
 			}
 		}
@@ -195,7 +215,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				Toast.makeText(getApplicationContext(), R.string.favorite_enable_delete, Toast.LENGTH_SHORT).show();
 			}
 
-			//			onResume();
+			onResume();
 			return true;
 		}
 	};

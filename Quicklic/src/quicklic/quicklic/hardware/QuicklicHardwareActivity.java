@@ -182,6 +182,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					Intent activateDeviceAdminIntent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
 					activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
 					activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.hardware_device_admin_description));
+					activateDeviceAdminIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(activateDeviceAdminIntent);
 				}
 				else
