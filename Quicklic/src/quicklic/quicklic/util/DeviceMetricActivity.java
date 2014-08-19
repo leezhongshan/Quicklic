@@ -2,6 +2,7 @@ package quicklic.quicklic.util;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
 import android.util.DisplayMetrics;
@@ -15,6 +16,28 @@ public class DeviceMetricActivity extends Service {
 	private Display windowDisplay;
 	private int deviceWidth;
 	private int deviceHeight;
+
+	@Override
+	public IBinder onBind( Intent arg0 )
+	{
+		return null;
+	}
+
+	@Override
+	public void onCreate()
+	{
+		displayMetrics();
+		createLayoutParams();
+		super.onCreate();
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		displayMetrics();
+		createLayoutParams();
+		super.onConfigurationChanged(newConfig);
+	}
 
 	protected int getOrientation()
 	{
@@ -80,20 +103,6 @@ public class DeviceMetricActivity extends Service {
 		deviceHeight = displayMetrics.heightPixels;
 	}
 
-	@Override
-	public IBinder onBind( Intent arg0 )
-	{
-		return null;
-	}
-
-	@Override
-	public void onCreate()
-	{
-		displayMetrics();
-		createLayoutParams();
-		super.onCreate();
-	}
-
 	private void createLayoutParams()
 	{
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
@@ -115,5 +124,4 @@ public class DeviceMetricActivity extends Service {
 	{
 		return windowManager;
 	}
-
 }

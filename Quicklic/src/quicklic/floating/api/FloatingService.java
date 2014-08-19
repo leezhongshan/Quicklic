@@ -249,26 +249,6 @@ public class FloatingService extends Service
 		return remoteBinder;
 	}
 
-	/**
-	 * @함수명 : onConfigurationChanged
-	 * @매개변수 :
-	 * @기능(역할) : 화면 회전이 감지될 때마다, display 정보를 다시 생성함
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 6. 26.
-	 */
-	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		try
-		{
-			displayMetrics();
-		}
-		catch (Exception e)
-		{
-		}
-	}
-
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
@@ -293,7 +273,27 @@ public class FloatingService extends Service
 		{
 			e.printStackTrace();
 		}
-		return Service.START_NOT_STICKY;
+		return START_NOT_STICKY;
+	}
+
+	/**
+	 * @함수명 : onConfigurationChanged
+	 * @매개변수 :
+	 * @기능(역할) : 화면 회전이 감지될 때마다, display 정보를 다시 생성함
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 26.
+	 */
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		try
+		{
+			displayMetrics();
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
 	/**

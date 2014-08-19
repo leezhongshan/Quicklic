@@ -51,7 +51,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private int sizeOfQuicklicMain;
 	private int deviceWidth;
 
-	private RemoteBinder remoteBinder;
+	private RemoteBinder remoteBinder = new RemoteBinder();
 
 	private ArrayList<FrameLayout> quickPagerArrayList = new ArrayList<FrameLayout>();
 	private ViewPager viewPager;
@@ -66,7 +66,24 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	public void onCreate()
 	{
 		super.onCreate();
-		initialize();
+		initializeQuicklic();
+		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		if ( serviceConnection != null )
+			unbindService(serviceConnection);
+		super.onDestroy();
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		getWindowManager().removeView(detectLayout);
+		initializeQuicklic();
 	}
 
 	/**************************************
@@ -89,19 +106,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	protected void setCenterView( ImageView centerView )
 	{
 		this.centerView = centerView;
-
-		if ( centerView != null )
-		{
-
-			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
-			centerLayoutParams.leftMargin = (int) origin_x;
-			centerLayoutParams.topMargin = (int) origin_y;
-
-			centerView.setScaleType(ScaleType.CENTER_INSIDE);
-			centerView.setLayoutParams(centerLayoutParams);
-			quicklicLayout.addView(centerView);
-			viewCount++;
-		}
 	}
 
 	protected ImageView getCenterView()
@@ -237,13 +241,12 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 
 		// ViewPager setting
-		System.out.println(pagerCount);
 		itemPagerAdapter = new ItemPagerAdapter(this, pagerCount, quickPagerArrayList);
-		LinearLayout.LayoutParams viewPagerLayoutParams = new LinearLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain);
-		viewPager.setLayoutParams(viewPagerLayoutParams);
+		viewPager.setLayoutParams(new LinearLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain));
 		viewPager.setAdapter(itemPagerAdapter);
-
 		quicklicLayout.addView(viewPager);
+
+		setCenterView(itemSize, origin_x, origin_y);
 	}
 
 	/**
@@ -287,6 +290,11 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		return View.VISIBLE;
 	}
 
+	public LinearLayout getDetectLayout()
+	{
+		return detectLayout;
+	}
+
 	/**************************************
 	 * Developer Section
 	 **************************************/
@@ -310,19 +318,17 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	};
 
 	/**
-	 * @함수명 : initialize
+	 * @함수명 : initializeQuicklic
 	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : 초기화
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 5. 5.
 	 */
-	private void initialize()
+	protected void initializeQuicklic()
 	{
-		remoteBinder = new RemoteBinder();
 		context = this;
 
-		System.out.println("quick init");
 		// 화면 회전의 방향에 따른 resize 비율
 		if ( getOrientation() == Surface.ROTATION_0 )
 		{
@@ -344,50 +350,32 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
 
 		detectLayout = new LinearLayout(this);
-		LinearLayout.LayoutParams detectLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 		detectLayout.setGravity(Gravity.CENTER);
-		detectLayout.setLayoutParams(detectLayoutParams);
+		detectLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 		detectLayout.setOnTouchListener(detectListener);
 
 		quicklicLayout = new FrameLayout(this);
-		FrameLayout.LayoutParams quicklicLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-		quicklicLayout.setLayoutParams(quicklicLayoutParams);
-
+		quicklicLayout.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
 		detectLayout.addView(quicklicLayout);
 
 		getWindowManager().addView(detectLayout, getLayoutParams());
-		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-		unbindService(serviceConnection);
 	}
 
-	public LinearLayout getDetectLayout()
+	private void setCenterView( float itemSize, float origin_x, float origin_y )
 	{
-		return detectLayout;
-	}
-
-	private OnTouchListener detectListener = new OnTouchListener()
-	{
-		@Override
-		public boolean onTouch( View v, MotionEvent event )
+		if ( centerView != null )
 		{
-			getWindowManager().removeView(detectLayout);
+			centerLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize, Gravity.TOP | Gravity.LEFT);
+			centerLayoutParams.leftMargin = (int) origin_x;
+			centerLayoutParams.topMargin = (int) origin_y;
 
-			FloatingService.setVisibility(true);
+			centerView.setScaleType(ScaleType.CENTER_INSIDE);
+			centerView.setLayoutParams(centerLayoutParams);
+			quicklicLayout.addView(centerView);
 
-			//TODO HOW TO SET?
-
-			Intent intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
-			stopService(intent);
-
-			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-			stopService(intent2);
-
-			Intent intent3 = new Intent(getApplicationContext(), QuicklicHardwareActivity.class);
-			stopService(intent3);
-
-			return false;
+			viewCount++;
 		}
-	};
+	}
 
 	/**
 	 * @함수명 : getAxis
@@ -420,5 +408,29 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		return itemSize;
 	}
+
+	private OnTouchListener detectListener = new OnTouchListener()
+	{
+		@Override
+		public boolean onTouch( View v, MotionEvent event )
+		{
+			getWindowManager().removeView(detectLayout);
+
+			FloatingService.setVisibility(true);
+
+			//TODO HOW TO SET?
+
+			Intent intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+			stopService(intent);
+
+			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+			stopService(intent2);
+
+			Intent intent3 = new Intent(getApplicationContext(), QuicklicHardwareActivity.class);
+			stopService(intent3);
+
+			return false;
+		}
+	};
 
 }

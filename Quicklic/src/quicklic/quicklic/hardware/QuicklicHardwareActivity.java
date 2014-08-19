@@ -11,9 +11,9 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.Settings;
@@ -37,8 +37,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private final int COMP_HOME_KEY = 9;
 	private final int COMP_AIR_PLANE = 10;
 
-	private boolean isActivity;
-
 	private DevicePolicyManager devicePolicyManager;
 	private ComponentName componentName;
 
@@ -57,20 +55,18 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		initialize();
 	}
 
-	//	@Override
-	//	protected void onCreate( Bundle savedInstanceState )
-	//	{
-	//		super.onCreate(savedInstanceState);
-	//		setContentView(R.layout.activity_main_quicklic);
-	//	}
-	//
-	//	@Override
-	//	protected void onResume()
-	//	{
-	//		super.onResume();
-	//		resetQuicklic();
-	//		initialize();
-	//	}
+	@Override
+	public int onStartCommand( Intent intent, int flags, int startId )
+	{
+		return START_NOT_STICKY;
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		resetQuicklic();
+	}
 
 	/**
 	 * @함수명 : resetQuicklic
@@ -83,6 +79,7 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	private void resetQuicklic()
 	{
 		getQuicklicFrameLayout().removeAllViews();
+		initialize();
 	}
 
 	/**
@@ -95,8 +92,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	 */
 	private void initialize()
 	{
-		isActivity = true;
-
 		/* For Component Power */
 		devicePolicyManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
 		componentName = new ComponentName(this, DeviceAdmin.class);
@@ -158,47 +153,38 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				break;
 
 			case COMP_GPS:
-				isActivity = false;
 				Intent gps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
 				gps.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(gps);
 				return;
 
 			case COMP_HOME_KEY:
-				isActivity = false;
 				Intent homekey = new Intent(Intent.ACTION_MAIN);
 				homekey.addCategory(Intent.CATEGORY_HOME);
 				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(homekey);
 				setFloatingVisibility(true);
-				//TODO
-				//				finish();
 				return;
 
 			case COMP_POWER:
-				isActivity = false;
 				if ( !devicePolicyManager.isAdminActive(componentName) )
 				{
-					Intent activateDeviceAdminIntent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-					activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-					activateDeviceAdminIntent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.hardware_device_admin_description));
-					activateDeviceAdminIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(activateDeviceAdminIntent);
+					Intent power = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+					power.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
+					power.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.hardware_device_admin_description));
+					power.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(power);
 				}
 				else
 				{
 					devicePolicyManager.lockNow();
-					//TODO
-					//					setResult(HARDWARE_POWER);
-					//					finish();
 				}
 				return;
 
 			case COMP_AIR_PLANE:
-				isActivity = false;
-				Intent airplaneIntent = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
-				airplaneIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(airplaneIntent);
+				Intent airplane = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+				airplane.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(airplane);
 				return;
 
 			default:
@@ -221,14 +207,13 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 					public void handleMessage( Message message )
 					{
 						resetQuicklic();
-						initialize();
 					}
 				};
 				// DOUBLE_PRESS_INTERVAL 시간동안 Handler 를 Delay 시킴.
 				handler.sendMessageDelayed(message, DELAY_TIME);
 				return;
 			}
-			//			onResume();
+			resetQuicklic();
 		}
 	};
 

@@ -43,7 +43,6 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 
 	private boolean isSystem;
 	private boolean isUser;
-	private boolean isPressed;
 
 	private PreferencesManager preferencesManager;
 
@@ -58,6 +57,14 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		initializeApkListView();
 		changeAppListView(false);
 	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onPause();
+		Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+		startService(intent);
+	};
 
 	/**
 	 * @함수명 : ApkAsyncTask
@@ -99,7 +106,6 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		isSystem = false;
 		isUser = false;
-		isPressed = false;
 
 		mainRelativeLayout = (RelativeLayout) findViewById(R.id.favorite_main_RelativeLayout);
 		apkListView = (ListView) findViewById(R.id.favorite_app_ListView);
@@ -168,17 +174,6 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			String firstString = packageManager.getApplicationLabel(object1.applicationInfo).toString();
 			String secondString = packageManager.getApplicationLabel(object2.applicationInfo).toString();
 			return collator.compare(firstString, secondString);
-		}
-	};
-
-	protected void onPause()
-	{
-		super.onPause();
-
-		if ( !isPressed )
-		{
-			Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-			startService(intent);
 		}
 	};
 

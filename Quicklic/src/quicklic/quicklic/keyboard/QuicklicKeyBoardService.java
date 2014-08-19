@@ -109,9 +109,10 @@ public class QuicklicKeyBoardService extends Service {
 			stopService(intent);
 		}
 
-		return Service.START_NOT_STICKY;
+		return START_NOT_STICKY;
 	}
 
+	@Override
 	public void onDestroy()
 	{
 		if ( keyboardLinearLayout != null )
