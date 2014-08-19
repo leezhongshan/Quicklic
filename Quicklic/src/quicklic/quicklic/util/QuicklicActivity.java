@@ -15,11 +15,10 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Configuration;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v4.view.ViewPager;
-import android.view.GestureDetector;
-import android.view.GestureDetector.OnGestureListener;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Surface;
@@ -42,7 +41,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private float SIZE_ITEM_RATE = 0.125f;
 
 	private Context context;
-	private GestureDetector gestureDetector;
 
 	private FrameLayout quicklicLayout;
 	private FrameLayout.LayoutParams centerLayoutParams;
@@ -61,6 +59,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	private float origin_x;
 	private float origin_y;
 	private float itemSize;
+
+	private LinearLayout detectLayout;
 
 	@Override
 	public void onCreate()
@@ -139,7 +139,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	}
 
 	/**
-	 * @param imageList
 	 * @함수명 : addViewsForBalance
 	 * @매개변수 : int item_count, ArrayList<Drawable> imageArrayList, OnClickListener clickListener
 	 * @반환 : void
@@ -152,8 +151,8 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		FrameLayout pagerFrameLayout = new FrameLayout(this);
 		quickPagerArrayList.clear();
-		viewPager = new ViewPager(this);
 
+		viewPager = new ViewPager(this);
 		viewCount = item_count;
 
 		itemSize = deviceWidth * SIZE_ITEM_RATE; // 등록되어질 아이템의 크기
@@ -236,6 +235,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			pagerFrameLayout.setBackgroundResource(R.drawable.rendering_circle);
 			quickPagerArrayList.add(pagerFrameLayout);
 		}
+
 		// ViewPager setting
 		System.out.println(pagerCount);
 		itemPagerAdapter = new ItemPagerAdapter(this, pagerCount, quickPagerArrayList);
@@ -308,21 +308,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			remoteBinder = (RemoteBinder) iBinder;
 		}
 	};
-	private LinearLayout detectLayout;
-
-	/**
-	 * @함수명 : setContentView
-	 * @매개변수 : int layoutResID
-	 * @기능(역할) : 초기화 세팅
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 5. 21.
-	 */
-	//	@Override
-	//	public void setContentView( int layoutResID )
-	//	{
-	//		super.setContentView(layoutResID);
-	//			initialize();
-	//	}
 
 	/**
 	 * @함수명 : initialize
@@ -337,6 +322,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		remoteBinder = new RemoteBinder();
 		context = this;
 
+		System.out.println("quick init");
 		// 화면 회전의 방향에 따른 resize 비율
 		if ( getOrientation() == Surface.ROTATION_0 )
 		{
@@ -356,7 +342,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		viewCount = 0;
 		deviceWidth = getDeviceWidth();
 		sizeOfQuicklicMain = (int) (deviceWidth * SIZE_QUICKLIC_RATE);
-		gestureDetector = new GestureDetector(this, onGestureListener);
 
 		detectLayout = new LinearLayout(this);
 		LinearLayout.LayoutParams detectLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -404,11 +389,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		}
 	};
 
-	//	public void onDestroy()
-	//	{
-	//		fini
-	//	};
-
 	/**
 	 * @함수명 : getAxis
 	 * @매개변수 : float origin_x, float origin_y, float radius, double angle
@@ -425,100 +405,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 		axis.setAxis_y((int) (origin_y + radius * Math.sin(angles)));
 		return axis;
 	}
-
-	//	private OnTouchListener touchListener = new OnTouchListener()
-	//	{
-	//		/**
-	//		 * @함수명 : onTouch
-	//		 * @매개변수 : View v, MotionEvent event
-	//		 * @기능(역할) : 감지된 Touch Event를 Gesture Detector에게 넘겨줌
-	//		 * @작성자 : THYang
-	//		 * @작성일 : 2014. 5. 5.
-	//		 */
-	//		@Override
-	//		public boolean onTouch( View v, MotionEvent event )
-	//		{
-	//			gestureDetector.onTouchEvent(event);
-	//			return true;
-	//		}
-	//	};
-
-	private OnGestureListener onGestureListener = new OnGestureListener()
-	{
-
-		@Override
-		public boolean onSingleTapUp( MotionEvent e )
-		{
-			return false;
-		}
-
-		@Override
-		public void onShowPress( MotionEvent e )
-		{
-		}
-
-		@Override
-		public boolean onScroll( MotionEvent e1, MotionEvent e2, float distanceX, float distanceY )
-		{
-			return false;
-		}
-
-		@Override
-		public void onLongPress( MotionEvent e )
-		{
-		}
-
-		/**
-		 * @함수명 : onFling
-		 * @매개변수 :
-		 * @기능(역할) : 상하좌우에 대한 Touch 이벤트
-		 * @작성자 : THYang
-		 * @작성일 : 2014. 6. 26.
-		 */
-		@Override
-		public boolean onFling( MotionEvent e1, MotionEvent e2, float velocityX, float velocityY )
-		{
-			/* MotionEvent의 시작과 끝 지점의 X,Y 좌표값을 절대 값으로  가져온 다음, 같은 축 끼리 감산 계산을 한다.
-			 * MotionEvent는 어디서 부터 시작했느냐에 따라서 음수 값이 발생하기 때문에 절대 값 처리가 필요하다.
-			 * 
-			 * 움직임이 더 큰 쪽의 방향을 우선시 하기 위해 가로와 세로의 크기를 비교 한다.
-			 * 가로의 움직임이 큰 경우, 왼쪽과 오른쪽 / 세로의 움직임이 큰 경우, 위쪽과 아래쪽
-			 * 어느 방향으로 움직였느냐에 따라서 음수 값이 나오기 때문에, 음수 양수를 구분으로 방향을 정한다. 
-			 */
-			float xLorR = Math.abs(e1.getX()) - Math.abs(e2.getX());
-			float yUorD = Math.abs(e1.getY()) - Math.abs(e2.getY());
-
-			if ( Math.abs(xLorR) > Math.abs(yUorD) )
-			{
-				if ( xLorR < 0 )
-				{
-					//to Right
-				}
-				else
-				{
-					//to Left
-				}
-			}
-			else
-			{
-				if ( yUorD < 0 )
-				{
-					//to Down
-				}
-				else
-				{
-					//to Up
-				}
-			}
-			return false;
-		}
-
-		@Override
-		public boolean onDown( MotionEvent e )
-		{
-			return false;
-		}
-	};
 
 	public float getOrigin_x()
 	{

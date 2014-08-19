@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.util.QuicklicActivity;
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -28,7 +27,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private boolean delEnabled;
 	private int item_count;
 	private ImageView imageView;
-	public static Activity activity;
 
 	@Override
 	public void onCreate()
@@ -46,30 +44,25 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
 		delEnabled = intent.getBooleanExtra("center", false);
-		System.out.println(delEnabled);
+		System.out.println(" aa : " + delEnabled);
 		setCenterView();
+
+		System.out.println("start");
 
 		return START_NOT_STICKY;
 	}
 
 	@Override
-	public void onRebind( Intent intent )
-	{
-		// TODO Auto-generated method stub
-		System.out.println("Rebind");
-		super.onRebind(intent);
-	}
-
-	@Override
 	public void onConfigurationChanged( Configuration newConfig )
 	{
-		// TODO Auto-generated method stub
 		System.out.println("Config");
+		onResume();
 		super.onConfigurationChanged(newConfig);
 	}
 
 	private void onResume()
 	{
+		System.out.println("Resume");
 		resetQuicklic();
 		initializeView();
 		setCenterView();
@@ -192,27 +185,22 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 						startActivity(runIntent);
 
 						setFloatingVisibility(true);
+
+						Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+						stopService(stopIntent);
 					}
 					catch (Exception e)
 					{
 						Toast.makeText(getApplicationContext(), R.string.favorite_run_no, Toast.LENGTH_SHORT).show();
+
+						Intent restartIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+						restartIntent.putExtra("center", delEnabled);
+						startService(restartIntent);
 					}
-					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-					stopService(stopIntent);
 				}
 				else
 				{
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					//					onResume();
-
-					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-					stopService(stopIntent);
-
-					Intent restartIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-					restartIntent.putExtra("center", delEnabled);
-					System.out.println(delEnabled);
-					startService(restartIntent);
-
 				}
 			}
 		}

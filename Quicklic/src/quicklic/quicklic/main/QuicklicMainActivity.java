@@ -9,6 +9,7 @@ import quicklic.quicklic.hardware.QuicklicHardwareActivity;
 import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +31,14 @@ public class QuicklicMainActivity extends QuicklicActivity {
 	{
 		super.onCreate();
 		initialize();
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		initialize();
+		System.out.println("Quick config");
 	}
 
 	private void initialize()
@@ -77,7 +86,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 				startService(intent);
 				setFloatingVisibility(false);
-				//				finish();
 				break;
 
 			case FAVORITE:
@@ -88,7 +96,6 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				intent = new Intent(QuicklicMainActivity.this, QuicklicFavoriteActivity.class);
 				getQuicklicFrameLayout().setVisibility(View.INVISIBLE);
 				startService(intent);
-
 				break;
 
 			default:
@@ -96,12 +103,4 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			}
 		}
 	};
-
-	//	protected void onUserLeaveHint()
-	//	{
-	//		if ( !isNotHomeKey )
-	//		{
-	//			homeKeyPressed();
-	//		}
-	//	};
 }
