@@ -27,7 +27,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	private ArrayList<String> pkgArrayList;
 
 	private boolean delEnabled;
-	private boolean isActivity;
 	private int item_count;
 	private ImageView imageView;
 	public static Activity activity;
@@ -47,14 +46,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-<<<<<<< HEAD
-		System.out.println("start");
-=======
 		delEnabled = intent.getBooleanExtra("center", false);
 		System.out.println(delEnabled);
 		setCenterView();
 
->>>>>>> origin/ActivityToService
 		return START_NOT_STICKY;
 	}
 
@@ -204,15 +199,8 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					{
 						Toast.makeText(getApplicationContext(), R.string.favorite_run_no, Toast.LENGTH_SHORT).show();
 					}
-<<<<<<< HEAD
-					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-					//					stopService(stopIntent);
-
-					onResume();
-=======
 					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 					stopService(stopIntent);
->>>>>>> origin/ActivityToService
 				}
 				else
 				{
@@ -222,15 +210,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 					stopService(stopIntent);
 
-<<<<<<< HEAD
-					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-					//					stopService(stopIntent);
-=======
 					Intent restartIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 					restartIntent.putExtra("center", delEnabled);
 					System.out.println(delEnabled);
 					startService(restartIntent);
->>>>>>> origin/ActivityToService
 
 				}
 			}
