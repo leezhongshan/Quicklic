@@ -30,7 +30,6 @@ import android.widget.RelativeLayout;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
-	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private PackageManager packageManager;
 	private ApkAdapter apkAdapter;
 

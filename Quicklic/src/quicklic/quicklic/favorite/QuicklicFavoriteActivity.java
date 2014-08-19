@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -166,7 +165,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					{
 						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
 					}
-					isActivity = true;
 					Intent apkIntent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
 					apkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					apkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
