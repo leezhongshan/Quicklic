@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -37,6 +38,8 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	{
 		super.onCreate();
 
+		System.out.println("create");
+
 		imageView = new ImageView(this);
 		initialize();
 		initializeView();
@@ -46,8 +49,24 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-		System.out.println("aa");
+		System.out.println("start");
 		return START_NOT_STICKY;
+	}
+
+	@Override
+	public void onRebind( Intent intent )
+	{
+		// TODO Auto-generated method stub
+		System.out.println("Rebind");
+		super.onRebind(intent);
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		// TODO Auto-generated method stub
+		System.out.println("Config");
+		super.onConfigurationChanged(newConfig);
 	}
 
 	private void onResume()
@@ -182,7 +201,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					}
 					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 					//					stopService(stopIntent);
-					
+
 					onResume();
 				}
 				else
@@ -190,8 +209,8 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					System.out.println("Del");
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
 
-//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-//					stopService(stopIntent);
+					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+					//					stopService(stopIntent);
 
 					onResume();
 				}
