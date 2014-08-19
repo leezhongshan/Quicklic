@@ -5,12 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
-import quicklic.quicklic.main.QuicklicMainActivity;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -31,7 +27,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
@@ -49,6 +44,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 
 	private boolean isSystem;
 	private boolean isUser;
+	private boolean isPressed;
 
 	private PreferencesManager preferencesManager;
 
@@ -95,6 +91,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			{
 				Dialog.dismiss();
 			}
+
 			apkAdapter.notifyDataSetChanged();
 		}
 	}
@@ -103,6 +100,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		isSystem = false;
 		isUser = false;
+		isPressed = false;
 
 		mainRelativeLayout = (RelativeLayout) findViewById(R.id.favorite_main_RelativeLayout);
 		apkListView = (ListView) findViewById(R.id.favorite_app_ListView);
@@ -174,6 +172,17 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		}
 	};
 
+	protected void onPause()
+	{
+		super.onPause();
+
+		if ( !isPressed )
+		{
+			Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+			startService(intent);
+		}
+	};
+
 	/**
 	 * @함수명 : changeAppListView
 	 * @매개변수 : boolean isApp
@@ -226,9 +235,6 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		PackageInfo packageInfo = (PackageInfo) parent.getItemAtPosition(position);
 		preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
 
-		Intent intent = new Intent(ApkListActivity.this, QuicklicFavoriteActivity.class);
-		startService(intent);
-
 		finish();
 	}
 
@@ -266,37 +272,4 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		}
 	};
 
-	public void homeKeyPressed()
-	{
-		FloatingService.getQuicklic().setVisibility(View.GONE);
-		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
-
-		TimerTask checkTask;
-		checkTask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						FloatingService.getQuicklic().setVisibility(View.VISIBLE);
-						QuicklicFavoriteActivity.activity.finish();
-						finish();
-					}
-				});
-			}
-		};
-
-		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
-	}
-
-	protected void onUserLeaveHint()
-	{
-		homeKeyPressed();
-		finish();
-	};
 }

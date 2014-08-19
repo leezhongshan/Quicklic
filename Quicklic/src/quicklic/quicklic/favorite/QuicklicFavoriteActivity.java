@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.main.QuicklicMainActivity;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.app.Activity;
 import android.content.Intent;
@@ -12,7 +11,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -43,13 +42,19 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		imageView = new ImageView(this);
 		initialize();
 		initializeView();
-		setCenterView();
 	}
 
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
+<<<<<<< HEAD
 		System.out.println("start");
+=======
+		delEnabled = intent.getBooleanExtra("center", false);
+		System.out.println(delEnabled);
+		setCenterView();
+
+>>>>>>> origin/ActivityToService
 		return START_NOT_STICKY;
 	}
 
@@ -91,13 +96,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 		imageArrayList = new ArrayList<Item>();
 		pkgArrayList = new ArrayList<String>();
-		delEnabled = false;
 	}
 
 	private void initializeView()
 	{
-		isActivity = false;
-
 		getPreference();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
@@ -159,12 +161,12 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		@Override
 		public void onClick( View v )
 		{
-			getWindowManager().removeView(getDetectLayout());
-
 			if ( v == getCenterView() ) // Add / Delete Button
 			{
 				if ( !delEnabled )
 				{
+					getWindowManager().removeView(getDetectLayout());
+
 					if ( isItemFull(item_count) ) // check full count
 					{
 						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
@@ -181,8 +183,11 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			}
 			else
 			{
+				getWindowManager().removeView(getDetectLayout());
+
 				if ( !delEnabled )
 				{
+
 					/* 실행할 수 없는 앱을 추가한 상태에서
 					 *  앱 실행을 요청했을 때,
 					 *  예외처리를 하여서 service는 죽지 않으며, 사용자에게 Toast로 알림.
@@ -199,20 +204,34 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					{
 						Toast.makeText(getApplicationContext(), R.string.favorite_run_no, Toast.LENGTH_SHORT).show();
 					}
+<<<<<<< HEAD
 					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 					//					stopService(stopIntent);
 
 					onResume();
+=======
+					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+					stopService(stopIntent);
+>>>>>>> origin/ActivityToService
 				}
 				else
 				{
-					System.out.println("Del");
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
+					//					onResume();
 
+					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+					stopService(stopIntent);
+
+<<<<<<< HEAD
 					//					Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 					//					stopService(stopIntent);
+=======
+					Intent restartIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+					restartIntent.putExtra("center", delEnabled);
+					System.out.println(delEnabled);
+					startService(restartIntent);
+>>>>>>> origin/ActivityToService
 
-					onResume();
 				}
 			}
 		}

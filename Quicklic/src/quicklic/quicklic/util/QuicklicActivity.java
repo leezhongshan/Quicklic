@@ -237,6 +237,7 @@ public class QuicklicActivity extends DeviceMetricActivity {
 			quickPagerArrayList.add(pagerFrameLayout);
 		}
 		// ViewPager setting
+		System.out.println(pagerCount);
 		itemPagerAdapter = new ItemPagerAdapter(this, pagerCount, quickPagerArrayList);
 		LinearLayout.LayoutParams viewPagerLayoutParams = new LinearLayout.LayoutParams(sizeOfQuicklicMain, sizeOfQuicklicMain);
 		viewPager.setLayoutParams(viewPagerLayoutParams);
@@ -371,7 +372,6 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 		getWindowManager().addView(detectLayout, getLayoutParams());
 		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-
 		unbindService(serviceConnection);
 	}
 
