@@ -14,15 +14,15 @@ import android.widget.FrameLayout;
 
 public class ItemPagerAdapter extends PagerAdapter {
 
+	private ArrayList<FrameLayout> quicklicPageArrayList;
 	private int pagerCount = 0;
-	private ArrayList<FrameLayout> quickPageArrayList;
 
-	public ItemPagerAdapter(Context context, int pagerCount, ArrayList<FrameLayout> quickPageArrayList)
+	public ItemPagerAdapter(Context context, int pagerCount, ArrayList<FrameLayout> quicklicPageArrayList)
 	{
 		super();
 
 		this.pagerCount = pagerCount;
-		this.quickPageArrayList = quickPageArrayList;
+		this.quicklicPageArrayList = quicklicPageArrayList;
 	}
 
 	@Override
@@ -40,9 +40,9 @@ public class ItemPagerAdapter extends PagerAdapter {
 	@Override
 	public Object instantiateItem( View view, int position )
 	{
-		((ViewPager) view).addView(quickPageArrayList.get(position), 0);
+		((ViewPager) view).addView(quicklicPageArrayList.get(position), 0);
 
-		return quickPageArrayList.get(position);
+		return quicklicPageArrayList.get(position);
 	}
 
 	@Override
@@ -52,7 +52,7 @@ public class ItemPagerAdapter extends PagerAdapter {
 	}
 
 	@Override
-	public void restoreState( Parcelable arg0, ClassLoader arg1 )
+	public void restoreState( Parcelable parcelable, ClassLoader classLoader )
 	{
 	}
 
@@ -63,12 +63,12 @@ public class ItemPagerAdapter extends PagerAdapter {
 	}
 
 	@Override
-	public void startUpdate( View arg0 )
+	public void startUpdate( View view )
 	{
 	}
 
 	@Override
-	public void finishUpdate( View arg0 )
+	public void finishUpdate( View view )
 	{
 	}
 }
