@@ -90,17 +90,17 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		getPreference();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 
-		//		if ( isAdded )
-		//		{
-		//			getViewPager().setCurrentItem(getViewCount());
-		//		}
-		//		else
-		//		{
-		//			if ( page_count == getViewPager().getCurrentItem() )
-		//			{
-		//				getViewPager().setCurrentItem(page_count);
-		//			}
-		//		}
+		if ( isAdded )
+		{
+			getViewPager().setCurrentItem(getViewCount());
+		}
+		else
+		{
+			if ( page_count == getViewPager().getCurrentItem() )
+			{
+				getViewPager().setCurrentItem(page_count);
+			}
+		}
 	}
 
 	/**
