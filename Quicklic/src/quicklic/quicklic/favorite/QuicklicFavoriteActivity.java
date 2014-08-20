@@ -133,23 +133,10 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 		}
 	}
 
-	private void restartService()
-	{
-		stopService();
-		startService();
-	}
-
 	private void stopService()
 	{
 		Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
 		stopService(stopIntent);
-	}
-
-	private void startService()
-	{
-		Intent startIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
-		startIntent.putExtra("center", delEnabled);
-		startService(startIntent);
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -179,8 +166,6 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 			// Application Click
 			else
 			{
-				getWindowManager().removeView(getDetectLayout());
-
 				if ( !delEnabled ) // ADD Mode
 				{
 					/* 실행할 수 없는 앱을 추가한 상태에서
@@ -189,13 +174,15 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					 */
 					try
 					{
-						//TODO 앱 실행시 Favorite 액티비티 서비스 제거
+						// 앱 실행시 Favorite 액티비티 서비스 제거
 						String packageName = preferencesManager.getAppPreferences(getApplicationContext(), v.getId());
 						Intent runIntent = packageManager.getLaunchIntentForPackage(packageName);
 						startActivity(runIntent);
 
 						setFloatingVisibility(true);
 						stopService();
+
+						getWindowManager().removeView(getDetectLayout());
 					}
 					catch (Exception e)
 					{
@@ -205,7 +192,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 				else
 				{
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					restartService();
+					resetQuicklic();
 				}
 			}
 		}
