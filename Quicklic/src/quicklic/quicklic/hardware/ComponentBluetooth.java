@@ -95,4 +95,16 @@ public class ComponentBluetooth {
 		}
 	}
 
+	/**
+	 * @함수명 : getScanMode
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : ScanMode를 int형 타입으로 반환
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 20.
+	 */
+	public int getScanMode()
+	{
+		return bluetooth.getScanMode();
+	}
 }

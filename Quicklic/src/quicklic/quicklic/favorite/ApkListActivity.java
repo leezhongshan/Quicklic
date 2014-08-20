@@ -51,7 +51,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main_favorite);
+		setContentView(R.layout.activity_apklist_favorite);
 
 		initialize();
 		initializeApkListView();

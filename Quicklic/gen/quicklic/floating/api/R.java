@@ -43,22 +43,16 @@ public final class R {
         public static final int wifi_on=0x7f02001d;
     }
     public static final class id {
-        public static final int appname_TextView=0x7f070009;
-        public static final int button1=0x7f070000;
-        public static final int button2=0x7f070001;
-        public static final int favorite_app_ListView=0x7f070003;
-        public static final int favorite_button_LinearLayout=0x7f070004;
-        public static final int favorite_main_RelativeLayout=0x7f070002;
-        public static final int favorite_system_Button=0x7f070006;
-        public static final int favorite_user_Button=0x7f070005;
-        public static final int quicklic_main_FrameLayout=0x7f070007;
-        public static final int quicklic_main_ImageView=0x7f070008;
+        public static final int appname_TextView=0x7f070005;
+        public static final int favorite_app_ListView=0x7f070001;
+        public static final int favorite_button_LinearLayout=0x7f070002;
+        public static final int favorite_main_RelativeLayout=0x7f070000;
+        public static final int favorite_system_Button=0x7f070004;
+        public static final int favorite_user_Button=0x7f070003;
     }
     public static final class layout {
-        public static final int activity_main=0x7f030000;
-        public static final int activity_main_favorite=0x7f030001;
-        public static final int activity_main_quicklic=0x7f030002;
-        public static final int apklist_item=0x7f030003;
+        public static final int activity_apklist_favorite=0x7f030000;
+        public static final int apklist_item=0x7f030001;
     }
     public static final class string {
         /**  System 

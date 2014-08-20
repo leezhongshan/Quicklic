@@ -8,9 +8,12 @@ import quicklic.quicklic.util.DeviceAdmin;
 import quicklic.quicklic.util.QuicklicActivity;
 import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
+import android.bluetooth.BluetoothAdapter;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.wifi.WifiManager;
@@ -53,6 +56,18 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 	{
 		super.onCreate();
 		initialize();
+
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+		filter.addAction(WifiManager.WIFI_STATE_CHANGED_ACTION);
+		registerReceiver(broadcastReceiver, filter);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		unregisterReceiver(broadcastReceiver);
 	}
 
 	@Override
@@ -119,6 +134,24 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 		addViewsForBalance(imageArrayList.size(), imageArrayList, onClickListener);
 	}
 
+	// Bluetooth와 Wifi의 상태 변화를 감지하여, 화면을 reload 하는 효과를 준다.
+	private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver()
+	{
+		@Override
+		public void onReceive( Context context, Intent intent )
+		{
+			String action = intent.getAction();
+			if ( BluetoothAdapter.ACTION_SCAN_MODE_CHANGED.equals(action) )
+			{
+				resetQuicklic();
+			}
+			else if ( WifiManager.WIFI_STATE_CHANGED_ACTION.equals(action) )
+			{
+				resetQuicklic();
+			}
+		}
+	};
+
 	public OnClickListener onClickListener = new OnClickListener()
 	{
 		@SuppressLint("HandlerLeak")
@@ -151,6 +184,14 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			case COMP_ROTATE:
 				componentRotate.controlRotate();
 				break;
+
+			case COMP_BLUETOOTH:
+				componentBluetooth.controlBluetooth();
+				return;
+
+			case COMP_WIFI:
+				componentWifi.controlWifi();
+				return;
 
 			case COMP_GPS:
 				Intent gps = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
@@ -192,10 +233,6 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 				{
 				case COMP_WIFI:
 					componentWifi.controlWifi();
-					break;
-
-				case COMP_BLUETOOTH:
-					componentBluetooth.controlBluetooth();
 					break;
 				}
 				v.setEnabled(false);
