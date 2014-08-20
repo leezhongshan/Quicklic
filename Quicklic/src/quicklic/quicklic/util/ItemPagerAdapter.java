@@ -1,5 +1,5 @@
 /**
- * Product by KIHan
+ * Product by Kyle
  */
 package quicklic.quicklic.util;
 
@@ -9,7 +9,6 @@ import android.content.Context;
 import android.os.Parcelable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -41,7 +40,6 @@ public class ItemPagerAdapter extends PagerAdapter {
 	@Override
 	public Object instantiateItem( View view, int position )
 	{
-		Log.e("test", "instaniateItem : " + position);
 		((ViewPager) view).addView(quickPageArrayList.get(position), 0);
 
 		return quickPageArrayList.get(position);

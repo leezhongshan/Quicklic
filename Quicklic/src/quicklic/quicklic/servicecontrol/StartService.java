@@ -12,12 +12,10 @@ public class StartService extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		//		testingFunction = new SettingFloatingInterface();
 		Intent intent = new Intent(StartService.this, FloatingService.class);
-		//		intent.putExtra("interface", testingFunction);
 		startService(intent);
-		overridePendingTransition(0, 0);
 
+		overridePendingTransition(0, 0);
 		finish();
 	}
 
