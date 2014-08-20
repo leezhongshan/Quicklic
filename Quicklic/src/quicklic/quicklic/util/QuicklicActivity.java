@@ -75,6 +75,14 @@ public class QuicklicActivity extends DeviceMetricActivity {
 	{
 		if ( serviceConnection != null )
 			unbindService(serviceConnection);
+		try
+		{
+			getWindowManager().removeView(getDetectLayout());
+		}
+		catch (Exception e)
+		{
+			// TODO: handle exception
+		}
 		super.onDestroy();
 	}
 

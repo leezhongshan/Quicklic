@@ -233,6 +233,7 @@ public class FloatingService extends Service
 		{
 			// Binder 객체 변환
 			remoteBinder = (RemoteBinder) iBinder;
+			context.unbindService(serviceConnection);
 		}
 	};
 
