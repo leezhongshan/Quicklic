@@ -4,6 +4,7 @@ import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
 import quicklic.quicklic.favorite.QuicklicFavoriteService;
 import quicklic.quicklic.hardware.QuicklicHardwareService;
+import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
 import quicklic.quicklic.main.QuicklicMainService;
 import android.app.Activity;
 import android.content.Intent;
@@ -29,6 +30,9 @@ public class FinishService extends Activity {
 		stopService(intent);
 
 		intent = new Intent(FinishService.this, QuicklicHardwareService.class);
+		stopService(intent);
+
+		intent = new Intent(FinishService.this, QuicklicKeyBoardService.class);
 		stopService(intent);
 
 		Toast.makeText(getApplicationContext(), R.string.quit_quicklic, Toast.LENGTH_SHORT).show();

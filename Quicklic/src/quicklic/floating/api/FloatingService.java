@@ -143,7 +143,13 @@ public class FloatingService extends Service
 	 */
 	public static void stopQuicklicService()
 	{
-		context.unbindService(serviceConnection);
+		try
+		{
+			context.unbindService(serviceConnection);
+		}
+		catch (Exception e)
+		{
+		}
 
 		Intent intent = new Intent(context, FinishService.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
