@@ -6,7 +6,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.util.DeviceAdmin;
 import quicklic.quicklic.util.DeviceAdminActivity;
-import quicklic.quicklic.util.QuicklicBase;
+import quicklic.quicklic.util.BaseQuicklic;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -22,7 +22,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
-public class QuicklicHardwareService extends QuicklicBase {
+public class QuicklicHardwareService extends BaseQuicklic {
 
 	private final int COMP_SOUND_RING = 1;
 	private final int COMP_SOUND_INC = 2;

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.util.QuicklicBase;
+import quicklic.quicklic.util.BaseQuicklic;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -16,7 +16,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class QuicklicFavoriteService extends QuicklicBase {
+public class QuicklicFavoriteService extends BaseQuicklic {
 
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
@@ -37,7 +37,6 @@ public class QuicklicFavoriteService extends QuicklicBase {
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-		delEnabled = intent.getBooleanExtra("center", false);
 		initializeImage();
 		return START_NOT_STICKY;
 	}
@@ -55,6 +54,14 @@ public class QuicklicFavoriteService extends QuicklicBase {
 		initializeView();
 	}
 
+	/**
+	 * @함수명 : resetQuicklic
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 화면을 새로고침
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	private void resetQuicklic()
 	{
 		if ( getQuicklicFrameLayout() != null )
@@ -198,6 +205,7 @@ public class QuicklicFavoriteService extends QuicklicBase {
 		}
 	};
 
+	// 추가 / 삭제 모드를 구분
 	private OnLongClickListener onLongClickListener = new OnLongClickListener()
 	{
 		@Override
