@@ -54,17 +54,17 @@
         </activity>
 
         <service
-            android:name="quicklic.quicklic.main.QuicklicMainActivity"
+            android:name="quicklic.quicklic.main.QuicklicMainService"
             android:configChanges="orientation"
             android:exported="false" >
         </service>
         <service
-            android:name="quicklic.quicklic.favorite.QuicklicFavoriteActivity"
+            android:name="quicklic.quicklic.favorite.QuicklicFavoriteService"
             android:configChanges="orientation"
             android:exported="false" >
         </service>
         <service
-            android:name="quicklic.quicklic.hardware.QuicklicHardwareActivity"
+            android:name="quicklic.quicklic.hardware.QuicklicHardwareService"
             android:configChanges="orientation"
             android:exported="false" >
         </service>

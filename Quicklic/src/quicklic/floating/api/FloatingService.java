@@ -3,7 +3,7 @@ package quicklic.floating.api;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import quicklic.quicklic.main.QuicklicMainActivity;
+import quicklic.quicklic.main.QuicklicMainService;
 import quicklic.quicklic.servicecontrol.FinishService;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -195,7 +195,7 @@ public class FloatingService extends Service
 		{
 			System.out.println("touched");
 
-			Intent intent = new Intent(context, QuicklicMainActivity.class);
+			Intent intent = new Intent(context, QuicklicMainService.class);
 			setFloatingVisibility(false);
 			context.startService(intent);
 		}

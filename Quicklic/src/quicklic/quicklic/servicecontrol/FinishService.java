@@ -2,9 +2,9 @@ package quicklic.quicklic.servicecontrol;
 
 import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
-import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
-import quicklic.quicklic.hardware.QuicklicHardwareActivity;
-import quicklic.quicklic.main.QuicklicMainActivity;
+import quicklic.quicklic.favorite.QuicklicFavoriteService;
+import quicklic.quicklic.hardware.QuicklicHardwareService;
+import quicklic.quicklic.main.QuicklicMainService;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,13 +22,13 @@ public class FinishService extends Activity {
 		intent = new Intent(FinishService.this, FloatingService.class);
 		stopService(intent);
 
-		intent = new Intent(FinishService.this, QuicklicMainActivity.class);
+		intent = new Intent(FinishService.this, QuicklicMainService.class);
 		stopService(intent);
 
-		intent = new Intent(FinishService.this, QuicklicFavoriteActivity.class);
+		intent = new Intent(FinishService.this, QuicklicFavoriteService.class);
 		stopService(intent);
 
-		intent = new Intent(FinishService.this, QuicklicHardwareActivity.class);
+		intent = new Intent(FinishService.this, QuicklicHardwareService.class);
 		stopService(intent);
 
 		Toast.makeText(getApplicationContext(), R.string.quit_quicklic, Toast.LENGTH_SHORT).show();

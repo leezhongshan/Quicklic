@@ -62,7 +62,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	protected void onDestroy()
 	{
 		super.onPause();
-		Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+		Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
 		startService(intent);
 	};
 

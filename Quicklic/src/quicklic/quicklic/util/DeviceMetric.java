@@ -9,7 +9,7 @@ import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class DeviceMetricActivity extends Service {
+public class DeviceMetric extends Service {
 
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;

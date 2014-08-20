@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import quicklic.floating.api.R;
-import quicklic.quicklic.main.QuicklicMainActivity;
+import quicklic.quicklic.main.QuicklicMainService;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -412,7 +412,7 @@ public class QuicklicKeyBoardService extends Service {
 				stopService(intent);
 
 				// MainActivity 시작
-				intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainActivity.class);
+				intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainService.class);
 				startService(intent);
 			}
 		}

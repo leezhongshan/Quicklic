@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
-import quicklic.quicklic.hardware.QuicklicHardwareActivity;
+import quicklic.quicklic.favorite.QuicklicFavoriteService;
+import quicklic.quicklic.hardware.QuicklicHardwareService;
 import quicklic.quicklic.keyboard.QuicklicKeyBoardService;
-import quicklic.quicklic.util.QuicklicActivity;
+import quicklic.quicklic.util.QuicklicBase;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-public class QuicklicMainActivity extends QuicklicActivity {
+public class QuicklicMainService extends QuicklicBase {
 
 	private final int HARDWARE = 0;
 	private final int KEYBOARD = 1;
@@ -47,10 +47,10 @@ public class QuicklicMainActivity extends QuicklicActivity {
 
 	private void restartService( Class<?> cls )
 	{
-		Intent intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+		Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
 		stopService(intent);
 
-		intent = new Intent(QuicklicMainActivity.this, cls);
+		intent = new Intent(QuicklicMainService.this, cls);
 		startService(intent);
 	}
 
@@ -64,7 +64,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 			switch ( v.getId() )
 			{
 			case HARDWARE:
-				restartService(QuicklicHardwareActivity.class);
+				restartService(QuicklicHardwareService.class);
 				break;
 
 			case KEYBOARD:
@@ -73,7 +73,7 @@ public class QuicklicMainActivity extends QuicklicActivity {
 				break;
 
 			case FAVORITE:
-				restartService(QuicklicFavoriteActivity.class);
+				restartService(QuicklicFavoriteService.class);
 				break;
 
 			default:

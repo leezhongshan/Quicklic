@@ -7,9 +7,9 @@ import quicklic.floating.api.FloatingService.RemoteBinder;
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Axis;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.favorite.QuicklicFavoriteActivity;
-import quicklic.quicklic.hardware.QuicklicHardwareActivity;
-import quicklic.quicklic.main.QuicklicMainActivity;
+import quicklic.quicklic.favorite.QuicklicFavoriteService;
+import quicklic.quicklic.hardware.QuicklicHardwareService;
+import quicklic.quicklic.main.QuicklicMainService;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -31,7 +31,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
-public class QuicklicActivity extends DeviceMetricActivity {
+public class QuicklicBase extends DeviceMetric {
 
 	private final static int LIMTED_ITEM_COUNT = 10;
 	private final static int DEFALT_POSITION = 270;
@@ -428,13 +428,13 @@ public class QuicklicActivity extends DeviceMetricActivity {
 
 			//TODO HOW TO SET?
 
-			Intent intent = new Intent(getApplicationContext(), QuicklicMainActivity.class);
+			Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
 			stopService(intent);
 
-			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+			Intent intent2 = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
 			stopService(intent2);
 
-			Intent intent3 = new Intent(getApplicationContext(), QuicklicHardwareActivity.class);
+			Intent intent3 = new Intent(getApplicationContext(), QuicklicHardwareService.class);
 			stopService(intent3);
 
 			return false;

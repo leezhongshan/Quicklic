@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.util.QuicklicActivity;
+import quicklic.quicklic.util.QuicklicBase;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -16,7 +16,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-public class QuicklicFavoriteActivity extends QuicklicActivity {
+public class QuicklicFavoriteService extends QuicklicBase {
 
 	private PreferencesManager preferencesManager;
 	private PackageManager packageManager;
@@ -135,7 +135,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 
 	private void stopService()
 	{
-		Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteActivity.class);
+		Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
 		stopService(stopIntent);
 	}
 
@@ -155,7 +155,7 @@ public class QuicklicFavoriteActivity extends QuicklicActivity {
 					{
 						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
 					}
-					Intent apkIntent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
+					Intent apkIntent = new Intent(QuicklicFavoriteService.this, ApkListActivity.class);
 					apkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					apkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(apkIntent);
