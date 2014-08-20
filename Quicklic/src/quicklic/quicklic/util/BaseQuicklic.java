@@ -62,38 +62,6 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 
 	private LinearLayout detectLayout;
 
-	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-		initializeQuicklic();
-		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-	}
-
-	@Override
-	public void onDestroy()
-	{
-		if ( serviceConnection != null )
-			unbindService(serviceConnection);
-		try
-		{
-			getWindowManager().removeView(getDetectLayout());
-		}
-		catch (Exception e)
-		{
-			// TODO: handle exception
-		}
-		super.onDestroy();
-	}
-
-	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		getWindowManager().removeView(detectLayout);
-		initializeQuicklic();
-	}
-
 	/**************************************
 	 * Support Function Section
 	 **************************************/
@@ -225,6 +193,7 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 					// 기준 좌표와 각도를 넣어주고, 각도 만큼 떨어져 있는 좌표를 가져옴
 					axis = getAxis(origin_x, origin_y, radius, angle_sum += ANGLE);
 
+					// 좌표에 맞게 아이템들을 배치한 뒤 레이아웃에 추가
 					FrameLayout.LayoutParams itemBackLayoutParams = new FrameLayout.LayoutParams((int) itemSize, (int) itemSize);
 					itemBackLayoutParams.leftMargin = axis.getAxis_x();
 					itemBackLayoutParams.topMargin = axis.getAxis_y();
@@ -307,6 +276,37 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 	 * Developer Section
 	 **************************************/
 
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+		initializeQuicklic();
+		bindService(new Intent(this, FloatingService.class), serviceConnection, Service.BIND_AUTO_CREATE);
+	}
+
+	@Override
+	public void onDestroy()
+	{
+		if ( serviceConnection != null )
+			unbindService(serviceConnection);
+		try
+		{
+			getWindowManager().removeView(getDetectLayout());
+		}
+		catch (Exception e)
+		{
+		}
+		super.onDestroy();
+	}
+
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		getWindowManager().removeView(detectLayout);
+		initializeQuicklic();
+	}
+
 	/**
 	 * Service Connection
 	 */
@@ -369,6 +369,14 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		getWindowManager().addView(detectLayout, getLayoutParams());
 	}
 
+	/**
+	 * @함수명 : setCenterView
+	 * @매개변수 : float itemSize, float origin_x, float origin_y
+	 * @반환 : void
+	 * @기능(역할) : 가운데 버튼에 이미지 추가
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	private void setCenterView( float itemSize, float origin_x, float origin_y )
 	{
 		if ( centerView != null )
