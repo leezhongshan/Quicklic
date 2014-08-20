@@ -28,6 +28,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	private boolean isAdded;
 
 	private int item_count;
+	private int page_count;
 
 	@Override
 	public void onCreate()
@@ -92,6 +93,13 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		if ( isAdded )
 		{
 			getViewPager().setCurrentItem(getViewCount());
+		}
+		else
+		{
+			if ( page_count == getViewPager().getCurrentItem() )
+			{
+				getViewPager().setCurrentItem(page_count);
+			}
 		}
 	}
 
@@ -208,6 +216,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 				else
 				{
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
+					page_count = getViewPager().getCurrentItem();
 					resetQuicklic();
 				}
 			}
