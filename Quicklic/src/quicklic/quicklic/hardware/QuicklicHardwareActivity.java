@@ -6,6 +6,7 @@ import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
 import quicklic.quicklic.util.DeviceAdmin;
 import quicklic.quicklic.util.QuicklicActivity;
+import quicklic.quicklic.util.DeviceAdminActivity;
 import android.annotation.SuppressLint;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
@@ -25,8 +26,6 @@ import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 public class QuicklicHardwareActivity extends QuicklicActivity {
-
-	private final int HARDWARE_POWER = 100;
 
 	private final int DELAY_TIME = 2000;
 	private final int COMP_SOUND_RING = 1;
@@ -210,11 +209,9 @@ public class QuicklicHardwareActivity extends QuicklicActivity {
 			case COMP_POWER:
 				if ( !devicePolicyManager.isAdminActive(componentName) )
 				{
-					Intent power = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-					power.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName);
-					power.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.hardware_device_admin_description));
-					power.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(power);
+					Intent intent = new Intent(getApplicationContext(), DeviceAdminActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(intent);
 				}
 				else
 				{

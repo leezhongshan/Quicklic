@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -47,6 +47,10 @@
             android:name="quicklic.quicklic.favorite.ApkListActivity"
             android:configChanges="orientation"
             android:theme="@android:style/Theme.Dialog" >
+        </activity>
+        <activity
+            android:name="quicklic.quicklic.util.DeviceAdminActivity"
+            android:theme="@style/Theme.Transparent" >
         </activity>
 
         <service
