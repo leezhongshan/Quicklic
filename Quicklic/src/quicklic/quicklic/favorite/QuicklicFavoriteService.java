@@ -31,19 +31,11 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	private int current_page;
 
 	@Override
-	public void onCreate()
-	{
-		super.onCreate();
-		initialize();
-	}
-
-	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
-		current_page = intent.getIntExtra("page", 0);
-		isAdded = intent.getBooleanExtra("add", false);
-
+		initialize(intent);
 		initializeImage();
+
 		return START_NOT_STICKY;
 	}
 
@@ -58,6 +50,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	{
 		setCenterView();
 		initializeView();
+		initializeViewPager();
 	}
 
 	/**
@@ -70,6 +63,11 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	 */
 	private void resetQuicklic()
 	{
+		isAdded = false;
+
+		// 현재 보고 있는 viewPager의 page를 기억
+		current_page = getViewPager().getCurrentItem();
+
 		if ( getQuicklicFrameLayout() != null )
 		{
 			getQuicklicFrameLayout().removeAllViews();
@@ -77,44 +75,54 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		initializeImage();
 	}
 
-	private void initialize()
+	private void initialize( Intent intent )
 	{
 		preferencesManager = new PreferencesManager(this);
 		packageManager = getPackageManager();
 
 		imageArrayList = new ArrayList<Item>();
 		pkgArrayList = new ArrayList<String>();
+
+		current_page = intent.getIntExtra("page", 0);
+		isAdded = intent.getBooleanExtra("add", false);
 	}
 
 	private void initializeView()
 	{
 		getPreference();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
+	}
 
-		//TODO
+	/**
+	 * @함수명 : initializeViewPager
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 추가/삭제 모드변경 또는 앱 추가 시 상황에 맞는 page 위치 이동
+	 * @작성자 : 13 JHPark
+	 * @작성일 : 2014. 8. 21.
+	 */
+	private void initializeViewPager()
+	{
+		// 추가 모드
 		if ( !delEnabled )
 		{
+			// 앱 선택 안함 : 현재 페이지 유지
 			if ( !isAdded )
 			{
 				getViewPager().setCurrentItem(current_page);
 			}
+			// 앱 선택 : 추가되는 페이지로 이동 (마지막 페이지)
 			else
 			{
 				getViewPager().setCurrentItem(getViewCount());
 			}
 		}
+		// 삭제 모드
 		else
 		{
-			if ( current_page > getViewCount() )
-			{
-				getViewPager().setCurrentItem(current_page - 1);
-			}
-			else
-			{
-				getViewPager().setCurrentItem(current_page);
-			}
+			// 현재 페이지 유지
+			getViewPager().setCurrentItem(current_page);
 		}
-
 	}
 
 	/**
@@ -171,6 +179,14 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		}
 	}
 
+	/**
+	 * @함수명 : stopService
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : 현재 서비스 종료
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	private void stopService()
 	{
 		Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
@@ -193,11 +209,12 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 					{
 						Toast.makeText(getApplicationContext(), R.string.err_limited_item_count, Toast.LENGTH_SHORT).show();
 					}
-					Intent apkIntent = new Intent(QuicklicFavoriteService.this, ApkListActivity.class);
-					apkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					apkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-					apkIntent.putExtra("page", getViewPager().getCurrentItem());
-					startActivity(apkIntent);
+
+					Intent apk = new Intent(QuicklicFavoriteService.this, ApkListActivity.class);
+					apk.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					apk.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					apk.putExtra("page", getViewPager().getCurrentItem());
+					startActivity(apk);
 
 					stopService();
 				}
@@ -230,8 +247,6 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 				}
 				else
 				{
-					current_page = getViewPager().getCurrentItem();
-
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
 					resetQuicklic();
 				}
@@ -245,8 +260,6 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		@Override
 		public boolean onLongClick( View v )
 		{
-			current_page = getViewPager().getCurrentItem();
-
 			if ( delEnabled )
 			{
 				delEnabled = false;
