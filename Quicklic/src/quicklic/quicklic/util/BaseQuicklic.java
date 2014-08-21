@@ -34,7 +34,7 @@ import android.widget.LinearLayout;
 
 public class BaseQuicklic extends DeviceMetricQuicklic {
 
-	private final static int LIMTED_ITEM_COUNT = 10;
+	private final static int LIMTED_ITEM_COUNT = 3;
 	private final static int DEFALT_POSITION = 270;
 	private int IMG_PADDING = 12;
 	private int MAIN_PADDING = 20;
