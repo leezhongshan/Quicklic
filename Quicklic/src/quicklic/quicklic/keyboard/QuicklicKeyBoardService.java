@@ -8,16 +8,19 @@ import java.util.TimerTask;
 import quicklic.floating.api.R;
 import quicklic.quicklic.main.QuicklicMainService;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -47,7 +50,11 @@ public class QuicklicKeyBoardService extends Service {
 	private WindowManager windowManager;
 	private WindowManager.LayoutParams layoutParams;
 
+	private PackageManager packageManager;
+
 	private LinearLayout keyboardLinearLayout;
+	private FrameLayout leftIconFrameLayout;
+	private FrameLayout rightIconFrameLayout;
 
 	private int keyboardHeight;
 	private int keyboardWidth;
@@ -68,7 +75,9 @@ public class QuicklicKeyBoardService extends Service {
 
 	private ActivityManager activityManager;
 	private ArrayList<String> packageArrayList;
+	private ArrayList<String> tempArrayList;
 	private int packageIndex;
+	private int appCount;
 
 	@Override
 	public IBinder onBind( Intent intent )
@@ -96,6 +105,7 @@ public class QuicklicKeyBoardService extends Service {
 				displayMetrics();
 				createKeyBoard();
 				getRunningTaskList();
+				resetKeyBoard(packageArrayList.get(checkUnderBound(packageIndex)), packageArrayList.get(checkUpperBound(packageIndex + 1)));
 				addViewInWindowManager();
 			}
 			catch (Exception e)
@@ -149,8 +159,11 @@ public class QuicklicKeyBoardService extends Service {
 	{
 		this.intent = intent;
 		timer = new Timer();
+
+		packageManager = getPackageManager();
 		packageArrayList = new ArrayList<String>();
 		packageIndex = 0;
+		appCount = 0;
 
 		KEY_HEIGHT_RATE = 0.125f;
 		KEY_WIDTH_RATE = 0.25f;
@@ -183,6 +196,36 @@ public class QuicklicKeyBoardService extends Service {
 	}
 
 	/**
+	 * @함수명 : resetKeyBoard
+	 * @매개변수 : String leftPackge, String rightPackge
+	 * @반환 : void
+	 * @기능(역할) : 현재 앱을 기준으로 왼쪽과 오른쪽 버튼을 누를 시 실행 될 앱의 아이콘을 등록 / JELLY_BEAN이상의 경우에만 가능 / JELLY_BEAN 이상이 아니면, 기본 제공
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 22.
+	 */
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	private void resetKeyBoard( String leftPackge, String rightPackge )
+	{
+		try
+		{
+			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+			{
+				leftIconFrameLayout.setBackground(packageManager.getApplicationIcon(leftPackge));
+				rightIconFrameLayout.setBackground(packageManager.getApplicationIcon(rightPackge));
+			}
+			else
+			{
+				leftIconFrameLayout.setBackgroundColor(Color.TRANSPARENT);
+				rightIconFrameLayout.setBackgroundColor(Color.TRANSPARENT);
+			}
+		}
+		catch (NameNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * @함수명 : createKeyBoard
 	 * @매개변수 :
 	 * @반환 : void
@@ -193,11 +236,13 @@ public class QuicklicKeyBoardService extends Service {
 	private void createKeyBoard()
 	{
 		keyboardLinearLayout = new LinearLayout(this);
+		leftIconFrameLayout = new FrameLayout(this);
+		rightIconFrameLayout = new FrameLayout(this);
 		LinearLayout backSectionLinearLayout = new LinearLayout(this);
 		LinearLayout firstSectionLinearLayout = new LinearLayout(this);
 		LinearLayout secondSectionLinearLayout = new LinearLayout(this);
 
-		FrameLayout.LayoutParams keyboardLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+		FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout.LayoutParams sectionLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 		LinearLayout.LayoutParams buttonLayoutParams = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -212,7 +257,10 @@ public class QuicklicKeyBoardService extends Service {
 		keyboardLinearLayout.setOrientation(LinearLayout.VERTICAL);
 		keyboardLinearLayout.setBackgroundColor(Color.TRANSPARENT);
 		keyboardLinearLayout.setWeightSum(1);
-		keyboardLinearLayout.setLayoutParams(keyboardLayoutParams);
+		keyboardLinearLayout.setLayoutParams(frameLayoutParams);
+
+		leftIconFrameLayout.setLayoutParams(buttonLayoutParams);
+		rightIconFrameLayout.setLayoutParams(buttonLayoutParams);
 
 		backSectionLinearLayout.setOrientation(LinearLayout.VERTICAL);
 		backSectionLinearLayout.setBackgroundColor(Color.WHITE);
@@ -234,12 +282,12 @@ public class QuicklicKeyBoardService extends Service {
 		secondSectionLinearLayout.setLayoutParams(sectionLayoutParams);
 
 		leftButton.setHeight(keyboardHeight);
-		leftButton.setLayoutParams(buttonLayoutParams);
+		leftButton.setLayoutParams(frameLayoutParams);
 		leftButton.setTextAppearance(this, R.style.KeyBoard_Button);
 		leftButton.setBackgroundResource(R.drawable.key_left);
 
 		rightButton.setHeight(keyboardHeight);
-		rightButton.setLayoutParams(buttonLayoutParams);
+		rightButton.setLayoutParams(frameLayoutParams);
 		rightButton.setTextAppearance(this, R.style.KeyBoard_Button);
 		rightButton.setBackgroundResource(R.drawable.key_right);
 
@@ -263,13 +311,76 @@ public class QuicklicKeyBoardService extends Service {
 		firstSectionLinearLayout.addView(moveButton);
 		firstSectionLinearLayout.addView(exitButton);
 
-		secondSectionLinearLayout.addView(leftButton);
-		secondSectionLinearLayout.addView(rightButton);
+		leftIconFrameLayout.addView(leftButton);
+		rightIconFrameLayout.addView(rightButton);
+
+		secondSectionLinearLayout.addView(leftIconFrameLayout);
+		secondSectionLinearLayout.addView(rightIconFrameLayout);
 
 		backSectionLinearLayout.addView(firstSectionLinearLayout);
 		backSectionLinearLayout.addView(secondSectionLinearLayout);
 
 		keyboardLinearLayout.addView(backSectionLinearLayout);
+	}
+
+	/**
+	 * @함수명 : checkUpperBound
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : PackageName List의 upper 경계 검사해서 오류 방지
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 22.
+	 */
+	private int checkUpperBound( int index )
+	{
+		if ( index >= packageArrayList.size() )
+			return packageArrayList.size() - 1;
+		return index;
+	}
+
+	/**
+	 * @함수명 : checkUnderBound
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : PackageName List의 under 경계 검사해서 오류 방지
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 22.
+	 */
+	private int checkUnderBound( int index )
+	{
+		if ( index <= 0 )
+			return 0;
+		return index - 1;
+	}
+
+	/**
+	 * @함수명 : getLauncherName
+	 * @매개변수 :
+	 * @반환 : String
+	 * @기능(역할) : Launcher 이름 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 22.
+	 */
+	private String getLauncherName()
+	{
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.addCategory(Intent.CATEGORY_HOME);
+		ResolveInfo resolveInfo = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+		return resolveInfo.activityInfo.packageName;
+	}
+
+	/**
+	 * @함수명 : getTopPackageName
+	 * @매개변수 :
+	 * @반환 : String
+	 * @기능(역할) : 현재 상위 Package 이름 가져오기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 22.
+	 */
+	private String getTopPackageName()
+	{
+		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
+		return taskinfo.get(0).topActivity.getPackageName();
 	}
 
 	/**
@@ -282,24 +393,33 @@ public class QuicklicKeyBoardService extends Service {
 	 */
 	private void getRunningTaskList()
 	{
-		Intent intent = new Intent(Intent.ACTION_MAIN);
-		intent.addCategory(Intent.CATEGORY_HOME);
-		ResolveInfo resolveInfo = getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-		String launcherName = resolveInfo.activityInfo.packageName;
+		tempArrayList = new ArrayList<String>(packageArrayList); // 이전 리스트 임시 보관
+		packageArrayList.clear(); // 초기화
+
+		String launcherName = getLauncherName();
 
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
 
-			if ( !(packageName.contains(launcherName) || packageName.contains(".phone") || packageName.contains("quicklic")
-					|| packageName.contains(".contacts") || packageName.contains("skt.prod")) )
+			// 시스템 앱 또는 항상 실행중인 기본 앱 걸러내기 : 사용자가 직접 실행한 앱만 추가하기 위함
+			// 또한, 이전에 갖고 있던 Task 앱 목록을 제외한 나머지를 추가하여, 중복 추가를 배제함
+			if ( !packageName.matches(launcherName + "|.*contacts.*|.*skt.prod.*|.*.phone.*|.*quicklic.*") && !tempArrayList.contains(packageName) )
 			{
-				// TODO 
-				System.out.println(packageName);
-				packageArrayList.add(packageName);
+				tempArrayList.add(packageName);
 			}
 		}
+		packageArrayList.addAll(tempArrayList); // 새로 구성된 리스트 복사
+
+		// 현재 보고 있는 앱의 위치로 초기화
+		packageIndex = packageArrayList.indexOf(getTopPackageName());
+		if ( packageIndex < 0 )
+			packageIndex = 0;
+		if ( packageIndex >= packageArrayList.size() )
+			packageIndex = packageArrayList.size();
+
+		appCount = packageArrayList.size();
 	}
 
 	private OnClickListener clickListener = new OnClickListener()
@@ -316,65 +436,14 @@ public class QuicklicKeyBoardService extends Service {
 		public void onClick( View v )
 		{
 			PackageManager packageManager = getPackageManager();
-			if ( v == leftButton )
+
+			if ( appCount == 0 )
 			{
-				if ( packageArrayList.size() == 0 )
-				{
-					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
-					return;
-				}
-
-				if ( packageIndex > 0 )
-				{
-					--packageIndex;
-
-					try
-					{
-						Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(packageIndex));
-						startActivity(intent);
-					}
-					catch (Exception e)
-					{
-						Toast.makeText(getApplicationContext(), R.string.keyboard_run_no, Toast.LENGTH_SHORT).show();
-						packageArrayList.remove(packageIndex);
-					}
-				}
-				else
-				{
-					Toast.makeText(getApplicationContext(), R.string.keyboard_move_first, Toast.LENGTH_SHORT).show();
-				}
-
+				Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
+				return;
 			}
-			else if ( v == rightButton )
-			{
-				if ( packageArrayList.size() == 0 )
-				{
-					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
-					return;
-				}
-				if ( packageIndex != packageArrayList.size() - 1 )
-				{
-					++packageIndex;
 
-					try
-					{
-						Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(packageIndex));
-						startActivity(intent);
-					}
-					catch (Exception e)
-					{
-						Toast.makeText(getApplicationContext(), R.string.keyboard_run_no, Toast.LENGTH_SHORT).show();
-						packageArrayList.remove(packageIndex);
-						packageIndex--;
-					}
-				}
-				else
-				{
-					Toast.makeText(getApplicationContext(), R.string.keyboard_move_finish, Toast.LENGTH_SHORT).show();
-				}
-
-			}
-			else if ( v == moveButton )
+			if ( v == moveButton )
 			{
 				long pressTime = System.currentTimeMillis();
 
@@ -419,6 +488,45 @@ public class QuicklicKeyBoardService extends Service {
 				// MainActivity 시작
 				Intent intent = new Intent(QuicklicKeyBoardService.this, QuicklicMainService.class);
 				startService(intent);
+			}
+			else
+			{
+				getRunningTaskList();
+
+				try
+				{
+					if ( v == leftButton ) // Button '<'
+					{
+						if ( packageArrayList.get(0).equals(getTopPackageName()) )
+						{
+							Toast.makeText(getApplicationContext(), R.string.keyboard_move_first, Toast.LENGTH_SHORT).show();
+							return;
+						}
+						else if ( (packageIndex - 1) >= 0 ) // 리스트의 처음이 아니면,
+						{
+							packageIndex--; // 이전 앱 실행
+						}
+					}
+					else if ( v == rightButton ) // Button '>'
+					{
+						if ( packageArrayList.get(appCount - 1).equals(getTopPackageName()) )
+						{
+							Toast.makeText(getApplicationContext(), R.string.keyboard_move_finish, Toast.LENGTH_SHORT).show();
+							return;
+						}
+						else if ( (packageIndex + 1) != appCount ) // 리스트의 끝이 아니면,
+						{
+							packageIndex++; // 다음 앱 실행
+						}
+					}
+					Intent intent = packageManager.getLaunchIntentForPackage(packageArrayList.get(packageIndex));
+					startActivity(intent);
+				}
+				catch (Exception e)
+				{
+					Toast.makeText(getApplicationContext(), R.string.keyboard_run_no, Toast.LENGTH_SHORT).show();
+				}
+				resetKeyBoard(packageArrayList.get(checkUnderBound(packageIndex)), packageArrayList.get(checkUpperBound(packageIndex + 1)));
 			}
 		}
 	};
