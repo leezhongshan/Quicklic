@@ -82,7 +82,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		@Override
 		protected void onPreExecute()
 		{
-			Dialog.setMessage(getResources().getString(R.string.quicklic_loading));
+			Dialog.setMessage(getResources().getString(R.string.favorite_loading));
 			Dialog.show();
 		}
 

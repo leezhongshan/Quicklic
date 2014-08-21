@@ -61,9 +61,10 @@ public final class R {
         public static final int err_limited_item_count=0x7f050004;
         public static final int favorite_disable_delete=0x7f050009;
         public static final int favorite_duplication_warning=0x7f05000d;
+        public static final int favorite_enable_delete=0x7f050008;
         /**  Favorite 
          */
-        public static final int favorite_enable_delete=0x7f050008;
+        public static final int favorite_loading=0x7f050007;
         public static final int favorite_run_no=0x7f05000a;
         public static final int favorite_system=0x7f05000b;
         public static final int favorite_user=0x7f05000c;
@@ -82,11 +83,10 @@ public final class R {
         public static final int keyboard_move_first=0x7f05000f;
         public static final int keyboard_move_no=0x7f050010;
         public static final int keyboard_run_no=0x7f050011;
-        public static final int quicklic_floating_mode=0x7f050007;
+        public static final int quicklic_floating_mode=0x7f050006;
         /**  Quicklic 
          */
-        public static final int quicklic_loading=0x7f050005;
-        public static final int quicklic_magnet_mode=0x7f050006;
+        public static final int quicklic_magnet_mode=0x7f050005;
         public static final int quit_quicklic=0x7f050003;
         public static final int stop_quicklic=0x7f050002;
     }
