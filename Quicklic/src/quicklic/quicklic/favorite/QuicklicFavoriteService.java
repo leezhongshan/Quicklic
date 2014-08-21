@@ -28,7 +28,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	private boolean isAdded;
 
 	private int item_count;
-	private int page_count;
+	private int current_page;
 
 	@Override
 	public void onCreate()
@@ -40,6 +40,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
+		current_page = intent.getIntExtra("page", 0);
 		isAdded = intent.getBooleanExtra("add", false);
 
 		initializeImage();
@@ -90,17 +91,30 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		getPreference();
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 
-		if ( isAdded )
+		//TODO
+		if ( !delEnabled )
 		{
-			getViewPager().setCurrentItem(getViewCount());
+			if ( !isAdded )
+			{
+				getViewPager().setCurrentItem(current_page);
+			}
+			else
+			{
+				getViewPager().setCurrentItem(getViewCount());
+			}
 		}
 		else
 		{
-			if ( page_count == getViewPager().getCurrentItem() )
+			if ( current_page > getViewCount() )
 			{
-				getViewPager().setCurrentItem(page_count);
+				getViewPager().setCurrentItem(current_page - 1);
+			}
+			else
+			{
+				getViewPager().setCurrentItem(current_page);
 			}
 		}
+
 	}
 
 	/**
@@ -182,6 +196,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 					Intent apkIntent = new Intent(QuicklicFavoriteService.this, ApkListActivity.class);
 					apkIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					apkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+					apkIntent.putExtra("page", getViewPager().getCurrentItem());
 					startActivity(apkIntent);
 
 					stopService();
@@ -215,8 +230,9 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 				}
 				else
 				{
+					current_page = getViewPager().getCurrentItem();
+
 					preferencesManager.removeAppPreferences(getApplicationContext(), v.getId());
-					page_count = getViewPager().getCurrentItem();
 					resetQuicklic();
 				}
 			}
@@ -229,6 +245,8 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		@Override
 		public boolean onLongClick( View v )
 		{
+			current_page = getViewPager().getCurrentItem();
+
 			if ( delEnabled )
 			{
 				delEnabled = false;
