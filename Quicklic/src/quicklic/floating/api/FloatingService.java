@@ -3,7 +3,7 @@ package quicklic.floating.api;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import quicklic.quicklic.main.QuicklicMainActivity;
+import quicklic.quicklic.main.QuicklicMainService;
 import quicklic.quicklic.servicecontrol.FinishService;
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
@@ -143,7 +143,13 @@ public class FloatingService extends Service
 	 */
 	public static void stopQuicklicService()
 	{
-		context.unbindService(serviceConnection);
+		try
+		{
+			context.unbindService(serviceConnection);
+		}
+		catch (Exception e)
+		{
+		}
 
 		Intent intent = new Intent(context, FinishService.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -155,11 +161,10 @@ public class FloatingService extends Service
 	/*****************************************************************************/
 
 	/**
-	 * @author 태훈 AIDL을 활용한 Interface Binder 클래스
+	 * @author THYang AIDL을 활용한 Interface Binder 클래스
 	 */
 	public static class RemoteBinder extends FloatingInterfaceAIDL.Stub
 	{
-
 		@Override
 		public int setDrawableQuicklic() throws RemoteException
 		{
@@ -185,7 +190,7 @@ public class FloatingService extends Service
 		}
 
 		@Override
-		public boolean setAnimation() throws RemoteException
+		public boolean getAnimation() throws RemoteException
 		{
 			return true;
 		}
@@ -193,11 +198,9 @@ public class FloatingService extends Service
 		@Override
 		public void touched() throws RemoteException
 		{
-			Intent intent = new Intent(context, QuicklicMainActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // 서비스 도중 실행 시, New Task 플래그가 필요하다.
-			intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); // 한 번 호출된 Activity에 대해서는 중복 호출 되지 않는다. (중복 불가 적용)
+			Intent intent = new Intent(context, QuicklicMainService.class);
 			setFloatingVisibility(false);
-			context.startActivity(intent);
+			context.startService(intent);
 		}
 
 		@Override
@@ -233,6 +236,7 @@ public class FloatingService extends Service
 		{
 			// Binder 객체 변환
 			remoteBinder = (RemoteBinder) iBinder;
+			context.unbindService(serviceConnection);
 		}
 	};
 
@@ -247,26 +251,6 @@ public class FloatingService extends Service
 	public IBinder onBind( Intent intent )
 	{
 		return remoteBinder;
-	}
-
-	/**
-	 * @함수명 : onConfigurationChanged
-	 * @매개변수 :
-	 * @기능(역할) : 화면 회전이 감지될 때마다, display 정보를 다시 생성함
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 6. 26.
-	 */
-	@Override
-	public void onConfigurationChanged( Configuration newConfig )
-	{
-		super.onConfigurationChanged(newConfig);
-		try
-		{
-			displayMetrics();
-		}
-		catch (Exception e)
-		{
-		}
 	}
 
 	@Override
@@ -293,7 +277,27 @@ public class FloatingService extends Service
 		{
 			e.printStackTrace();
 		}
-		return Service.START_NOT_STICKY;
+		return START_NOT_STICKY;
+	}
+
+	/**
+	 * @함수명 : onConfigurationChanged
+	 * @매개변수 :
+	 * @기능(역할) : 화면 회전이 감지될 때마다, display 정보를 다시 생성함
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 6. 26.
+	 */
+	@Override
+	public void onConfigurationChanged( Configuration newConfig )
+	{
+		super.onConfigurationChanged(newConfig);
+		try
+		{
+			displayMetrics();
+		}
+		catch (Exception e)
+		{
+		}
 	}
 
 	/**
@@ -331,7 +335,7 @@ public class FloatingService extends Service
 
 			context = this;
 
-			moveToSide = remoteBinder.setAnimation();
+			moveToSide = remoteBinder.getAnimation();
 			timer = new Timer();
 		}
 		catch (Exception e)
@@ -405,25 +409,20 @@ public class FloatingService extends Service
 		quicklic.setImageResource(remoteBinder.setDrawableQuicklic());
 		quicklic.setLayoutParams(new RelativeLayout.LayoutParams(imageWidth, imageHeight));
 
-		//animation위해서 quicklicRelativeLayout 추가함
+		//animation위해서 quicklicRelativeLayout 추가
 		quicklicRelativeLayout = new RelativeLayout(this);
 		quicklicRelativeLayout.addView(quicklic);
 		quicklicRelativeLayout.setBackgroundResource(android.R.color.transparent);
 
 		/* WindowManager.LayoutParams.TYPE_PHONE : Window를 최상위로 유지
 		 * WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE :  다른 영역에 TouchEvent가 발생했을 때 인지 하지 않음
-		 * PixelFormat.TRANSLUCENT : 투명
 		 */
 		layoutParams = new WindowManager.LayoutParams(WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-				PixelFormat.RGBA_8888); // PixelFormat.RGBA_8888 : TRANSLUCENT 보다 추천한다고 함.
-
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.RGBA_8888);
 		layoutParams.windowAnimations = android.R.style.Animation_Dialog;
-
 		layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
 		layoutParams.x = deviceHorizontalCenter;
 		layoutParams.y = deviceVerticalCenter;
-
 		layoutParams.width = imageWidth;
 		layoutParams.height = imageHeight;
 
@@ -460,8 +459,9 @@ public class FloatingService extends Service
 
 		PendingIntent intent = PendingIntent.getActivity(context, 0, new Intent(context, FinishService.class), Intent.FLAG_ACTIVITY_NEW_TASK);
 
-		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle("Quicklic").setContentText(getResources().getString(R.string.stop_quicklic))
-				.setSmallIcon(R.drawable.ic_launcher).setTicker(getResources().getString(R.string.hello_quicklic)).setOngoing(true).setContentIntent(intent).build();
+		Notification notification = new NotificationCompat.Builder(getApplicationContext()).setContentTitle(getString(R.string.app_name))
+				.setContentText(getResources().getString(R.string.stop_quicklic)).setSmallIcon(R.drawable.ic_launcher).setTicker(getResources().getString(R.string.hello_quicklic)).setOngoing(true)
+				.setContentIntent(intent).build();
 		notification.flags = Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
 
 		notificationManager.notify(NOTIFICATION_ID, notification);
@@ -599,6 +599,13 @@ public class FloatingService extends Service
 		private int moveTouchY;
 		private RelativeLayout imageView;
 
+		/**
+		 * @함수명 : onTouch
+		 * @매개변수 : View v, MotionEvent event
+		 * @기능(역할) : Quick View의 움직임 refresh
+		 * @작성자 : 13 JHPark
+		 * @작성일 : 2014. 8. 21.
+		 */
 		@Override
 		public boolean onTouch( View v, MotionEvent event )
 		{
@@ -731,13 +738,19 @@ public class FloatingService extends Service
 			layoutParams.x = toX;
 			layoutParams.y = toY;
 
-			//			if ( !moveToSide )
 			animateFromTo(quicklic, initialX, initialY, toX, toY);
-			//			else
-			//				windowManagerUpdateViewLayout(imageView, layoutParams);
 		}
 	};
 
+	/**
+	 * @도움 : Kyle
+	 * @함수명 : animateFromTo
+	 * @매개변수 :
+	 * @반환 : void
+	 * @기능(역할) : WindowManager에 추가된 View에 애니메이션 효과주기
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 21.
+	 */
 	public void animateFromTo( View v, int fromX, int fromY, final int toX, final int toY )
 	{
 		layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;

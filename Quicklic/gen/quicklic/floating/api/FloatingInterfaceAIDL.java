@@ -75,10 +75,10 @@ reply.writeNoException();
 reply.writeFloat(_result);
 return true;
 }
-case TRANSACTION_setAnimation:
+case TRANSACTION_getAnimation:
 {
 data.enforceInterface(DESCRIPTOR);
-boolean _result = this.setAnimation();
+boolean _result = this.getAnimation();
 reply.writeNoException();
 reply.writeInt(((_result)?(1):(0)));
 return true;
@@ -188,14 +188,14 @@ _data.recycle();
 }
 return _result;
 }
-@Override public boolean setAnimation() throws android.os.RemoteException
+@Override public boolean getAnimation() throws android.os.RemoteException
 {
 android.os.Parcel _data = android.os.Parcel.obtain();
 android.os.Parcel _reply = android.os.Parcel.obtain();
 boolean _result;
 try {
 _data.writeInterfaceToken(DESCRIPTOR);
-mRemote.transact(Stub.TRANSACTION_setAnimation, _data, _reply, 0);
+mRemote.transact(Stub.TRANSACTION_getAnimation, _data, _reply, 0);
 _reply.readException();
 _result = (0!=_reply.readInt());
 }
@@ -252,7 +252,7 @@ static final int TRANSACTION_setDrawableQuicklic = (android.os.IBinder.FIRST_CAL
 static final int TRANSACTION_setFloatingVisibility = (android.os.IBinder.FIRST_CALL_TRANSACTION + 1);
 static final int TRANSACTION_getFloatingVisibility = (android.os.IBinder.FIRST_CALL_TRANSACTION + 2);
 static final int TRANSACTION_setSize = (android.os.IBinder.FIRST_CALL_TRANSACTION + 3);
-static final int TRANSACTION_setAnimation = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
+static final int TRANSACTION_getAnimation = (android.os.IBinder.FIRST_CALL_TRANSACTION + 4);
 static final int TRANSACTION_touched = (android.os.IBinder.FIRST_CALL_TRANSACTION + 5);
 static final int TRANSACTION_doubleTouched = (android.os.IBinder.FIRST_CALL_TRANSACTION + 6);
 static final int TRANSACTION_longTouched = (android.os.IBinder.FIRST_CALL_TRANSACTION + 7);
@@ -261,7 +261,7 @@ public int setDrawableQuicklic() throws android.os.RemoteException;
 public void setFloatingVisibility(boolean value) throws android.os.RemoteException;
 public int getFloatingVisibility() throws android.os.RemoteException;
 public float setSize() throws android.os.RemoteException;
-public boolean setAnimation() throws android.os.RemoteException;
+public boolean getAnimation() throws android.os.RemoteException;
 public void touched() throws android.os.RemoteException;
 public void doubleTouched() throws android.os.RemoteException;
 public void longTouched() throws android.os.RemoteException;

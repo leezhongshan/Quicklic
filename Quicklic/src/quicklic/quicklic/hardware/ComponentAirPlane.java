@@ -1,6 +1,7 @@
 package quicklic.quicklic.hardware;
 
 import quicklic.floating.api.R;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.provider.Settings;
@@ -41,10 +42,11 @@ public class ComponentAirPlane {
 	 * @함수명 : isEnable
 	 * @매개변수 :
 	 * @반환 : boolean
-	 * @기능(역할) : Airplane on/off에 따른 상태 반환
+	 * @기능(역할) : Airplane on/off에 따른 상태 반환 (SDK 버전에 맞는 방법을 적용)
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 6. 25.
 	 */
+	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
 	public boolean isEnable()
 	{

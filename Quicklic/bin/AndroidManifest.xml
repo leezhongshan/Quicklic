@@ -5,7 +5,7 @@
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -38,19 +38,7 @@
             android:theme="@style/Theme.Transparent" >
         </activity>
         <activity
-            android:name="quicklic.quicklic.main.QuicklicMainActivity"
-            android:configChanges="orientation"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Transparent" >
-        </activity>
-        <activity
-            android:name="quicklic.quicklic.favorite.QuicklicFavoriteActivity"
-            android:configChanges="orientation"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Transparent" >
-        </activity>
-        <activity
-            android:name="quicklic.quicklic.hardware.QuicklicHardwareActivity"
+            android:name="quicklic.quicklic.servicecontrol.StartQuicklicMainService"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:theme="@style/Theme.Transparent" >
@@ -60,7 +48,26 @@
             android:configChanges="orientation"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
+        <activity
+            android:name="quicklic.quicklic.util.DeviceAdminActivity"
+            android:theme="@style/Theme.Transparent" >
+        </activity>
 
+        <service
+            android:name="quicklic.quicklic.main.QuicklicMainService"
+            android:configChanges="orientation"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="quicklic.quicklic.favorite.QuicklicFavoriteService"
+            android:configChanges="orientation"
+            android:exported="false" >
+        </service>
+        <service
+            android:name="quicklic.quicklic.hardware.QuicklicHardwareService"
+            android:configChanges="orientation"
+            android:exported="false" >
+        </service>
         <service
             android:name="quicklic.floating.api.FloatingService"
             android:configChanges="orientation"

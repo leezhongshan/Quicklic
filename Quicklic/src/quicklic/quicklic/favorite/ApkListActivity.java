@@ -5,13 +5,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import quicklic.floating.api.FloatingService;
 import quicklic.floating.api.R;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -29,11 +27,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 public class ApkListActivity extends Activity implements OnItemClickListener
 {
-	private final static int HOMEKEY_DELAY_TIME = 5000;
 	private PackageManager packageManager;
 	private ApkAdapter apkAdapter;
 
@@ -47,6 +43,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 
 	private boolean isSystem;
 	private boolean isUser;
+	private boolean isAdded;
 
 	private PreferencesManager preferencesManager;
 
@@ -55,12 +52,22 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main_favorite);
+		setContentView(R.layout.activity_apklist_favorite);
 
 		initialize();
 		initializeApkListView();
 		changeAppListView(false);
 	}
+
+	@Override
+	protected void onDestroy()
+	{
+		super.onPause();
+		Intent intent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
+		intent.putExtra("page", getIntent().getIntExtra("page", 0));
+		intent.putExtra("add", isAdded);
+		startService(intent);
+	};
 
 	/**
 	 * @함수명 : ApkAsyncTask
@@ -75,7 +82,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		@Override
 		protected void onPreExecute()
 		{
-			Dialog.setMessage(getResources().getString(R.string.quicklic_loading));
+			Dialog.setMessage(getResources().getString(R.string.favorite_loading));
 			Dialog.show();
 		}
 
@@ -93,6 +100,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 			{
 				Dialog.dismiss();
 			}
+
 			apkAdapter.notifyDataSetChanged();
 		}
 	}
@@ -101,6 +109,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	{
 		isSystem = false;
 		isUser = false;
+		isAdded = false;
 
 		mainRelativeLayout = (RelativeLayout) findViewById(R.id.favorite_main_RelativeLayout);
 		apkListView = (ListView) findViewById(R.id.favorite_app_ListView);
@@ -159,6 +168,7 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		}
 	}
 
+	// Comparator : 파일명으로 List를 정렬하기 위해 사용되는 비교자
 	private Comparator<PackageInfo> comparator = new Comparator<PackageInfo>()
 	{
 		private final Collator collator = Collator.getInstance();
@@ -222,7 +232,8 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 	public void onItemClick( AdapterView<?> parent, View view, int position, long row )
 	{
 		PackageInfo packageInfo = (PackageInfo) parent.getItemAtPosition(position);
-		preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
+		isAdded = preferencesManager.setPreference(packageInfo.packageName, getApplicationContext());
+
 		finish();
 	}
 
@@ -260,37 +271,4 @@ public class ApkListActivity extends Activity implements OnItemClickListener
 		}
 	};
 
-	public void homeKeyPressed()
-	{
-		FloatingService.getQuicklic().setVisibility(View.GONE);
-		Toast.makeText(getApplicationContext(), R.string.quicklic_loading, Toast.LENGTH_LONG).show();
-
-		TimerTask checkTask;
-		checkTask = new TimerTask()
-		{
-			@Override
-			public void run()
-			{
-				runOnUiThread(new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						FloatingService.getQuicklic().setVisibility(View.VISIBLE);
-						QuicklicFavoriteActivity.activity.finish();
-						finish();
-					}
-				});
-			}
-		};
-
-		Timer mTimer = new Timer();
-		mTimer.schedule(checkTask, HOMEKEY_DELAY_TIME);
-	}
-
-	protected void onUserLeaveHint()
-	{
-		homeKeyPressed();
-		finish();
-	};
 }

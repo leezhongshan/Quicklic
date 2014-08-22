@@ -5,7 +5,7 @@ interface FloatingInterfaceAIDL {
 	void setFloatingVisibility(boolean value);
 	int getFloatingVisibility();
 	float setSize();
-	boolean setAnimation();
+	boolean getAnimation();
 	void touched(); 
 	void doubleTouched();
 	void longTouched();
