@@ -28,6 +28,7 @@
 
         <Button
             android:id="@+id/favorite_user_Button"
+            style="@android:attr/buttonBarButtonStyle"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_marginRight="1dp"
@@ -39,6 +40,7 @@
 
         <Button
             android:id="@+id/favorite_system_Button"
+            style="@android:attr/buttonBarButtonStyle"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_marginLeft="1dp"

@@ -2,7 +2,6 @@ package quicklic.quicklic.hardware;
 
 import quicklic.floating.api.R;
 import android.bluetooth.BluetoothAdapter;
-import android.util.Log;
 
 public class ComponentBluetooth {
 
@@ -89,10 +88,18 @@ public class ComponentBluetooth {
 				offBluetooth();
 			}
 		}
-		else
-		{
-			Log.i("DEBUG_TAG", "블루투스지원안함");
-		}
 	}
 
+	/**
+	 * @함수명 : getScanMode
+	 * @매개변수 :
+	 * @반환 : int
+	 * @기능(역할) : ScanMode를 int형 타입으로 반환
+	 * @작성자 : THYang
+	 * @작성일 : 2014. 8. 20.
+	 */
+	public int getScanMode()
+	{
+		return bluetooth.getScanMode();
+	}
 }

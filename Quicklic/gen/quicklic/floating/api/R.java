@@ -11,6 +11,7 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
+<<<<<<< HEAD
         public static final int bluetooth_off=0x7f020000;
         public static final int bluetooth_on=0x7f020001;
         public static final int favorite=0x7f020002;
@@ -57,11 +58,56 @@ public final class R {
         public static final int activity_main_favorite=0x7f030001;
         public static final int activity_main_quicklic=0x7f030002;
         public static final int apklist_item=0x7f030003;
+=======
+        public static final int airplane_off=0x7f020000;
+        public static final int airplane_on=0x7f020001;
+        public static final int bluetooth_off=0x7f020002;
+        public static final int bluetooth_on=0x7f020003;
+        public static final int favorite=0x7f020004;
+        public static final int favorite_add=0x7f020005;
+        public static final int favorite_delete=0x7f020006;
+        public static final int floating=0x7f020007;
+        public static final int gps_off=0x7f020008;
+        public static final int gps_on=0x7f020009;
+        public static final int hardware=0x7f02000a;
+        public static final int home=0x7f02000b;
+        public static final int ic_launcher=0x7f02000c;
+        public static final int key_exit=0x7f02000d;
+        public static final int key_left=0x7f02000e;
+        public static final int key_move=0x7f02000f;
+        public static final int key_right=0x7f020010;
+        public static final int keyboard=0x7f020011;
+        public static final int power=0x7f020012;
+        public static final int rendering_circle=0x7f020013;
+        public static final int rendering_item=0x7f020014;
+        public static final int rotate_off=0x7f020015;
+        public static final int rotate_on=0x7f020016;
+        public static final int sound_decrease=0x7f020017;
+        public static final int sound_increase=0x7f020018;
+        public static final int sound_mute=0x7f020019;
+        public static final int sound_on=0x7f02001a;
+        public static final int sound_vibrate=0x7f02001b;
+        public static final int wifi_off=0x7f02001c;
+        public static final int wifi_on=0x7f02001d;
+    }
+    public static final class id {
+        public static final int appname_TextView=0x7f070005;
+        public static final int favorite_app_ListView=0x7f070001;
+        public static final int favorite_button_LinearLayout=0x7f070002;
+        public static final int favorite_main_RelativeLayout=0x7f070000;
+        public static final int favorite_system_Button=0x7f070004;
+        public static final int favorite_user_Button=0x7f070003;
+    }
+    public static final class layout {
+        public static final int activity_apklist_favorite=0x7f030000;
+        public static final int apklist_item=0x7f030001;
+>>>>>>> origin/ActivityToService
     }
     public static final class string {
         /**  System 
          */
         public static final int app_name=0x7f050000;
+<<<<<<< HEAD
         public static final int device_admin=0x7f050014;
         public static final int device_admin_description=0x7f050015;
         public static final int err_limited_item_count=0x7f050004;
@@ -73,6 +119,22 @@ public final class R {
         public static final int favorite_run_no=0x7f05000a;
         public static final int favorite_system=0x7f05000b;
         public static final int favorite_user=0x7f05000c;
+=======
+        public static final int err_limited_item_count=0x7f050004;
+        public static final int favorite_disable_delete=0x7f050009;
+        public static final int favorite_duplication_warning=0x7f05000d;
+        public static final int favorite_enable_delete=0x7f050008;
+        /**  Favorite 
+         */
+        public static final int favorite_loading=0x7f050007;
+        public static final int favorite_run_no=0x7f05000a;
+        public static final int favorite_system=0x7f05000b;
+        public static final int favorite_user=0x7f05000c;
+        public static final int hardware_device_admin_active=0x7f050014;
+        public static final int hardware_device_admin_deactive=0x7f050015;
+        public static final int hardware_device_admin_description=0x7f050017;
+        public static final int hardware_device_admin_label=0x7f050016;
+>>>>>>> origin/ActivityToService
         /**  Hardware 
          */
         public static final int hardware_volume_max=0x7f050012;
@@ -84,11 +146,18 @@ public final class R {
         public static final int keyboard_move_first=0x7f05000f;
         public static final int keyboard_move_no=0x7f050010;
         public static final int keyboard_run_no=0x7f050011;
+<<<<<<< HEAD
         public static final int quicklic_floating_mode=0x7f050007;
         /**  Quicklic 
          */
         public static final int quicklic_loading=0x7f050005;
         public static final int quicklic_magnet_mode=0x7f050006;
+=======
+        public static final int quicklic_floating_mode=0x7f050006;
+        /**  Quicklic 
+         */
+        public static final int quicklic_magnet_mode=0x7f050005;
+>>>>>>> origin/ActivityToService
         public static final int quit_quicklic=0x7f050003;
         public static final int stop_quicklic=0x7f050002;
     }
