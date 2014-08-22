@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
+import quicklic.quicklic.main.QuicklicMainService;
 import quicklic.quicklic.util.DeviceAdmin;
 import quicklic.quicklic.util.DeviceAdminActivity;
 import quicklic.quicklic.util.BaseQuicklic;
@@ -63,6 +64,10 @@ public class QuicklicHardwareService extends BaseQuicklic {
 	{
 		super.onDestroy();
 		unregisterReceiver(broadcastReceiver);
+
+		setFloatingVisibility(false);
+		Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
+		startService(intent);
 	}
 
 	@Override
@@ -204,8 +209,6 @@ public class QuicklicHardwareService extends BaseQuicklic {
 				homekey.addCategory(Intent.CATEGORY_HOME);
 				homekey.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(homekey);
-
-				stopToService();
 				return;
 
 				/**
