@@ -402,15 +402,22 @@ public class QuicklicKeyBoardService extends Service {
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
 
 		int runningTaskCount = 0;
+		boolean isExist = false;
+
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
 
 			// 시스템 앱 또는 항상 실행중인 기본 앱 걸러내기 : 사용자가 직접 실행한 앱만 추가하기 위함
 			// 또한, 이전에 갖고 있던 Task 앱 목록을 제외한 나머지를 추가하여, 중복 추가를 배제함
-			if ( !packageName.matches(launcherName + "|.*contacts.*|.*skt.prod.*|.*.phone.*|.*quicklic.*") && !tempArrayList.contains(packageName) )
+			isExist = tempArrayList.contains(packageName);
+			if ( !packageName.matches(launcherName + "|" + getString(R.string.keyboard_except_list)) && !isExist )
 			{
 				tempArrayList.add(packageName);
+				runningTaskCount++;
+			}
+			if ( isExist )
+			{
 				runningTaskCount++;
 			}
 		}
@@ -498,7 +505,7 @@ public class QuicklicKeyBoardService extends Service {
 					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
 					return;
 				}
-				
+
 				try
 				{
 					if ( v == leftButton ) // Button '<'

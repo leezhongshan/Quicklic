@@ -25,6 +25,7 @@
     <string name="keyboard_move_first">처음 앱입니다.</string>
     <string name="keyboard_move_no">실행중인 앱이 없습니다.</string>
     <string name="keyboard_run_no">실행할 수 없는 앱입니다. 한번더 눌러주세요.</string>
+    <string name="keyboard_except_list">.*contacts.*|.*skt.prod.*|.*.phone.*|.*quicklic.*</string>
 
     <!-- Hardware -->
     <string name="hardware_volume_max">최대 음량입니다.</string>
