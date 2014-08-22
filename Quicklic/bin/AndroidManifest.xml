@@ -80,15 +80,9 @@
         </service>
 
         <receiver
-<<<<<<< HEAD
-            android:name="quicklic.quicklic.hardware.ComponentPower$DeviceAdmin"
-            android:description="@string/device_admin_description"
-            android:label="@string/device_admin"
-=======
             android:name="quicklic.quicklic.util.DeviceAdmin"
             android:description="@string/hardware_device_admin_description"
             android:label="@string/hardware_device_admin_label"
->>>>>>> origin/ActivityToService
             android:permission="android.permission.BIND_DEVICE_ADMIN" >
             <meta-data
                 android:name="android.app.device_admin"

@@ -36,14 +36,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		initialize(intent);
 		initializeImage();
 
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-		initialize();
-		initializeView();
-		setCenterView();
-
-=======
 		return START_NOT_STICKY;
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 	}
 
 	@Override
@@ -70,22 +63,18 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	 */
 	private void resetQuicklic()
 	{
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-=======
+
 		isAdded = false;
 
 		// 현재 보고 있는 viewPager의 page를 기억
 		current_page = getViewPager().getCurrentItem();
 
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 		if ( getQuicklicFrameLayout() != null )
 		{
 			getQuicklicFrameLayout().removeAllViews();
 		}
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-=======
+
 		initializeImage();
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 	}
 
 	private void initialize( Intent intent )
@@ -176,11 +165,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		imageArrayList.clear();
 		item_count = preferencesManager.getNumPreferences(this);
 
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-		for ( int i = 0; i < item_count /*&& !isItemFull(i)*/; i++ )
-=======
 		for ( int i = 0; i < item_count; i++ )
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 		{
 			String packageName = preferencesManager.getAppPreferences(this, i);
 			pkgArrayList.add(packageName);
@@ -215,20 +200,12 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		@Override
 		public void onClick( View v )
 		{
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-=======
 			// Center Button Click
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 			if ( v == getCenterView() )
 			{
 				if ( !delEnabled )
 				{
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-					isActivity = true;
-					intent = new Intent(QuicklicFavoriteActivity.this, ApkListActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(intent);
-=======
+
 					getWindowManager().removeView(getDetectLayout());
 
 					if ( isItemFull(item_count) ) // check full count
@@ -243,7 +220,6 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 					startActivity(apk);
 
 					stopService();
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 				}
 			}
 			// Application Click
@@ -302,18 +278,4 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		}
 	};
 
-<<<<<<< HEAD:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteActivity.java
-	protected void onUserLeaveHint()
-	{
-		if ( SettingFloatingInterface.getFloatingService() != null && !isActivity )
-		{
-			if ( SettingFloatingInterface.getFloatingService().getQuicklic().getVisibility() != View.VISIBLE )
-			{
-				homeKeyPressed();
-			}
-		}
-	};
-
-=======
->>>>>>> origin/ActivityToService:Quicklic/src/quicklic/quicklic/favorite/QuicklicFavoriteService.java
 }

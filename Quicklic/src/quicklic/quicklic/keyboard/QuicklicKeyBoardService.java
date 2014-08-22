@@ -105,7 +105,7 @@ public class QuicklicKeyBoardService extends Service {
 				displayMetrics();
 				createKeyBoard();
 				getRunningTaskList();
-				resetKeyBoard(packageArrayList.get(checkUnderBound(packageIndex)), packageArrayList.get(checkUpperBound(packageIndex + 1)));
+				resetKeyBoard();
 				addViewInWindowManager();
 			}
 			catch (Exception e)
@@ -124,9 +124,9 @@ public class QuicklicKeyBoardService extends Service {
 	@Override
 	public void onDestroy()
 	{
+		super.onDestroy();
 		if ( keyboardLinearLayout != null )
 			windowManager.removeView(keyboardLinearLayout);
-		super.onDestroy();
 	}
 
 	private void displayMetrics()
@@ -197,19 +197,21 @@ public class QuicklicKeyBoardService extends Service {
 
 	/**
 	 * @함수명 : resetKeyBoard
-	 * @매개변수 : String leftPackge, String rightPackge
+	 * @매개변수 :
 	 * @반환 : void
 	 * @기능(역할) : 현재 앱을 기준으로 왼쪽과 오른쪽 버튼을 누를 시 실행 될 앱의 아이콘을 등록 / JELLY_BEAN이상의 경우에만 가능 / JELLY_BEAN 이상이 아니면, 기본 제공
 	 * @작성자 : THYang
 	 * @작성일 : 2014. 8. 22.
 	 */
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-	private void resetKeyBoard( String leftPackge, String rightPackge )
+	private void resetKeyBoard()
 	{
 		try
 		{
-			if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+			if ( packageArrayList.size() > 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
 			{
+				String leftPackge = packageArrayList.get(checkUnderBound(packageIndex));
+				String rightPackge = packageArrayList.get(checkUpperBound(packageIndex + 1));
 				leftIconFrameLayout.setBackground(packageManager.getApplicationIcon(leftPackge));
 				rightIconFrameLayout.setBackground(packageManager.getApplicationIcon(rightPackge));
 			}
@@ -397,8 +399,9 @@ public class QuicklicKeyBoardService extends Service {
 		packageArrayList.clear(); // 초기화
 
 		String launcherName = getLauncherName();
-
 		List<RunningTaskInfo> taskinfo = activityManager.getRunningTasks(MAX_TASK_NUM);
+
+		int runningTaskCount = 0;
 		for ( int i = 0; i < taskinfo.size(); i++ )
 		{
 			String packageName = taskinfo.get(i).topActivity.getPackageName();
@@ -408,8 +411,13 @@ public class QuicklicKeyBoardService extends Service {
 			if ( !packageName.matches(launcherName + "|.*contacts.*|.*skt.prod.*|.*.phone.*|.*quicklic.*") && !tempArrayList.contains(packageName) )
 			{
 				tempArrayList.add(packageName);
+				runningTaskCount++;
 			}
 		}
+
+		if ( runningTaskCount == 0 )
+			tempArrayList.clear();
+
 		packageArrayList.addAll(tempArrayList); // 새로 구성된 리스트 복사
 
 		// 현재 보고 있는 앱의 위치로 초기화
@@ -435,14 +443,6 @@ public class QuicklicKeyBoardService extends Service {
 		@Override
 		public void onClick( View v )
 		{
-			PackageManager packageManager = getPackageManager();
-
-			if ( appCount == 0 )
-			{
-				Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
-				return;
-			}
-
 			if ( v == moveButton )
 			{
 				long pressTime = System.currentTimeMillis();
@@ -492,7 +492,13 @@ public class QuicklicKeyBoardService extends Service {
 			else
 			{
 				getRunningTaskList();
-
+				resetKeyBoard();
+				if ( appCount == 0 )
+				{
+					Toast.makeText(getApplicationContext(), R.string.keyboard_move_no, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				try
 				{
 					if ( v == leftButton ) // Button '<'
@@ -526,7 +532,7 @@ public class QuicklicKeyBoardService extends Service {
 				{
 					Toast.makeText(getApplicationContext(), R.string.keyboard_run_no, Toast.LENGTH_SHORT).show();
 				}
-				resetKeyBoard(packageArrayList.get(checkUnderBound(packageIndex)), packageArrayList.get(checkUpperBound(packageIndex + 1)));
+				resetKeyBoard();
 			}
 		}
 	};
