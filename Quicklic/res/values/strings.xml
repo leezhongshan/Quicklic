@@ -3,7 +3,7 @@
     <!-- System -->
     <string name="app_name">Quicklic</string>
     <string name="hello_quicklic">Quicklic 서비스를 시작합니다.</string>
-    <string name="stop_quicklic">서비스가 실행중입니다.누르시면 종료됩니다.</string>
+    <string name="stop_quicklic">서비스가 실행중입니다. 누르시면 종료됩니다.</string>
     <string name="quit_quicklic">Quicklic 서비스를 종료합니다.</string>
     <string name="err_limited_item_count">마지막 페이지에 추가됩니다.</string>
 
