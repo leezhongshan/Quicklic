@@ -4,10 +4,9 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.main.QuicklicMainService;
+import quicklic.quicklic.util.BaseQuicklic;
 import quicklic.quicklic.util.DeviceAdmin;
 import quicklic.quicklic.util.DeviceAdminActivity;
-import quicklic.quicklic.util.BaseQuicklic;
 import android.app.admin.DevicePolicyManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
@@ -64,15 +63,12 @@ public class QuicklicHardwareService extends BaseQuicklic {
 	{
 		super.onDestroy();
 		unregisterReceiver(broadcastReceiver);
-
-		setFloatingVisibility(false);
-		Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
-		startService(intent);
 	}
 
 	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
+		setIsMain(false);
 		return START_NOT_STICKY;
 	}
 

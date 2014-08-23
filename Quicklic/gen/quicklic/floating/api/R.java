@@ -34,14 +34,13 @@ public final class R {
         public static final int rendering_item=0x7f020014;
         public static final int rotate_off=0x7f020015;
         public static final int rotate_on=0x7f020016;
-        public static final int screen_off=0x7f020017;
-        public static final int sound_decrease=0x7f020018;
-        public static final int sound_increase=0x7f020019;
-        public static final int sound_mute=0x7f02001a;
-        public static final int sound_on=0x7f02001b;
-        public static final int sound_vibrate=0x7f02001c;
-        public static final int wifi_off=0x7f02001d;
-        public static final int wifi_on=0x7f02001e;
+        public static final int sound_decrease=0x7f020017;
+        public static final int sound_increase=0x7f020018;
+        public static final int sound_mute=0x7f020019;
+        public static final int sound_on=0x7f02001a;
+        public static final int sound_vibrate=0x7f02001b;
+        public static final int wifi_off=0x7f02001c;
+        public static final int wifi_on=0x7f02001d;
     }
     public static final class id {
         public static final int appname_TextView=0x7f070005;

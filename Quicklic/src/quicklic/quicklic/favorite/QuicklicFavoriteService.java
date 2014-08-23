@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import quicklic.floating.api.R;
 import quicklic.quicklic.datastructure.Item;
-import quicklic.quicklic.main.QuicklicMainService;
 import quicklic.quicklic.util.BaseQuicklic;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,17 +31,9 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	private int current_page;
 
 	@Override
-	public void onDestroy()
-	{
-		super.onDestroy();
-		setFloatingVisibility(false);
-		Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
-		startService(intent);
-	}
-
-	@Override
 	public int onStartCommand( Intent intent, int flags, int startId )
 	{
+		setIsMain(false);
 		initialize(intent);
 		initializeImage();
 
@@ -73,7 +64,6 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 	 */
 	private void resetQuicklic()
 	{
-
 		isAdded = false;
 
 		// 현재 보고 있는 viewPager의 page를 기억

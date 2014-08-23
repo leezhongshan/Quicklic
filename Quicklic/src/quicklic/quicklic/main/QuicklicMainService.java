@@ -37,6 +37,8 @@ public class QuicklicMainService extends BaseQuicklic {
 
 	private void initialize()
 	{
+		setIsMain(true);
+
 		imageArrayList = new ArrayList<Item>();
 		imageArrayList.add(new Item(HARDWARE, R.drawable.hardware));
 		imageArrayList.add(new Item(KEYBOARD, R.drawable.keyboard));

@@ -61,6 +61,8 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 	private float origin_y;
 	private float itemSize;
 
+	private boolean isMain;
+
 	private LinearLayout detectLayout;
 
 	/**************************************
@@ -297,9 +299,14 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		return View.VISIBLE;
 	}
 
-	public LinearLayout getDetectLayout()
+	protected LinearLayout getDetectLayout()
 	{
 		return detectLayout;
+	}
+
+	protected void setIsMain( boolean enable )
+	{
+		isMain = enable;
 	}
 
 	/**************************************
@@ -373,6 +380,7 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 	protected void initializeQuicklic()
 	{
 		context = this;
+		isMain = true;
 
 		// 화면 회전의 방향에 따른 resize 비율
 		if ( getOrientation() == Surface.ROTATION_0 )
@@ -475,10 +483,18 @@ public class BaseQuicklic extends DeviceMetricQuicklic {
 		public boolean onTouch( View v, MotionEvent event )
 		{
 			getWindowManager().removeView(detectLayout);
-
-			FloatingService.setVisibility(true);
-
 			stopServices();
+
+			if ( !isMain )
+			{
+				setFloatingVisibility(false);
+				Intent intent = new Intent(getApplicationContext(), QuicklicMainService.class);
+				startService(intent);
+			}
+			else
+			{
+				setFloatingVisibility(true);
+			}
 			return false;
 		}
 
