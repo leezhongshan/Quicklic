@@ -1,0 +1,38 @@
+<resources>
+
+    <!-- System -->
+    <string name="app_name">快启</string>
+    <string name="hello_quicklic">启动快启</string>
+    <string name="stop_quicklic">停止快启</string>
+    <string name="quit_quicklic">退出快起</string>
+    <string name="err_limited_item_count">err_limited_item_count</string>
+
+    <!-- Quicklic -->
+    <string name="quicklic_magnet_mode">quicklic_magnet_mode</string>
+    <string name="quicklic_floating_mode">quicklic_floating_mode</string>
+
+    <!-- Favorite -->
+    <string name="favorite_loading">favorite_loading</string>
+    <string name="favorite_enable_delete">favorite_enable_delete</string>
+    <string name="favorite_disable_delete">favorite_disable_delete</string>
+    <string name="favorite_run_no">favorite_run_no</string>
+    <string name="favorite_system">favorite_system</string>
+    <string name="favorite_user">favorite_user</string>
+    <string name="favorite_duplication_warning">favorite_duplication_warning</string>
+
+    <!-- Keyboard -->
+    <string name="keyboard_move_finish">keyboard_move_finish</string>
+    <string name="keyboard_move_first">keyboard_move_first</string>
+    <string name="keyboard_move_no">keyboard_move_no</string>
+    <string name="keyboard_run_no">keyboard_run_no</string>
+    <string name="keyboard_except_list">.*contacts.*|.*skt.prod.*|.*.phone.*|.*quicklic.*</string>
+
+    <!-- Hardware -->
+    <string name="hardware_volume_max">hardware_volume_max</string>
+    <string name="hardware_volume_min">hardware_volume_min</string>
+    <string name="hardware_device_admin_active">hardware_device_admin_active</string>
+    <string name="hardware_device_admin_deactive">hardware_device_admin_deactive</string>
+    <string name="hardware_device_admin_label">Quicklic ( hardware_device_admin_label )</string>
+    <string name="hardware_device_admin_description">hardware_device_admin_description</string>
+
+</resources>
