@@ -54,19 +54,11 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		initializeViewPager();
 	}
 
-	/**
-	 * @함수명 : resetQuicklic
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 화면을 새로고침
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 8. 21.
-	 */
+
 	private void resetQuicklic()
 	{
 		isAdded = false;
 
-		// 현재 보고 있는 viewPager의 page를 기억
 		current_page = getViewPager().getCurrentItem();
 
 		if ( getQuicklicFrameLayout() != null )
@@ -79,6 +71,8 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 
 	private void initialize( Intent intent )
 	{
+		setIsMain(true);
+
 		preferencesManager = new PreferencesManager(this);
 		packageManager = getPackageManager();
 
@@ -95,71 +89,31 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		addViewsForBalance(imageArrayList.size(), imageArrayList, clickListener);
 	}
 
-	/**
-	 * @함수명 : initializeViewPager
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 추가/삭제 모드변경 또는 앱 추가 시 상황에 맞는 page 위치 이동
-	 * @작성자 : 13 JHPark
-	 * @작성일 : 2014. 8. 21.
-	 */
+
 	private void initializeViewPager()
 	{
-		// 추가 모드
+
 		if ( !delEnabled )
 		{
-			// 앱 선택 안함 : 현재 페이지 유지
+
 			if ( !isAdded )
 			{
 				getViewPager().setCurrentItem(current_page);
 			}
-			// 앱 선택 : 추가되는 페이지로 이동 (마지막 페이지)
+
 			else
 			{
 				getViewPager().setCurrentItem(getViewCount());
 			}
 		}
-		// 삭제 모드
 		else
 		{
-			// 현재 페이지 유지
+
 			getViewPager().setCurrentItem(current_page);
 		}
 	}
 
-	/**
-	 * @함수명 : setCenterView
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 삭제모드에 따라서 + / - 를 전환
-	 * @작성자 : JHPark, THYang
-	 * @작성일 : 2014. 6. 26.
-	 */
-	private void setCenterView()
-	{
-		ImageView imageView = new ImageView(this);
-
-		if ( !delEnabled )
-			imageView.setBackgroundResource(R.drawable.favorite_add);
-		else
-			imageView.setBackgroundResource(R.drawable.favorite_delete);
-
-		imageView.setId(0);
-		imageView.setOnClickListener(clickListener);
-		imageView.setOnLongClickListener(onLongClickListener);
-
-		setCenterView(imageView);
-	}
-
-	/**
-	 * @함수명 : getPreference
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : Favorite에 보여줄 어플리케이션을 모두 가져오기
-	 * @작성자 : JHPark
-	 * @작성일 : 2014. 5. 22.
-	 */
-	private void getPreference()
+    private void getPreference()
 	{
 		pkgArrayList.clear();
 		imageArrayList.clear();
@@ -181,14 +135,26 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		}
 	}
 
-	/**
-	 * @함수명 : stopService
-	 * @매개변수 :
-	 * @반환 : void
-	 * @기능(역할) : 현재 서비스 종료
-	 * @작성자 : THYang
-	 * @작성일 : 2014. 8. 21.
-	 */
+
+	private void setCenterView()
+	{
+		ImageView imageView = new ImageView(this);
+
+		if ( !delEnabled )
+			imageView.setBackgroundResource(R.drawable.favorite_add);
+		else
+			imageView.setBackgroundResource(R.drawable.favorite_delete);
+
+		imageView.setId(0);
+		imageView.setOnClickListener(clickListener);
+		imageView.setOnLongClickListener(onLongClickListener);
+
+		setCenterView(imageView);
+	}
+
+
+
+
 	private void stopService()
 	{
 		Intent stopIntent = new Intent(getApplicationContext(), QuicklicFavoriteService.class);
@@ -227,13 +193,9 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 			{
 				if ( !delEnabled ) // ADD Mode
 				{
-					/* 실행할 수 없는 앱을 추가한 상태에서
-					 *  앱 실행을 요청했을 때,
-					 *  예외처리를 통해 service는 죽지 않으며, 사용자에게 Toast로 알림.
-					 */
 					try
 					{
-						// 앱 실행시 Favorite 액티비티 서비스 제거
+
 						String packageName = preferencesManager.getAppPreferences(getApplicationContext(), v.getId());
 						Intent runIntent = packageManager.getLaunchIntentForPackage(packageName);
 						startActivity(runIntent);
@@ -257,7 +219,7 @@ public class QuicklicFavoriteService extends BaseQuicklic {
 		}
 	};
 
-	// 추가 / 삭제 모드를 구분
+
 	private OnLongClickListener onLongClickListener = new OnLongClickListener()
 	{
 		@Override
